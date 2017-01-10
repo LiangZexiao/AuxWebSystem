@@ -187,10 +187,18 @@
     <Compile Include="Controllers\ParameterController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
+    <Compile Include="Filters\UserFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\DatabaseHelpers.cs" />
+    <Compile Include="Helpers\DateviewHelper.cs" />
+    <Compile Include="Helpers\UserSecurityHelper.cs" />
+    <Compile Include="Helpers\UserTableHelper.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\DataViewModel.cs" />
+    <Compile Include="Models\TableModel.cs" />
+    <Compile Include="Models\UserTableModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -310,8 +318,11 @@
     <Content Include="Views\Parameter\Holiday.cshtml" />
     <Content Include="Views\Parameter\PasswordManager.cshtml" />
     <Content Include="Views\Dataview\index.cshtml" />
-    <Content Include="Views\User\Register.cshtml" />
+    <Content Include="Views\User\RegisterPage.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
+    <Content Include="Views\User\LoginPage.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\ModifyUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

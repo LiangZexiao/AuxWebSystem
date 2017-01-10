@@ -13,32 +13,30 @@
         <header>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <!--
-                        <p class="site-title">@Html.ActionLink("将你的徽标放置在此处", "Index", "Home")</p>
+                    <p class="site-title">@Html.ActionLink("将你的徽标放置在此处", "Index", "Home")</p>
                 </div>
-                    -->
-                    
                 <div class="float-right">
+                    
                     <section id="login">
                         @Html.Partial("_LoginPartial")
                     </section>
+                    
                     <nav>
                         <ul id="menu">
                             <li>@Html.ActionLink("主页", "Index", "Home")</li>
-
-
-                            <li>@Html.ActionLink("Web用户管理", "WebUserManager", "User")</li>
-                            <li>@Html.ActionLink("远程曲线权限管理", "CurveJurisdictionManager", "User")</li>
-                            <li>@Html.ActionLink("时间参数", "TimeParameter", "Parameter")</li>
-                            <li>@Html.ActionLink("节假日", "Holiday", "Parameter")</li>
-                            <li>@Html.ActionLink("密码管理", "PasswordManager", "Parameter")</li>
-                            <li>@Html.ActionLink("数据查看", "Index", "Dataview")</li>
-
                             <li>@Html.ActionLink("关于", "About", "Home")</li>
                             <li>@Html.ActionLink("联系方式", "Contact", "Home")</li>
                         </ul>
                     </nav>
                 </div>
+                <ul id="menu">
+                    <li>@Html.ActionLink("Web用户管理", "WebUserManager", "User")</li>
+                    <li>@Html.ActionLink("远程曲线权限管理", "CurveJurisdictionManager", "User")</li>
+                    <li>@Html.ActionLink("时间参数", "TimeParameter", "Parameter")</li>
+                    <li>@Html.ActionLink("节假日", "Holiday", "Parameter")</li>
+                    <li>@Html.ActionLink("密码管理", "PasswordManager", "Parameter")</li>
+                    <li>@Html.ActionLink("数据查看", "Index", "Dataview")</li>
+                </ul>
             </div>
         </header>
         <div id="body">

@@ -27,13 +27,37 @@ namespace WebSystem.Models
         public string UserName { get; set; }
     }
 
-    public class RegisterExternalLoginModel
+    public class SimpleUserModel
     {
-        [Required]
-        [Display(Name = "用户名")]
-        public string UserName { get; set; }
+        public SimpleUserModel(int id, String name)
+        {
+            UserID = id;
+            LogName = name;
+        }
+        public int UserID { get; set; }
+        public String LogName { get; set; }
 
-        public string ExternalLoginData { get; set; }
+        public String DeleteAccountSQL{
+            get{
+                //DELETE FROM 表名称 WHERE 列名称 = 值
+                return String.Format("DELETE FROM {0} WHERE UserID = '{1}' AND LogName = '{2}'", UserTableModel.TableName, UserID, LogName);
+            }
+        }
+        public String LoginStateSQL
+        {
+            get
+            {
+                //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
+                return String.Format(@"UPDATE {0} SET State = '{1}' WHERE UserID = '{2}'", UserTableModel.TableName, 1, UserID);
+            }
+        }
+        public String LogoutStateSql
+        {
+            get
+            {
+                return String.Format(@"UPDATE {0} SET State = '{1}' WHERE UserID = '{2}'", UserTableModel.TableName, 0, UserID);
+            }
+        }
     }
 
     public class LocalPasswordModel
@@ -59,39 +83,57 @@ namespace WebSystem.Models
     {
         [Required]
         [Display(Name = "用户名")]
-        public string UserName { get; set; }
+        public string LogName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "密码")]
         public string Password { get; set; }
 
-        [Display(Name = "记住我?")]
-        public bool RememberMe { get; set; }
+        public String LoginSQL
+        {
+            get
+            {
+                // SELECT * FROM 表名称
+                return String.Format(@"SELECT * FROM {0} WHERE LogName = '{1}' AND Password = '{2}'", UserTableModel.TableName, LogName, Password);
+            }
+        }
+
     }
 
-    public class RegisterModel
+    public class RegisterModel : UserTableModel
     {
-        [Required]
-        [Display(Name = "用户名")]
-        public string UserName { get; set; }
+        public RegisterModel(): base(){
 
-        [Required]
-        [StringLength(100, ErrorMessage = "{0} 必须至少包含 {2} 个字符。", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "密码")]
-        public string Password { get; set; }
+        }
 
         [DataType(DataType.Password)]
         [Display(Name = "确认密码")]
         [Compare("Password", ErrorMessage = "密码和确认密码不匹配。")]
         public string ConfirmPassword { get; set; }
-    }
 
-    public class ExternalLogin
-    {
-        public string Provider { get; set; }
-        public string ProviderDisplayName { get; set; }
-        public string ProviderUserId { get; set; }
+        ///
+        public string SelectLogNameSQL
+        {
+            get
+            {
+                //SELECT 列名称 FROM 表名称
+                //WHERE 列 运算符 值
+                return String.Format(@"SELECT LogName FROM {0} WHERE LogName = '{1}'", UserTableModel.TableName ,LogName);
+            }
+        }
+
+        /// <summary>
+        /// 获得注册的SQL语句
+        /// </summary>
+        public String RegisterSQL
+        {
+            get
+            {
+                //TODO: could be better
+                //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
+                return String.Format(@"INSERT INTO {0} ( LogName, Password, Area, Email, CellPhone ) VALUES ( '{1}', '{2}', '{3}', '{4}', '{5}')", UserTableModel.TableName, LogName, Password, Area, Email, CellPhone );
+            }
+        }
     }
 }

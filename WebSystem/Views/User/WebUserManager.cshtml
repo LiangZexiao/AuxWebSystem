@@ -3,3 +3,52 @@
 }
 
 <h2>Web用户管理</h2>
+<br />
+
+<table border="1">
+    <tr>
+        <th>用户名</th>
+        <th>登录名</th>
+        <th>区域</th>
+        <th>部门</th>
+        <th>密码</th>
+        <th>目前状态</th>
+        <th>邮箱</th>
+        <th>手机</th>
+        <th>超级用户权限</th>
+        <th>操作</th>
+    </tr>
+
+    @{
+
+        foreach (WebSystem.Models.UserTableModel item in ViewBag.userList)
+        {
+            <tr>
+                <td>@item.UserID</td>
+                <td>@item.LogName</td>
+                <td>@item.Area</td>
+                <td>@item.Department</td>
+                <td>@item.Password</td>
+                <td>@item.State</td>
+                <td>@item.Email</td>
+                <td>@item.CellPhone</td>
+                <td>@item.AdminUser</td>
+                <td><a href="/User/DeleteAccount/@item.UserID/@item.LogName">删除</a></td>
+            </tr>
+        }
+    }
+
+    
+
+</table>
+
+
+<br />
+<br />
+
+<a href="~/User/RegisterPage">添加新用户</a>
+
+
+<form>
+    <input type="datetime" />
+</form>
