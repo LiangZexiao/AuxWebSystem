@@ -6,7 +6,7 @@
             <li>@Html.ActionLink("登录", "LoginPage", "User", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
         </ul>
     }else{
-        WebSystem.Models.SimpleUserModel user = (WebSystem.Models.SimpleUserModel)obj;
+        WebSystem.Models.UserTableModel user = (WebSystem.Models.UserTableModel)obj;
         <text>
             你好，@user.LogName (@user.UserID)
             <a href="/User/Logoff">注销</a>

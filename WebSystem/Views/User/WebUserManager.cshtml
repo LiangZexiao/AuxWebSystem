@@ -20,20 +20,19 @@
     </tr>
 
     @{
-
-        foreach (WebSystem.Models.UserTableModel item in ViewBag.userList)
+        foreach (System.Data.DataRow row in @ViewBag.userTable.Rows)
         {
             <tr>
-                <td>@item.UserID</td>
-                <td>@item.LogName</td>
-                <td>@item.Area</td>
-                <td>@item.Department</td>
-                <td>@item.Password</td>
-                <td>@item.State</td>
-                <td>@item.Email</td>
-                <td>@item.CellPhone</td>
-                <td>@item.AdminUser</td>
-                <td><a href="/User/DeleteAccount/@item.UserID/@item.LogName">删除</a></td>
+                <td>@row["UserID"]</td>
+                <td>@row["LogName"]</td>
+                <td>@row["Area"]</td>
+                <td>@row["Department"]</td>
+                <td>@row["Password"]</td>
+                <td>@row["State"]</td>
+                <td>@row["Email"]</td>
+                <td>@row["CellPhone"]</td>
+                <td>@row["AdminUser"]</td>
+                <td><a href="/User/DeleteAccount/@System.Web.HttpUtility.HtmlEncode(row["UserID"])/@System.Web.HttpUtility.HtmlEncode(row["LogName"])">删除</a></td>
             </tr>
         }
     }
@@ -47,8 +46,9 @@
 <br />
 
 <a href="~/User/RegisterPage">添加新用户</a>
-
-
-<form>
-    <input type="datetime" />
+<br />
+<br />
+<form method="POST" action="/User/UploadFile" enctype="multipart/form-data" >
+    <label>上传Excel文件</label><input type="file" name="excelUpload" value="Upload" />
+    <input type="submit" value="Upload" />
 </form>

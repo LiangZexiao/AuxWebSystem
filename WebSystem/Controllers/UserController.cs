@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data;
-using System.Data.SqlClient;
 using WebSystem.Models;
 using WebSystem.Helpers;
 using WebSystem.Filters;
@@ -24,20 +23,9 @@ namespace WebSystem.Controllers
         public ActionResult WebUserManager()
         {
             //web用户管理
-            SqlConnection connection = DataBaseHelper.getSqlConnection();
-            connection.Open();
-            SqlCommand command = new SqlCommand(UserTableModel.SelectAllSQL, connection);
-            SqlDataReader reader = command.ExecuteReader();
-
-            List<UserTableModel> userList = new List<UserTableModel>();
-            while (reader.Read())
-            {
-                userList.Add(new UserTableModel(reader));
-            }
-
-            ViewBag.userList = userList;
-            reader.Close();
-            connection.Close();
+            UserTableModel usm = new UserTableModel();
+            DataTable userTable = DataBaseHelper.getAllRecord(usm);
+            ViewBag.userTable = userTable;
             return View();
         }
 
@@ -62,14 +50,7 @@ namespace WebSystem.Controllers
         /// <returns></returns>
         public ActionResult ModifyUser(int id)
         {
-            SqlConnection connection = DataBaseHelper.getSqlConnection();
-            connection.Open();
-            SqlCommand command = new SqlCommand(UserTableModel.SelectUserByIDSQL(id), connection);
-            SqlDataReader reader = command.ExecuteReader();
-            if (reader.Read())
-            {
-                ViewBag.User = new UserTableModel(reader);
-            }
+
             return View("Index");
         }
 
@@ -81,14 +62,13 @@ namespace WebSystem.Controllers
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
         public ActionResult Register(FormCollection form)
         {
-            RegisterModel rgmode = new RegisterModel();
-            rgmode.LogName = form["LogName"];
-            rgmode.Area = int.Parse(form["Area"]);
-            rgmode.Password = form["Password"];
-            rgmode.ConfirmPassword = form["ConfirmPassword"];
+            UserTableModel mode = new UserTableModel();
+            mode.LogName = form["LogName"];
+            mode.Email = form["Email"];
+            mode.CellPhone = form["CellPhone"];
             try
             {
-                UserSecurityHelper.Register(rgmode);
+                UserSecurityHelper.Register(mode);
             }
             catch (UserSecurityException e)
             {
@@ -103,9 +83,7 @@ namespace WebSystem.Controllers
         [HttpPost]
         public ActionResult Login(FormCollection form)
         {
-            LoginModel model = new LoginModel();
-            model.LogName = form["LogName"];
-            model.Password = form["Password"];
+            LoginModel model = new LoginModel(form["LogName"], form["Password"]);
             try
             {
                 UserSecurityHelper.Login(model);
@@ -129,7 +107,10 @@ namespace WebSystem.Controllers
         {
             try
             {
-                UserSecurityHelper.DeleteAccount(new SimpleUserModel(id,value));
+                UserTableModel tablemodel = new UserTableModel();
+                tablemodel.UserID = id;
+                tablemodel.LogName = value;
+                UserSecurityHelper.DeleteAccount(tablemodel);
             }
             catch (UserSecurityException e)
             {
@@ -138,6 +119,15 @@ namespace WebSystem.Controllers
             }
             Response.Redirect("/User/WebUserManager");
             return null;
+        }
+
+        [HttpPost]
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
+        public ActionResult UploadFile(FormCollection form)
+        {
+            ExcelHelper helper = new ExcelHelper();
+            helper.SaveFile();
+            return View("index");
         }
 
 
