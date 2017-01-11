@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "ModifyUser";
+}
+
+<h2>修改用户信息页面</h2>
+@{
+    /*
+     * 用户名	        UserID	    int	            否			
+     * 登录名	        LogName	    nvarchar(20)	否			
+     * 区域	            Area	    int	            否			
+     * 部门	            Department	int	            是	        
+     * 密码	            Password	nvarchar(200)	否			
+     * 目前状态	        State	    int	            是		    
+     * 邮箱	            Email	    nvarchar(200)	是			
+     * 手机	            CellPhone	nvarchar(20）	是			
+     * 超级用户权限	    AdminUser	int	            是		    
+     */
+<form>
+    <label>用户名</label><input type="text" value="@ViewBag.User.UserID" />
+
+</form>
+}
