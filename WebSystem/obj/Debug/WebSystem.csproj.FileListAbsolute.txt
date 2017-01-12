@@ -181,3 +181,4 @@ E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSyst
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\bin\ru\System.Spatial.resources.dll
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\bin\zh-Hans\System.Spatial.resources.dll
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\bin\zh-Hant\System.Spatial.resources.dll
+E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\obj\Debug\WebSystem.csproj.ResolveComReference.cache

@@ -1,6 +1,7 @@
 ﻿@{
-    ViewBag.Title = "ModifyUser";
-}<h2>修改用户信息页面</h2>
+}
+
+<h2>修改用户信息页面</h2>
 @{
     /*
      * 用户名         UserID     int             否
@@ -13,13 +14,13 @@
      * 手机             CellPhone nvarchar(20） 是
      * 超级用户权限     AdminUser int             是
      */
-    <form>
-        <label>用户名</label><input type="text" value="@ViewBag.User.UserID" />
+    <form method="POST" action="/User/ModifyUser">
+        <label>用户名</label><input type="text" value="" />
         <label>密码</label><input type="password" name="Password" /><br /><br />
         <label>新密码</label><input type="password" name="Newpassword" /><br /><br />
         <label>确认密码</label><input type="password" name="ComfirmPassword" /><br /><br />
-        <label>邮箱</label><input type="password" name="Email" /><br /><br />
-        <label>手机</label><input type="password" name="CellPhone" /><br /><br />
+        <label>邮箱</label><input type="text" name="Email" /><br /><br />
+        <label>手机</label><input type="text" name="CellPhone" /><br /><br />
         <input type="submit" value="确认修改" />
     </form>
 }

@@ -17,16 +17,16 @@ namespace WebSystem.Models
      * 表存在位置	服务器
      * 逻辑主键	    UserID
      * 
-     * 中文名称	        英文字段	    类型	            是否可为空	外键关系	            默认	    备注
-     * 用户名	        UserID	    int	            否			
-     * 登录名	        LogName	    nvarchar(20)	否			
-     * 区域	            Area	    int	            否			
-     * 部门	            Department	int	            是	        SystemParameter		
-     * 密码	            Password	nvarchar(200)	否			
-     * 目前状态	        State	    int	            是		                        0	    脱线：0；在线：1
-     * 邮箱	            Email	    nvarchar(200)	是			
-     * 手机	            CellPhone	nvarchar(20）	是			
-     * 超级用户权限	    AdminUser	int	            是		                        0	    超级用户可删减其他用户
+     * 中文名称         英文字段	        类型	            是否可为空	 外键关系	         	    备注
+     * 用户编号         UserID	        int	            否			
+     * 登录名           LogName	        nvarchar(20)	否			
+     * 密码             Password	        nvarchar(200)	否			
+     * 部门             Department	    int	            是	        SystemParameter		
+     * 用户类型         UserType        int             否                                       0: 超级管理员， 1: Web, 2: 曲线
+     * 邮箱             Email	        nvarchar(200)	是			     
+     * 手机	            CellPhone	    nvarchar(20）	是			
+     * 姓名             RealName        nvarchar(20)    否
+     * 最后登录时间     LastLoginTime   datatime         是
      */
 
     public class UserTableModel : TableModel
@@ -51,7 +51,7 @@ namespace WebSystem.Models
         /// </summary>
         public override String getMyRecordSQL()
         {
-            return String.Format(@"SELECT UserID, LogName, Area, Department, Password, State, Email, CellPhone, AdminUser FROM {0} WHERE LogName = '{1}' AND Password = '{2}'", TableName, LogName, Password);
+            return String.Format(@"SELECT UserID, LogName, Area, Department, State, Email, CellPhone, AdminUser FROM {0} WHERE LogName = '{1}' AND Password = '{2}'", TableName, LogName, Password);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace WebSystem.Models
         public override string getInsertSQL()
         {
             //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
-            return String.Format(@"INSERT INTO {0} ( LogName, Password, Email, CellPhone ) VALUES ( '{1}', '123', '{2}', '{3}')", TableName, LogName ,Email, CellPhone );
+            return String.Format(@"INSERT INTO {0} ( LogName, Password, Email, CellPhone ) VALUES ( '{1}', '123', '{2}', '{3}')", TableName, LogName, Email, CellPhone);
         }
 
         public override void FillData(SqlDataReader reader)
@@ -98,23 +98,19 @@ namespace WebSystem.Models
             }
             if (!reader.IsDBNull(4))
             {
-                Password = reader.GetString(4);
+                State = reader.GetInt32(4);
             }
             if (!reader.IsDBNull(5))
             {
-                State = reader.GetInt32(5);
+                Email = reader.GetString(5);
             }
             if (!reader.IsDBNull(6))
             {
-                Email = reader.GetString(6);
+                CellPhone = reader.GetString(6);
             }
             if (!reader.IsDBNull(7))
             {
-                CellPhone = reader.GetString(7);
-            }
-            if (!reader.IsDBNull(8))
-            {
-                AdminUser = reader.GetInt32(8);
+                AdminUser = reader.GetInt32(7);
             }
         }
 
@@ -229,7 +225,7 @@ namespace WebSystem.Models
         /// <returns>如果符合规范，返回true， 否则，返回false</returns>
         public static bool checkCellPhone(String phoneNumber)
         {
-            return System.Text.RegularExpressions.Regex.IsMatch(phoneNumber,@"^1(3|4|5|7|8)\d{9}$");
+            return System.Text.RegularExpressions.Regex.IsMatch(phoneNumber, @"^1(3|4|5|7|8)\d{9}$");
         }
 
         /// <summary>
@@ -238,7 +234,7 @@ namespace WebSystem.Models
         /// <returns>如果符合规范，返回true， 否则，返回false</returns>
         public bool checkCellPhone()
         {
-            return System.Text.RegularExpressions.Regex.IsMatch(CellPhone,@"^1(3|4|5|7|8)\d{9}$");
+            return System.Text.RegularExpressions.Regex.IsMatch(CellPhone, @"^1(3|4|5|7|8)\d{9}$");
         }
     }
 
@@ -312,6 +308,7 @@ namespace WebSystem.Models
         /// </summary>
         public string ConfirmPassword { get; set; }
 
+
         public override string getMyRecordSQL()
         {
             return String.Format(@"SELECT * FROM {0} WHERE UserID = '{1}'", TableName, UserID);
@@ -319,9 +316,21 @@ namespace WebSystem.Models
 
         public override string getUpdateSQL()
         {
+            if (null == CellPhone || "" == CellPhone)
+            {
+
+            }
+
+            if (null == Email || "" == Email)
+            {
+
+            }
+
+
             //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-            return String.Format(@"UPDATE {0} SET Password = '{1}' WHERE UserID = '{2}'", TableName, NewPassword, OldPassword);
+            return String.Format(@"UPDATE {0} SET Password = '{1}' CellPhone ='{2}'  Email='{3}'  WHERE UserID = '{4}'", TableName, NewPassword, CellPhone, Email, UserID);
         }
+
     }
 
 }

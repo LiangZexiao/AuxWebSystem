@@ -50,6 +50,7 @@ namespace WebSystem.Helpers
             connection.Open();
             SqlDataAdapter dataAdapter = new SqlDataAdapter(model.getAllRecordSQL(), connection);
             dataAdapter.Fill(dt);
+            connection.Close();
             return dt;
         }
 
@@ -148,6 +149,9 @@ namespace WebSystem.Helpers
             connection.Close();
             return succ;
         }
+
+
+
         /// <summary>
         /// 根据TableModel的getRecordByKeySQL执行SQL语句
         /// </summary>
@@ -161,6 +165,38 @@ namespace WebSystem.Helpers
             int result = command.ExecuteNonQuery();
             connection.Close();
             return result >= 1;
+        }
+
+        /// <summary>
+        /// 根据TableModel的getRecordByKeySQL执行SQL语句
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>DataTable</returns>
+        public static DataTable getRecordByKey(TableModel model)
+        {
+            DataTable dt = new DataTable();
+            SqlConnection connection = getSqlConnection();
+            connection.Open();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(model.getRecordByKeySQL(), connection);
+            dataAdapter.Fill(dt);
+            connection.Close();
+            return dt;
+        }
+
+        /// <summary>
+        /// 根据TableModel的getMyRecordSQL执行SQL语句
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>DataTable</returns>
+        public static DataTable getMyRecord(TableModel model)
+        {
+            DataTable dt = new DataTable();
+            SqlConnection connection = getSqlConnection();
+            connection.Open();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(model.getMyRecordSQL(), connection);
+            dataAdapter.Fill(dt);
+            connection.Close();
+            return dt;
         }
 
     }

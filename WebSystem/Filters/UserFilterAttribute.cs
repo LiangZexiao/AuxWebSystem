@@ -46,7 +46,7 @@ namespace WebSystem.Filters
             else
             {
                 UserTableModel model = (UserTableModel)obj;
-                if (!model.isAdminUser())
+                if (AdminRequire && !model.isAdminUser() )
                 {
                     filterContext.Result = new RedirectResult(FailUrl);
                 }

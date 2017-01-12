@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data;
+using System.Net.Http;
 using WebSystem.Models;
 using WebSystem.Helpers;
 using WebSystem.Filters;
@@ -48,10 +49,62 @@ namespace WebSystem.Controllers
         /// 修改用户信息页面
         /// </summary>
         /// <returns></returns>
-        public ActionResult ModifyUser(int id)
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = false)]
+        public ActionResult ModifyUser(FormCollection form)
         {
+            UserTableModel usm = (UserTableModel)Session[UserSecurityHelper.sessionName];
+            ModifyUserTableModel tmp = new ModifyUserTableModel();
+            tmp.UserID = usm.UserID;
+            tmp.Password = form["Password"];
+            tmp.NewPassword = form["Newpassword"];
+            tmp.ConfirmPassword = form["ComfirmPassword"];
+            tmp.Email = form["Email"];
+            tmp.CellPhone = form["CellPhone"];
+            if (null == tmp.Email)
+            {
+                tmp.Email = usm.Email;
+            }
+            if (null == tmp.CellPhone)
+            {
+                tmp.CellPhone = usm.CellPhone;
+            }
+            if (tmp.Password == usm.Password)
+            {
+                if (tmp.ConfirmPassword == tmp.NewPassword)
+                {
+                    if (DataBaseHelper.Update(tmp))
+                    {
+                        ViewBag.message = "修改成功";
+                        UserSecurityHelper.Logout();
+                        UserSecurityHelper.Login(new LoginModel(tmp.LogName, tmp.NewPassword));
+                        return View("Index");
+                    }
+                    else
+                    {
+                        ViewBag.message = "修改失败，请检查网络，稍后再试";
+                        return View();
+                    }
+                }
+                else
+                {
+                    ViewBag.message = "两次输入的新密码不同";
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.message = "旧密码输入错误";
+                return View();
+            }
+        }
 
-            return View("Index");
+        /// <summary>
+        /// 修改用户信息页面
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ModityUserPage()
+        {
+            return View();
         }
 
         /// <summary>
@@ -128,6 +181,16 @@ namespace WebSystem.Controllers
             ExcelHelper helper = new ExcelHelper();
             helper.SaveFile();
             return View("index");
+        }
+
+       
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
+        public HttpResponseMessage DownloadExcel()
+        {
+            UserTableModel usm = new UserTableModel();
+            DataTable datatable = DataBaseHelper.getAllRecord(usm);
+            String fileName = ExcelHelper.ExportExcel(datatable);
+            return ExcelHelper.UserDownloadFile(fileName);
         }
 
 

@@ -5,6 +5,14 @@
 <h2>Web用户管理</h2>
 <br />
 
+<div>
+    <form method="GET" action="/User/SearchUser">
+        <label>查询关键字</label><input type="text" name="keyWord" value="@ViewBag.keyWord" /> &nbsp; &nbsp;
+        <select name="">
+            <option></option>
+        </select>
+    </form>
+</div>
 <table border="1">
     <tr>
         <th>用户名</th>
@@ -52,3 +60,5 @@
     <label>上传Excel文件</label><input type="file" name="excelUpload" value="Upload" />
     <input type="submit" value="Upload" />
 </form>
+
+<a href="~/User/DownloadExcel">DownloadExcel</a>
