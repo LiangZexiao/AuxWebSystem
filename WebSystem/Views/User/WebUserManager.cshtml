@@ -6,41 +6,53 @@
 <br />
 
 <div>
-    <form method="GET" action="/User/SearchUser">
-        <label>查询关键字</label><input type="text" name="keyWord" value="@ViewBag.keyWord" /> &nbsp; &nbsp;
-        <select name="">
-            <option></option>
-        </select>
+    <form method="GET" action="/User/SearchName">
+        <label>查询关键字</label><input type="text" name="SearchName" value="@ViewBag.SearchName" /> &nbsp; &nbsp;
+        <input type="submit" value="提交" />
     </form>
 </div>
+@{
+    /*
+     * 中文名称	    英文字段	        是否可为空	    
+     * 用户编号	    UserID	        否			    
+     * 登录名	    LogName	        否			
+     * 姓名	        RealName	    否			   
+     * 密码	        Password	    否		        
+     * 部门	        Department	    是
+     * 用户类型	    UserType	    否   0:超级管理员，1：web,2:曲线			                         
+     * 邮箱	        Email	        是			
+     * 手机	        CellPhone	    是			
+     * 最后登录时间	LastLoginTime	是			
+     */
+}
 <table border="1">
     <tr>
-        <th>用户名</th>
         <th>登录名</th>
-        <th>区域</th>
+        <th>中文名</th>
+        <th>上次登录时间</th>
         <th>部门</th>
-        <th>密码</th>
-        <th>目前状态</th>
+        <th>用户类型</th>
         <th>邮箱</th>
         <th>手机</th>
-        <th>超级用户权限</th>
         <th>操作</th>
+        <th>区域权限</th>
     </tr>
 
     @{
         foreach (System.Data.DataRow row in @ViewBag.userTable.Rows)
         {
             <tr>
-                <td>@row["UserID"]</td>
                 <td>@row["LogName"]</td>
-                <td>@row["Area"]</td>
+                <td>@row["RealName"]</td>
+                <td>@row["LastLoginTime"]</td>
                 <td>@row["Department"]</td>
-                <td>@row["Password"]</td>
-                <td>@row["State"]</td>
+                <td>@row["UserType"]</td>
                 <td>@row["Email"]</td>
                 <td>@row["CellPhone"]</td>
-                <td>@row["AdminUser"]</td>
-                <td><a href="/User/DeleteAccount/@System.Web.HttpUtility.HtmlEncode(row["UserID"])/@System.Web.HttpUtility.HtmlEncode(row["LogName"])">删除</a></td>
+                <td>
+                    <a href="/User/DeleteAccount/@row["UserID"]/@row["LogName"]">删除</a>&nbsp;&nbsp;
+                    <a href="/User/ModityUserPage">修改</a>
+                </td>
             </tr>
         }
     }

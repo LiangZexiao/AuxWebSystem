@@ -32,6 +32,8 @@ namespace WebSystem.Helpers
                 UserTableModel usermodel = new UserTableModel();
                 usermodel.LogName = model.LogName;
                 usermodel.Password = model.Password;
+                model.LastLoginTime = DateTime.Now;
+                DataBaseHelper.Update(model);
                 DataBaseHelper.fillOneRecordToModel(usermodel);
                 session[sessionName] = usermodel;
             }
@@ -60,20 +62,26 @@ namespace WebSystem.Helpers
         {
             //TODO: can do better
             UserSecurityException exce = new UserSecurityException();
-            if (null == model.LogName)
+            bool hasErr = false;
+            if (null == model.LogName || "" == model.LogName)
             {
+                hasErr = true;
                 exce.Error.LogName = "登录名为空";
-                throw exce;
             }
 
-            bool hasErr = false;
-            if (null != model.Email && !model.checkEmail())
+            if (null == model.RealName || "" == model.RealName )
+            {
+                hasErr = true;
+                exce.Error.RealName = "真实姓名为空";
+            }
+
+            if (null != model.Email && !"".Equals(model.Email) && !model.checkEmail())
             {
                 hasErr = true;
                 exce.Error.Email = "Email不符合规范";
             }
 
-            if (null != model.CellPhone && !model.checkCellPhone())
+            if (null != model.CellPhone && !"".Equals(model.CellPhone) && !model.checkCellPhone())
             {
                 hasErr = true;
                 exce.Error.CellPhone = "手机号码不符合规范";
@@ -83,7 +91,7 @@ namespace WebSystem.Helpers
             {
                 throw exce;
             }
-            
+
             if (DataBaseHelper.hasMyKeyRecord(model))
             {
                 exce.Error.LogName = "登录名已存在";
@@ -109,6 +117,49 @@ namespace WebSystem.Helpers
                 throw new UserSecurityException("删除失败");
             }
         }
+
+        /// <summary>
+        /// 更改用户信息
+        /// </summary>
+        /// <param name="model">更改的信息</param>
+        /// <param name="orign">原来的信息</param>
+        public static void ModifyUser(ModifyUserTableModel model, UserTableModel orign)
+        {
+            UserSecurityException exec = new UserSecurityException();
+            if (null == model.Password || !model.Password.Equals(orign.Password))
+            {
+                exec.Error.Password = "原始密码不正确";
+                throw exec;
+            }
+
+            bool haserr = false;
+            if (null == model.NewPassword)
+            {
+                exec.Error.NewPassword = "请检查新密码";
+                haserr = true;
+            }
+
+            if (null == model.ConfirmPassword || !model.ConfirmPassword.Equals(model.NewPassword))
+            {
+                exec.Error.ConfirmPassword = "密码输入不一致";
+                haserr = true;
+            }
+
+            if (haserr)
+            {
+                throw exec;
+            }
+
+            if (DataBaseHelper.Update(model))
+            {
+                UserSecurityHelper.Logout();
+                UserSecurityHelper.Login(new LoginModel(model.LogName, model.NewPassword));
+            }
+            else
+            {
+                throw new UserSecurityException("修改失败，请检查网络，稍后再试");
+            }
+        }
     }
 
     /// <summary>
@@ -121,7 +172,7 @@ namespace WebSystem.Helpers
         {
             Error = new ModifyUserTableModel();
         }
-        public UserSecurityException() 
+        public UserSecurityException()
             : base("")
         {
             Error = new ModifyUserTableModel();

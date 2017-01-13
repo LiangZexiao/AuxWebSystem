@@ -11,110 +11,26 @@ using System.Data.SqlClient;
 namespace WebSystem.Models
 {
     /*
-     * 表中文名称	用户表
-     * 表英文名称	User
-     * 表用途	    各类用户登录权限
-     * 表存在位置	服务器
-     * 逻辑主键	    UserID
-     * 
-     * 中文名称         英文字段	        类型	            是否可为空	 外键关系	         	    备注
-     * 用户编号         UserID	        int	            否			
-     * 登录名           LogName	        nvarchar(20)	否			
-     * 密码             Password	        nvarchar(200)	否			
-     * 部门             Department	    int	            是	        SystemParameter		
-     * 用户类型         UserType        int             否                                       0: 超级管理员， 1: Web, 2: 曲线
-     * 邮箱             Email	        nvarchar(200)	是			     
-     * 手机	            CellPhone	    nvarchar(20）	是			
-     * 姓名             RealName        nvarchar(20)    否
-     * 最后登录时间     LastLoginTime   datatime         是
+     * 表英文名称	User					
+     * 表用途	各类用户登录权限					
+     * 表存在位置	服务器					
+     * 主键	UserID					
+						
+
+     * 中文名称	    英文字段	        类型	            是否可为空	    外键关系	    默认	    备注
+     * 用户编号	    UserID	        int	            否			    自增
+     * 登录名	    LogName	        nvarchar(20)	否			
+     * 姓名	        RealName	    nvarchar(20)	否			   
+     * 密码	        Password	    nvarchar(20)	否		                    123456	  
+     * 部门	        Department	    int	            是			SystemParameter
+     * 用户类型	    UserType	    int	            否			                         0:超级管理员，1：web,2:曲线
+     * 邮箱	        Email	        nvarchar(200)	是			
+     * 手机	        CellPhone	    nvarchar(20）	是			
+     * 最后登录时间	LastLoginTime	datetime	    是			
      */
 
     public class UserTableModel : TableModel
     {
-        /// <summary>
-        /// 表名称
-        /// </summary>
-        //public static String TableName = @"[User]";
-
-        /// <summary>
-        /// 管理员ID
-        /// </summary>
-        public static readonly int AdminID = 8;
-
-        public override string getRecordByKeySQL()
-        {
-            return String.Format(@"SELECT LogName FROM {0} WHERE LogName = '{1}'", TableName, LogName);
-        }
-
-        /// <summary>
-        /// 根据用户ID获得用户信息的SQL语句
-        /// </summary>
-        public override String getMyRecordSQL()
-        {
-            return String.Format(@"SELECT UserID, LogName, Area, Department, State, Email, CellPhone, AdminUser FROM {0} WHERE LogName = '{1}' AND Password = '{2}'", TableName, LogName, Password);
-        }
-
-        /// <summary>
-        /// 更新操作
-        /// </summary>
-        public override String getUpdateSQL()
-        {
-            //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-            return String.Format(@"UPDATE {0} SET Department = '{1}', Email = '{2}', CellPhone = '{3}' WHERE UserID = '{4}'", TableName, Department, Email, CellPhone);
-        }
-
-        public override string getDeleteSQL()
-        {
-            //DELETE FROM 表名称 WHERE 列名称 = 值
-            return String.Format("DELETE FROM {0} WHERE UserID = '{1}' AND LogName = '{2}' AND AdminUser = '0'", TableName, UserID, LogName);
-        }
-
-        public override string getInsertSQL()
-        {
-            //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
-            return String.Format(@"INSERT INTO {0} ( LogName, Password, Email, CellPhone ) VALUES ( '{1}', '123', '{2}', '{3}')", TableName, LogName, Email, CellPhone);
-        }
-
-        public override void FillData(SqlDataReader reader)
-        {
-            /*
-             * UserID, LogName, Area, Department, Password, State, Email, CellPhone, AdminUser
-             */
-            if (!reader.IsDBNull(0))
-            {
-                UserID = reader.GetInt32(0);
-            }
-            if (!reader.IsDBNull(1))
-            {
-                LogName = reader.GetString(1);
-            }
-            if (!reader.IsDBNull(2))
-            {
-                Area = reader.GetInt32(2);
-            }
-            if (!reader.IsDBNull(3))
-            {
-                Department = reader.GetInt32(3);
-            }
-            if (!reader.IsDBNull(4))
-            {
-                State = reader.GetInt32(4);
-            }
-            if (!reader.IsDBNull(5))
-            {
-                Email = reader.GetString(5);
-            }
-            if (!reader.IsDBNull(6))
-            {
-                CellPhone = reader.GetString(6);
-            }
-            if (!reader.IsDBNull(7))
-            {
-                AdminUser = reader.GetInt32(7);
-            }
-        }
-
-
         /// <summary>
         /// 用户名
         /// 不可为空
@@ -132,32 +48,28 @@ namespace WebSystem.Models
         public String LogName { get; set; }
 
         /// <summary>
-        /// 区域
-        /// 不可为空
-        /// </summary>
-        public int Area { get; set; }
-
-
-        /// <summary>
         /// 部门
         /// </summary>
         public int Department { get; set; }
 
         /// <summary>
+        /// 真实姓名
+        /// </summary>
+        public String RealName { get; set; }
+
+        /// <summary>
+        /// 用户类型
+        /// 0:超级管理员，1：web,2:曲线
+        /// </summary>
+        public int UserType { get; set; }
+
+        /// <summary>
         /// 密码
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "{0} 必须至少包含 {2} 个字符。", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "密码")]
         public String Password { get; set; }
-
-        /// <summary>
-        /// 目前状态
-        /// 默认 0
-        /// 脱线：0；在线：1
-        /// </summary>
-        public int State { get; set; }
 
         /// <summary>
         /// 邮箱
@@ -168,16 +80,130 @@ namespace WebSystem.Models
         /// 手机
         /// </summary>
         public String CellPhone { get; set; }
-
+        /// <summary>
+        /// 最后登录时间
+        /// </summary>
+        public DateTime LastLoginTime { get; set; }
         /// <summary>
         /// 超级用户权限
         /// 超级用户可删减其他用户
         /// </summary>
-        public int AdminUser { get; set; }
 
         public UserTableModel()
         {
             TableName = @"[User]";
+        }
+
+
+        public override string getRecordByKeySQL()
+        {
+            return String.Format(@"SELECT LogName FROM {0} WHERE LogName = '{1}'", TableName, LogName);
+        }
+
+        /// <summary>
+        /// 更新操作
+        /// </summary>
+        public override String getUpdateSQL()
+        {
+            //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
+            return String.Format(@"UPDATE {0} SET Department = '{1}', Email = '{2}', CellPhone = '{3}' WHERE UserID = '{4}'", TableName, Department, Email, CellPhone);
+        }
+
+        public override string getDeleteSQL()
+        {
+            //DELETE FROM 表名称 WHERE 列名称 = 值
+            return String.Format("DELETE FROM {0} WHERE UserID = '{1}' AND LogName = '{2}'", TableName, UserID, LogName);
+        }
+
+        public override string getInsertSQL()
+        {
+            List<String> para = new List<string>();
+            List<String> value = new List<string>();
+
+            if (!(null == Email || "" == Email))
+            {
+                para.Add("Email");
+                value.Add(Email);
+            }
+
+            if( !(null == CellPhone || "" == CellPhone))
+            {
+                para.Add("CellPhone");
+                value.Add(CellPhone);
+            }
+
+            String rstring = @"INSERT INTO " + TableName + " ( LogName, RealName, UserType ";
+            for (int i = 0; i < para.Count; i++)
+            {
+                rstring += " , " + para[i] + " ";
+            }
+
+            rstring += " ) VALUES ( '" + LogName + "' , '" + RealName + "' " + ", '" + UserType + "' ";
+
+            for (int i = 0; i < value.Count; i++)
+            {
+                rstring += " , '" + value[i] + "' ";
+            }
+
+            rstring += " ) ";
+
+            return rstring;
+            //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
+            //return String.Format(@"INSERT INTO {0} ( LogName, RealName, Email, CellPhone ) VALUES ( '{1}', '{2}', '{3}', '{4}')", TableName, LogName, RealName, Email, CellPhone);
+        }
+
+
+
+        /// <summary>
+        /// 根据用户ID获得用户信息的SQL语句
+        /// </summary>
+        public override String getMyRecordSQL()
+        {
+            return String.Format(@"SELECT UserID, LogName,Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} WHERE LogName = '{1}' AND Password = '{2}'", TableName, LogName, Password);
+        }
+
+        public override void FillData(SqlDataReader reader)
+        {
+            /*
+             * UserID, LogName,Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime
+             */
+            if (!reader.IsDBNull(0))
+            {
+                UserID = reader.GetInt32(0);
+            }
+            if (!reader.IsDBNull(1))
+            {
+                LogName = reader.GetString(1);
+            }
+            if (!reader.IsDBNull(2))
+            {
+                Department = reader.GetInt32(2);
+            }
+            if (!reader.IsDBNull(3))
+            {
+                Password = reader.GetString(3);
+            }
+            if (!reader.IsDBNull(4))
+            {
+                Email = reader.GetString(4);
+            }
+            if (!reader.IsDBNull(5))
+            {
+                CellPhone = reader.GetString(5);
+            }
+            if (!reader.IsDBNull(6))
+            {
+                RealName = reader.GetString(6);
+            }
+            if (!reader.IsDBNull(7))
+            {
+                UserType = reader.GetInt32(7);
+            }
+            if (!reader.IsDBNull(8))
+            {
+                LastLoginTime = reader.GetDateTime(8);
+            }
+
         }
 
         /// <summary>
@@ -186,7 +212,7 @@ namespace WebSystem.Models
         /// <returns>如果是管理员，返回true. 否则,返回false</returns>
         public bool isAdminUser()
         {
-            return AdminUser == 1;
+            return UserType == 0;
         }
 
         /// <summary>
@@ -254,6 +280,13 @@ namespace WebSystem.Models
 
         public String LogName { get; set; }
         public String Password { get; set; }
+        public DateTime LastLoginTime { get; set; }
+
+        public override string getUpdateSQL()
+        {
+            //update YourTableName set [finishTime] = CAST('2014-09-01' AS datetime)
+            return String.Format(@"UPDATE {0} SET LastLoginTime = getdate() WHERE LogName = '{1}'", TableName, LogName);
+        }
 
         public override string getMyRecordSQL()
         {
@@ -272,6 +305,8 @@ namespace WebSystem.Models
 
     public class ModifyUserTableModel : UserTableModel
     {
+
+        public static readonly String sessioName = "modifyUser";
         /// <summary>
         /// 
         /// </summary>
@@ -292,6 +327,7 @@ namespace WebSystem.Models
         {
 
         }
+
 
         /// <summary>
         /// 旧密码
@@ -316,19 +352,44 @@ namespace WebSystem.Models
 
         public override string getUpdateSQL()
         {
-            if (null == CellPhone || "" == CellPhone)
-            {
+            List<String> para = new List<String>();
+            List<String> value = new List<String>();
 
+            if (!(null == CellPhone || "" == CellPhone))
+            {
+                para.Add("CellPhone");
+                value.Add(CellPhone);
             }
 
-            if (null == Email || "" == Email)
+            if (!(null == Email || "" == Email))
             {
+                para.Add("Email");
+                value.Add(Email);
+            }
 
+            if (!(null == NewPassword || "" == NewPassword))
+            {
+                para.Add("Password");
+                value.Add(NewPassword);
             }
 
 
+            String rString = @"UPDATE " + TableName;
+
+            if (para.Count > 0)
+            {
+                rString += " SET ";
+            }
+
+            for (int i = 0; i < para.Count; i++ )
+            {
+                rString += " " + para[i] + " = '" + value[i] + "' ,";
+            }
+
+            rString += " RealName = '" + RealName + "' WHERE UserID = '" + UserID + "'";
+            return rString;
             //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-            return String.Format(@"UPDATE {0} SET Password = '{1}' CellPhone ='{2}'  Email='{3}'  WHERE UserID = '{4}'", TableName, NewPassword, CellPhone, Email, UserID);
+            //return String.Format(@"UPDATE {0} SET Password = '{1}' CellPhone ='{2}'  Email='{3}'  WHERE UserID = '{4}'", TableName, NewPassword, CellPhone, Email, UserID);
         }
 
     }

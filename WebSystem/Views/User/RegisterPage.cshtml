@@ -12,8 +12,11 @@
     {
         <form action="/User/Register" method="POST">
             <label>登录名</label><input type="text" name="LogName" /><label style="color: red">@ViewBag.Error.LogName</label><br /><br />
+            <label>登录名</label><input type="text" name="RealName" /><label style="color: red">@ViewBag.Error.RealName</label><br /><br />
             <label>邮箱</label><input type="text" name="Email" /><label style="color: red">@ViewBag.Error.Email</label><br /><br />
             <label>电话号码</label><input type="text" name="CellPhone" /><label style ="color: red">@ViewBag.Error.CellPhone</label><br /><br />
+            <input type="checkbox" name="UserType" value="1"><label>Web用户</label>
+            <input type="checkbox" name="UserType" value="2"><label>曲线用户</label>
             <input type="submit" value="提交" />
         </form>
     }
@@ -21,8 +24,11 @@
     {
         <form action="/User/Register" method="POST">
             <label>登录名</label><input type="text" name="LogName" /><br /><br />
+            <label>登录名</label><input type="text" name="RealName" /><br /><br />
             <label>邮箱</label><input type="text" name="Email" /><br /><br />
             <label>电话号码</label><input type="text" name="CellPhone" /><br /><br />
+            <input type="checkbox" name="UserType" value="1"><label>Web用户</label>
+            <input type="checkbox" name="UserType" value="2"><label>曲线用户</label>
             <input type="submit" value="提交" />
         </form>
     }

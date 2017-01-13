@@ -78,28 +78,46 @@ namespace WebSystem.Helpers
         /// 用户下载文件
         /// </summary>
         /// <param name="fileName">文件名</param>
-        public static HttpResponseMessage UserDownloadFile(String fileName)
+        //public static HttpResponseMessage UserDownloadFile(String fileName)
+        //{
+        //    String filePath = FileDir + fileName;
+
+        //    FileStream fstream = new FileStream( filePath, System.IO.FileMode.Open);
+
+        //    HttpResponseMessage resp = new HttpResponseMessage();
+        //    resp.Content = new StreamContent(fstream);
+        //    //MimeMapping.GetMimeMapping(fileName);
+        //    resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+        //    //response.AddHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(fileName, Encoding.UTF8));
+        //    resp.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+        //    {
+        //        FileName = fileName
+        //    };
+        //    return resp;
+        //}
+        public static void UserDownloadFile(String fileName)
         {
-            String filePath = FileDir + fileName;
-
-            FileStream fstream = new FileStream( filePath, System.IO.FileMode.Open);
-
-            HttpResponseMessage resp = new HttpResponseMessage();
-            resp.Content = new StreamContent(fstream);
-            //MimeMapping.GetMimeMapping(fileName);
-            resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
-            //response.AddHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(fileName, Encoding.UTF8));
-            resp.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
-            {
-                FileName = fileName
-            };
-            return resp;
+            string filePath = FileDir + fileName;//路径
+            FileInfo fileInfo = new FileInfo(filePath);
+            HttpResponse Response = HttpContext.Current.Response;
+            Response.Clear();
+            Response.ClearContent();
+            Response.ClearHeaders();
+            Response.AddHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode(fileName, System.Text.Encoding.UTF8));
+            Response.AddHeader("Content-Length", fileInfo.Length.ToString());//告诉浏览器是下载文件，而不是打开文件
+            Response.AddHeader("Content-Transfer-Encoding", "binary");
+            Response.ContentType = MimeMapping.GetMimeMapping(fileName);
+            Response.Charset = "UTF-8";
+            Response.ContentEncoding = Encoding.UTF8;
+            Response.WriteFile(fileInfo.FullName);
+            Response.Flush(); 
+            Response.End();
         }
+
         public DataTable ExcelData()
         {
 
             return null;
-
         }
 
 
@@ -168,13 +186,13 @@ namespace WebSystem.Helpers
             //恢复文化环境
             System.Threading.Thread.CurrentThread.CurrentCulture = CurrentCI;
 
-
             string fileName = DateTime.Now.Ticks.ToString() + ".xlsx";
             String savePath = FileDir + fileName;
-            workbook.Saved = true;
             workbook.SaveCopyAs(savePath);
-            
+            workbook.Saved = true;
+                        
             workbook.Close();
+            
             excelApp.Quit();
 
             return fileName;

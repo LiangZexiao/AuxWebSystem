@@ -33,7 +33,7 @@ namespace WebSystem.Helpers
         private static String getConnectionString()
         {
             //TODO: we need it to get connection String from xml
-            String connectionString = @"Data Source=ALIY-DESKTOP;Initial Catalog=AUX_GROUP_CO;Integrated Security=True";
+            String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=sa;Password=123456";
             return connectionString;
         }
 
@@ -194,6 +194,22 @@ namespace WebSystem.Helpers
             SqlConnection connection = getSqlConnection();
             connection.Open();
             SqlDataAdapter dataAdapter = new SqlDataAdapter(model.getMyRecordSQL(), connection);
+            dataAdapter.Fill(dt);
+            connection.Close();
+            return dt;
+        }
+
+        /// <summary>
+        /// 根据TableModel的getLikeRecordSQL执行SQL语句
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>DataTable</returns>
+        public static DataTable getLikeRecord(TableModel model)
+        {
+            DataTable dt = new DataTable();
+            SqlConnection connection = getSqlConnection();
+            connection.Open();
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(model.getLikeRecordSQL(), connection);
             dataAdapter.Fill(dt);
             connection.Close();
             return dt;

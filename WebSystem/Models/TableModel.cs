@@ -32,6 +32,15 @@ namespace WebSystem.Models
         }
 
         /// <summary>
+        /// 配合模拟查询
+        /// </summary>
+        /// <returns></returns>
+        public virtual String getLikeRecordSQL()
+        {
+            throw new MethodAccessException("方法: getLikeRecordSQL() 没有实现");
+        }
+
+        /// <summary>
         /// 根据Key找纪录
         /// </summary>
         /// <returns></returns>

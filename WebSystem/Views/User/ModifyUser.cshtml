@@ -1,25 +1,28 @@
-﻿@{
+﻿{
     ViewBag.Title = "ModifyUser";
 }<h2>修改用户信息页面</h2>
 @{
     /*
-     * 用户名         UserID     int             否
-     * 登录名         LogName     nvarchar(20) 否
-     * 区域             Area     int             否
-     * 部门             Department int             是
-     * 密码             Password nvarchar(200) 否
-     * 目前状态         State     int             是
-     * 邮箱             Email     nvarchar(200) 是
-     * 手机             CellPhone nvarchar(20） 是
-     * 超级用户权限     AdminUser int             是
+     * 中文名称	    英文字段	        是否可为空
+     * 用户编号	    UserID	        否
+     * 登录名	    LogName	        否
+     * 姓名	        RealName	    否
+     * 密码	        Password	    否
+     * 部门	        Department	    是
+     * 用户类型	    UserType	    否   0:超级管理员，1：web,2:曲线
+     * 邮箱	        Email	        是
+     * 手机	        CellPhone	    是
+     * 最后登录时间	LastLoginTime	是
      */
-    <form>
-        <label>用户名</label><input type="text" value="@ViewBag.User.UserID" />
+    <form action="/User/ModifyUser" method="POST">
+        <label>用户名</label><label>@ViewBag.LogName</label>
+        <input type="hidden" name="LogName" value="@ViewBag.LogName" />
+        <label>中文名</label><input type="text" value="@ViewBag.RealName">
         <label>密码</label><input type="password" name="Password" /><br /><br />
         <label>新密码</label><input type="password" name="Newpassword" /><br /><br />
         <label>确认密码</label><input type="password" name="ComfirmPassword" /><br /><br />
-        <label>邮箱</label><input type="password" name="Email" /><br /><br />
-        <label>手机</label><input type="password" name="CellPhone" /><br /><br />
+        <label>邮箱</label><input type="text" name="Email" /><br /><br />
+        <label>手机</label><input type="text" name="CellPhone" /><br /><br />
         <input type="submit" value="确认修改" />
     </form>
 }

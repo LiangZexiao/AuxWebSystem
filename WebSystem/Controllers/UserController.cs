@@ -17,7 +17,7 @@ namespace WebSystem.Controllers
         // GET: /User/
         public ActionResult Index()
         {
-            return View("LoginPage");
+            return View();
         }
 
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
@@ -52,60 +52,71 @@ namespace WebSystem.Controllers
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = false)]
         public ActionResult ModifyUser(FormCollection form)
         {
-            UserTableModel usm = (UserTableModel)Session[UserSecurityHelper.sessionName];
-            ModifyUserTableModel tmp = new ModifyUserTableModel();
-            tmp.UserID = usm.UserID;
-            tmp.Password = form["Password"];
-            tmp.NewPassword = form["Newpassword"];
-            tmp.ConfirmPassword = form["ComfirmPassword"];
-            tmp.Email = form["Email"];
-            tmp.CellPhone = form["CellPhone"];
-            if (null == tmp.Email)
+            UserTableModel user = (UserTableModel)Session[UserSecurityHelper.sessionName];
+            ModifyUserTableModel modiUser = new ModifyUserTableModel();
+            modiUser.LogName = user.LogName;
+            modiUser.Password = form["Password"];
+            modiUser.RealName = form["RealName"];
+            modiUser.OldPassword = form["OldPassword"];
+            modiUser.NewPassword = form["NewPassword"];
+            modiUser.ConfirmPassword = form["ConfirmPassword"];
+            modiUser.CellPhone = form["CellPhone"];
+            modiUser.Email = form["Email"];
+            if (null == modiUser.Password || "" == modiUser.Password)
             {
-                tmp.Email = usm.Email;
+                modiUser.Password = user.Password;
             }
-            if (null == tmp.CellPhone)
+            if (null == modiUser.NewPassword || "" == modiUser.NewPassword)
             {
-                tmp.CellPhone = usm.CellPhone;
+                modiUser.NewPassword = user.Password;
             }
-            if (tmp.Password == usm.Password)
+            if (null == modiUser.OldPassword || "" == modiUser.OldPassword)
             {
-                if (tmp.ConfirmPassword == tmp.NewPassword)
-                {
-                    if (DataBaseHelper.Update(tmp))
-                    {
-                        ViewBag.message = "修改成功";
-                        UserSecurityHelper.Logout();
-                        UserSecurityHelper.Login(new LoginModel(tmp.LogName, tmp.NewPassword));
-                        return View("Index");
-                    }
-                    else
-                    {
-                        ViewBag.message = "修改失败，请检查网络，稍后再试";
-                        return View();
-                    }
-                }
-                else
-                {
-                    ViewBag.message = "两次输入的新密码不同";
-                    return View();
-                }
+                modiUser.OldPassword = user.Password;
             }
-            else
+            if (null == modiUser.ConfirmPassword || "" == modiUser.ConfirmPassword)
             {
-                ViewBag.message = "旧密码输入错误";
-                return View();
+                modiUser.ConfirmPassword = user.Password;
             }
+            modiUser.UserID = user.UserID;
+            ViewBag.LogName = user.LogName;
+            ViewBag.CellPhone = user.CellPhone;
+            ViewBag.Email = user.Email;
+            ViewBag.RealName = user.RealName;
+
+            try
+            {
+                UserSecurityHelper.ModifyUser(modiUser, user);
+            }
+            catch (UserSecurityException e)
+            {
+                ViewBag.Error = e.Error;
+                ViewBag.message = e.Message;
+                return View("ModityUserPage");
+            }
+            UserSecurityHelper.Logout();
+            UserSecurityHelper.Login(new LoginModel(modiUser.LogName, modiUser.NewPassword));
+            Session.Remove(ModifyUserTableModel.sessioName);
+            ViewBag.message = "修改成功";
+            return View("index");
         }
+
 
         /// <summary>
         /// 修改用户信息页面
         /// </summary>
         /// <returns></returns>
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = false)]
         public ActionResult ModityUserPage()
         {
+            UserTableModel user = (UserTableModel)Session[UserSecurityHelper.sessionName];
+            ViewBag.LogName = user.LogName;
+            ViewBag.CellPhone = user.CellPhone;
+            ViewBag.Email = user.Email;
+            ViewBag.RealName = user.RealName;
             return View();
         }
+        
 
         /// <summary>
         /// 添加用户
@@ -119,6 +130,9 @@ namespace WebSystem.Controllers
             mode.LogName = form["LogName"];
             mode.Email = form["Email"];
             mode.CellPhone = form["CellPhone"];
+            mode.RealName = form["RealName"];
+            String dd = form["UserType"];
+            mode.UserType = int.Parse(form["UserType"]);
             try
             {
                 UserSecurityHelper.Register(mode);
@@ -147,7 +161,7 @@ namespace WebSystem.Controllers
             }
             return View("Index");
         }
-        
+
 
         public ActionResult LoginPage()
         {
@@ -183,14 +197,15 @@ namespace WebSystem.Controllers
             return View("index");
         }
 
-       
+
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public HttpResponseMessage DownloadExcel()
+        public void DownloadExcel()
         {
             UserTableModel usm = new UserTableModel();
             DataTable datatable = DataBaseHelper.getAllRecord(usm);
-            String fileName = ExcelHelper.ExportExcel(datatable);
-            return ExcelHelper.UserDownloadFile(fileName);
+            //String fileName = ExcelHelper.ExportExcel(datatable);
+            ExcelHelper.UserDownloadFile("636198609306488823.xlsx");
+            //Response.RedirectToRoute("/ExcelFile/636198609306488823.xlsx");
         }
 
 
@@ -200,6 +215,15 @@ namespace WebSystem.Controllers
             UserSecurityHelper.Logout();
             Response.Redirect("/Home/Index");
             return;
+        }
+
+        [HttpGet]
+        public ActionResult SearchName(FormCollection form)
+        {
+            UserTableModel users = new UserTableModel();
+            users.LogName = form["SearchName"];
+            ViewBag.userTable = DataBaseHelper.getLikeRecord(users);
+            return View("WebUserManager");
         }
     }
 }
