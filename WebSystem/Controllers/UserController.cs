@@ -21,11 +21,21 @@ namespace WebSystem.Controllers
         }
 
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
+
         public ActionResult WebUserManager()
         {
             //web用户管理
-            UserTableModel usm = new UserTableModel();
-            DataTable userTable = DataBaseHelper.getAllRecord(usm);
+            DataTable userTable;
+            if (null == HttpRuntime.Cache[UserTableModel.CacheName])
+            {
+                UserTableModel usm = new UserTableModel();
+                userTable = DataBaseHelper.getAllRecord(usm);
+                HttpRuntime.Cache[UserTableModel.CacheName] = userTable;
+            }
+            else
+            {
+                userTable = HttpRuntime.Cache[UserTableModel.CacheName] as DataTable;
+            }
             ViewBag.userTable = userTable;
             return View();
         }
@@ -62,19 +72,19 @@ namespace WebSystem.Controllers
             modiUser.ConfirmPassword = form["ConfirmPassword"];
             modiUser.CellPhone = form["CellPhone"];
             modiUser.Email = form["Email"];
-            if (null == modiUser.Password || "" == modiUser.Password)
+            if (null == modiUser.Password || "".Equals(modiUser.Password))
             {
                 modiUser.Password = user.Password;
             }
-            if (null == modiUser.NewPassword || "" == modiUser.NewPassword)
+            if (null == modiUser.NewPassword || "".Equals(modiUser.NewPassword))
             {
                 modiUser.NewPassword = user.Password;
             }
-            if (null == modiUser.OldPassword || "" == modiUser.OldPassword)
+            if (null == modiUser.OldPassword || "".Equals(modiUser.OldPassword))
             {
                 modiUser.OldPassword = user.Password;
             }
-            if (null == modiUser.ConfirmPassword || "" == modiUser.ConfirmPassword)
+            if (null == modiUser.ConfirmPassword || "".Equals(modiUser.ConfirmPassword))
             {
                 modiUser.ConfirmPassword = user.Password;
             }
@@ -87,6 +97,12 @@ namespace WebSystem.Controllers
             try
             {
                 UserSecurityHelper.ModifyUser(modiUser, user);
+                UserSecurityHelper.Logout();
+                UserSecurityHelper.Login(new LoginModel(modiUser.LogName, modiUser.NewPassword));
+                Session.Remove(ModifyUserTableModel.sessioName);
+                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
+                ViewBag.message = "修改成功";
+                return View("index");
             }
             catch (UserSecurityException e)
             {
@@ -94,11 +110,56 @@ namespace WebSystem.Controllers
                 ViewBag.message = e.Message;
                 return View("ModityUserPage");
             }
-            UserSecurityHelper.Logout();
-            UserSecurityHelper.Login(new LoginModel(modiUser.LogName, modiUser.NewPassword));
-            Session.Remove(ModifyUserTableModel.sessioName);
-            ViewBag.message = "修改成功";
-            return View("index");
+        }
+
+
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
+        public ActionResult AdminModifyUser(FormCollection form)
+        {
+            var ust = Session[UserTableModel.SessionName] as UserTableModel;
+            ViewBag.User = ust;
+            var model = new ModifyUserTableModel();
+            model.Password = ust.Password;
+            model.NewPassword = ust.Password;
+            model.OldPassword = ust.Password;
+            model.ConfirmPassword = ust.Password;
+            model.UserID = ust.UserID;
+            model.LogName = ust.LogName;
+            model.RealName = form["RealName"];
+            if (null != form["Department"])
+            {
+                model.Department = int.Parse(form["Department"]);
+            }
+            model.Email = form["Email"];
+            model.CellPhone = form["CellPhone"];
+            model.UserType = int.Parse(form["UserType"]);
+            try
+            {
+                DataBaseHelper.Update(model);
+                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
+            }
+            catch (UserSecurityException e)
+            {
+                ViewBag.Error = e.Error;
+                return View();
+            }
+
+            var helper = SystemParameterHelpers.getInstance();
+            ViewBag.Area = helper.Select("ParameterType", "Area");
+            Response.Redirect("/User/WebUserManager");
+            return null;
+        }
+
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
+        public ActionResult AdminModifyUserPage(int id)
+        {
+            UserTableModel ust = new UserTableModel();
+            ust.UserID = id;
+            DataBaseHelper.fillOneRecordByKeyToModel(ust);
+            Session[UserTableModel.SessionName] = ust;
+            ViewBag.User = ust;
+            ViewBag.Area = SystemParameterHelpers.getInstance().Select("ParameterType", "Area");
+            return View("AdminModifyUser");
         }
 
 
@@ -116,7 +177,7 @@ namespace WebSystem.Controllers
             ViewBag.RealName = user.RealName;
             return View();
         }
-        
+
 
         /// <summary>
         /// 添加用户
@@ -136,6 +197,7 @@ namespace WebSystem.Controllers
             try
             {
                 UserSecurityHelper.Register(mode);
+                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
             }
             catch (UserSecurityException e)
             {
@@ -143,8 +205,8 @@ namespace WebSystem.Controllers
                 ViewBag.Error = e.Error;
                 return View("RegisterPage");
             }
-            Response.Redirect("/User/WebUserManager");
-            return null;
+            ViewBag.message = "添加成功";
+            return View("Index");
         }
 
         [HttpPost]
@@ -178,14 +240,15 @@ namespace WebSystem.Controllers
                 tablemodel.UserID = id;
                 tablemodel.LogName = value;
                 UserSecurityHelper.DeleteAccount(tablemodel);
+                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
             }
             catch (UserSecurityException e)
             {
                 ViewBag.message = e.Message;
                 return View("Index");
             }
-            Response.Redirect("/User/WebUserManager");
-            return null;
+            ViewBag.message = "删除成功";
+            return View("Index");
         }
 
         [HttpPost]
@@ -193,21 +256,38 @@ namespace WebSystem.Controllers
         public ActionResult UploadFile(FormCollection form)
         {
             ExcelHelper helper = new ExcelHelper();
-            helper.SaveFile();
+            try
+            {
+                helper.SaveFile();
+            }
+            catch (ExcelHelperException e)
+            {
+                ViewBag.message = e.Message;
+                return View("index");
+            }
             return View("index");
         }
 
 
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public void DownloadExcel()
+        public ActionResult DownloadExcel()
         {
             UserTableModel usm = new UserTableModel();
             DataTable datatable = DataBaseHelper.getAllRecord(usm);
-            //String fileName = ExcelHelper.ExportExcel(datatable);
-            ExcelHelper.UserDownloadFile("636198609306488823.xlsx");
+            ExcelHelper helper = new ExcelHelper();
+            try
+            {
+                String fileName = helper.ExportExcel(datatable);
+                helper.UserDownloadFile(fileName);
+            }
+            catch(ExcelHelperException e)
+            {
+                ViewBag.message = e.Message;
+                return View("index");
+            }
+            return null;
             //Response.RedirectToRoute("/ExcelFile/636198609306488823.xlsx");
         }
-
 
         public void Logoff()
         {

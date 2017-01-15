@@ -192,6 +192,8 @@
     <Compile Include="Helpers\DatabaseHelpers.cs" />
     <Compile Include="Helpers\DateviewHelper.cs" />
     <Compile Include="Helpers\ExcelHelper.cs" />
+    <Compile Include="Helpers\SqlCommandHelper.cs" />
+    <Compile Include="Helpers\SystemParameterHelpers.cs" />
     <Compile Include="Helpers\UserSecurityHelper.cs" />
     <Compile Include="Models\DataViewModel.cs" />
     <Compile Include="Models\HolidayModels.cs" />
@@ -325,6 +327,7 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\ModifyUser.cshtml" />
     <Content Include="Views\User\ModityUserPage.cshtml" />
+    <Content Include="Views\User\AdminModifyUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

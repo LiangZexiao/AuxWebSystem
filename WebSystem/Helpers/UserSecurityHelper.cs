@@ -32,7 +32,6 @@ namespace WebSystem.Helpers
                 UserTableModel usermodel = new UserTableModel();
                 usermodel.LogName = model.LogName;
                 usermodel.Password = model.Password;
-                model.LastLoginTime = DateTime.Now;
                 DataBaseHelper.Update(model);
                 DataBaseHelper.fillOneRecordToModel(usermodel);
                 session[sessionName] = usermodel;
@@ -63,13 +62,13 @@ namespace WebSystem.Helpers
             //TODO: can do better
             UserSecurityException exce = new UserSecurityException();
             bool hasErr = false;
-            if (null == model.LogName || "" == model.LogName)
+            if (null == model.LogName || "".Equals(model.LogName))
             {
                 hasErr = true;
                 exce.Error.LogName = "登录名为空";
             }
 
-            if (null == model.RealName || "" == model.RealName )
+            if (null == model.RealName || "".Equals(model.RealName) )
             {
                 hasErr = true;
                 exce.Error.RealName = "真实姓名为空";
@@ -87,14 +86,27 @@ namespace WebSystem.Helpers
                 exce.Error.CellPhone = "手机号码不符合规范";
             }
 
-            if (hasErr)
+
+
+            var table = HttpRuntime.Cache[UserTableModel.CacheName] as DataTable;
+            
+            var row = table.Select(String.Format(" {0} = '{1}' ", "LogName", model.LogName ));
+            if (row.Length >= 1)
             {
-                throw exce;
+                hasErr = true;
+                exce.Error.LogName = "登录名重复";
             }
 
-            if (DataBaseHelper.hasMyKeyRecord(model))
+            row = table.Select(String.Format(" {0} = '{1}' ", "RealName", model.RealName));
+
+            if (row.Length >= 1)
             {
-                exce.Error.LogName = "登录名已存在";
+                hasErr = true;
+                exce.Error.RealName = "真实姓名重复";
+            }
+
+            if (hasErr)
+            {
                 throw exce;
             }
 

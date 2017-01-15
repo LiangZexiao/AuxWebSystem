@@ -7,6 +7,7 @@ using System.Web;
 using System.Data;
 using System.Reflection;
 using System.Data.SqlClient;
+using WebSystem.Helpers;
 
 namespace WebSystem.Models
 {
@@ -15,8 +16,7 @@ namespace WebSystem.Models
      * 表用途	各类用户登录权限					
      * 表存在位置	服务器					
      * 主键	UserID					
-						
-
+     * 
      * 中文名称	    英文字段	        类型	            是否可为空	    外键关系	    默认	    备注
      * 用户编号	    UserID	        int	            否			    自增
      * 登录名	    LogName	        nvarchar(20)	否			
@@ -31,6 +31,12 @@ namespace WebSystem.Models
 
     public class UserTableModel : TableModel
     {
+        /// <summary>
+        /// session 的名字
+        /// </summary>
+        public static readonly String SessionName = "UserTableModelSession";
+        public static readonly String CacheName = "UserTableModelCache";
+
         /// <summary>
         /// 用户名
         /// 不可为空
@@ -97,7 +103,7 @@ namespace WebSystem.Models
 
         public override string getRecordByKeySQL()
         {
-            return String.Format(@"SELECT LogName FROM {0} WHERE LogName = '{1}'", TableName, LogName);
+            return String.Format(@"SELECT UserID, LogName,Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} WHERE UserID = '{1}'", TableName, UserID);
         }
 
         /// <summary>
@@ -105,53 +111,40 @@ namespace WebSystem.Models
         /// </summary>
         public override String getUpdateSQL()
         {
+            SqlCommandHelper helper = new SqlCommandHelper(TableName);
+            helper.Add("Department", Department);
+            helper.Add("Email", Email);
+            helper.Add("CellPhone", CellPhone);
+            helper.Add("RealName", RealName);
+            return helper.Update();
             //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-            return String.Format(@"UPDATE {0} SET Department = '{1}', Email = '{2}', CellPhone = '{3}' WHERE UserID = '{4}'", TableName, Department, Email, CellPhone);
+            //return String.Format(@"UPDATE {0} SET Department = '{1}', Email = '{2}', CellPhone = '{3}' WHERE UserID = '{4}'", TableName, Department, Email, CellPhone);
         }
 
         public override string getDeleteSQL()
         {
-            //DELETE FROM 表名称 WHERE 列名称 = 值
-            return String.Format("DELETE FROM {0} WHERE UserID = '{1}' AND LogName = '{2}'", TableName, UserID, LogName);
+            //DELETE FROM 表名称 WHERE 列名称 = 值     <>	不等于
+            return String.Format("DELETE FROM {0} WHERE UserID = '{1}' AND LogName = '{2}' AND UserType <> '0' ", TableName, UserID, LogName);
         }
 
         public override string getInsertSQL()
         {
-            List<String> para = new List<string>();
-            List<String> value = new List<string>();
-
-            if (!(null == Email || "" == Email))
-            {
-                para.Add("Email");
-                value.Add(Email);
-            }
-
-            if( !(null == CellPhone || "" == CellPhone))
-            {
-                para.Add("CellPhone");
-                value.Add(CellPhone);
-            }
-
-            String rstring = @"INSERT INTO " + TableName + " ( LogName, RealName, UserType ";
-            for (int i = 0; i < para.Count; i++)
-            {
-                rstring += " , " + para[i] + " ";
-            }
-
-            rstring += " ) VALUES ( '" + LogName + "' , '" + RealName + "' " + ", '" + UserType + "' ";
-
-            for (int i = 0; i < value.Count; i++)
-            {
-                rstring += " , '" + value[i] + "' ";
-            }
-
-            rstring += " ) ";
-
-            return rstring;
+            SqlCommandHelper helper = new SqlCommandHelper(TableName);
+            helper.Add("Email", Email);
+            helper.Add("CellPhone", CellPhone);
+            helper.Add("LogName", LogName);
+            helper.Add("RealName", RealName);
+            helper.Add("UserType", UserType);
+            return helper.Insert();
             //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
             //return String.Format(@"INSERT INTO {0} ( LogName, RealName, Email, CellPhone ) VALUES ( '{1}', '{2}', '{3}', '{4}')", TableName, LogName, RealName, Email, CellPhone);
         }
 
+
+        public override string getAllRecordSQL()
+        {
+            return String.Format(@"SELECT UserID, LogName,Department, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0}", TableName);
+        }
 
 
         /// <summary>
@@ -159,7 +152,7 @@ namespace WebSystem.Models
         /// </summary>
         public override String getMyRecordSQL()
         {
-            return String.Format(@"SELECT UserID, LogName,Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} WHERE LogName = '{1}' AND Password = '{2}'", TableName, LogName, Password);
+            return String.Format(@"SELECT UserID, LogName,Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} WHERE LogName = '{1}'", TableName, LogName);
         }
 
         public override void FillData(SqlDataReader reader)
@@ -352,44 +345,12 @@ namespace WebSystem.Models
 
         public override string getUpdateSQL()
         {
-            List<String> para = new List<String>();
-            List<String> value = new List<String>();
-
-            if (!(null == CellPhone || "" == CellPhone))
-            {
-                para.Add("CellPhone");
-                value.Add(CellPhone);
-            }
-
-            if (!(null == Email || "" == Email))
-            {
-                para.Add("Email");
-                value.Add(Email);
-            }
-
-            if (!(null == NewPassword || "" == NewPassword))
-            {
-                para.Add("Password");
-                value.Add(NewPassword);
-            }
-
-
-            String rString = @"UPDATE " + TableName;
-
-            if (para.Count > 0)
-            {
-                rString += " SET ";
-            }
-
-            for (int i = 0; i < para.Count; i++ )
-            {
-                rString += " " + para[i] + " = '" + value[i] + "' ,";
-            }
-
-            rString += " RealName = '" + RealName + "' WHERE UserID = '" + UserID + "'";
-            return rString;
-            //UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
-            //return String.Format(@"UPDATE {0} SET Password = '{1}' CellPhone ='{2}'  Email='{3}'  WHERE UserID = '{4}'", TableName, NewPassword, CellPhone, Email, UserID);
+            SqlCommandHelper helper = new SqlCommandHelper(TableName);
+            helper.Add("Password", NewPassword);
+            helper.Add("Email", Email);
+            helper.Add("CellPhone", CellPhone);
+            helper.Add("RealName", RealName);
+            return helper.Where(String.Format(" WHERE UserID = '{0}' ", UserID)).Update();
         }
 
     }

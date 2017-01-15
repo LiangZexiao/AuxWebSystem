@@ -33,7 +33,9 @@ namespace WebSystem.Helpers
         private static String getConnectionString()
         {
             //TODO: we need it to get connection String from xml
-            String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=sa;Password=123456";
+            //Data Source=ALIY-DESKTOP;Initial Catalog=AUX_GROUP_CO;Integrated Security=True
+            //String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=sa;Password=123456";
+            String connectionString = @"Data Source=ALIY-DESKTOP;Initial Catalog=AUX_GROUP_CO;Integrated Security=True";
             return connectionString;
         }
 
@@ -64,6 +66,25 @@ namespace WebSystem.Helpers
             SqlConnection connection = getSqlConnection();
             connection.Open();
             SqlCommand command = new SqlCommand(model.getMyRecordSQL(), connection);
+            SqlDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                model.FillData(reader);
+            }
+            reader.Close();
+            connection.Close();
+        }
+
+        /// <summary>
+        /// 根据TableModel的getRecordByKeySQL填充一条信息
+        /// 要使用本方法，必须要实现model里面的FillData() 接口
+        /// </summary>
+        /// <param name="model"></param>
+        public static void fillOneRecordByKeyToModel(TableModel model)
+        {
+            SqlConnection connection = getSqlConnection();
+            connection.Open();
+            SqlCommand command = new SqlCommand(model.getRecordByKeySQL(), connection);
             SqlDataReader reader = command.ExecuteReader();
             if (reader.Read())
             {

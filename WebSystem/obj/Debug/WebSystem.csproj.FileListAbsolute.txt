@@ -90,7 +90,6 @@ d:\我的文档\visual studio 2013\Projects\WebSystem\WebSystem\bin\zh-Hant\Syst
 d:\我的文档\visual studio 2013\Projects\WebSystem\WebSystem\obj\Debug\WebSystem.csprojResolveAssemblyReference.cache
 d:\我的文档\visual studio 2013\Projects\WebSystem\WebSystem\obj\Debug\WebSystem.dll
 d:\我的文档\visual studio 2013\Projects\WebSystem\WebSystem\obj\Debug\WebSystem.pdb
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\obj\Debug\WebSystem.csprojResolveAssemblyReference.cache
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\obj\Debug\WebSystem.dll
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\obj\Debug\WebSystem.pdb
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\bin\WebSystem.dll.config
@@ -182,3 +181,4 @@ E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSyst
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\bin\zh-Hans\System.Spatial.resources.dll
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\bin\zh-Hant\System.Spatial.resources.dll
 E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\obj\Debug\WebSystem.csproj.ResolveComReference.cache
+E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\WebSystem-master\WebSystem\obj\Debug\WebSystem.csprojResolveAssemblyReference.cache

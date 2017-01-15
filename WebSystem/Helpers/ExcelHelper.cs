@@ -1,14 +1,18 @@
-﻿using System;
+﻿using Microsoft.Office.Interop;
+using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using Microsoft.Office.Interop;
+using System.Threading;
 
 namespace WebSystem.Helpers
 {
@@ -16,9 +20,24 @@ namespace WebSystem.Helpers
     {
         public String FileName { get; set; }
 
+        /// <summary>
+        /// ExcelFile\
+        /// </summary>
         public static readonly String floderName = @"ExcelFile\";
+
+        /// <summary>
+        /// template.xlsx
+        /// </summary>
+        public static readonly String templateName = "template.xlsx";
+
+        /// <summary>
+        /// AppDomain.CurrentDomain.BaseDirectory + floderName
+        /// </summary>
         public static readonly String FileDir = AppDomain.CurrentDomain.BaseDirectory + floderName;
 
+        /// <summary>
+        /// FileDir + @"\template.xlsx"
+        /// </summary>
         public static readonly String TemplateFileDir = FileDir + @"\template.xlsx";
 
         public ExcelHelper()
@@ -59,11 +78,6 @@ namespace WebSystem.Helpers
             //String fileDir = HttpContext.Current.Server.MapPath("ExcelFile");
             String fileDir = AppDomain.CurrentDomain.BaseDirectory + @"\ExcelFile";
 
-            if (!Directory.Exists(fileDir))
-            {
-                Directory.CreateDirectory(fileDir);
-            }
-
             //如果文件存在，删除文件
             if (File.Exists(@"ExcelFile\" + FileName))
             {
@@ -72,6 +86,9 @@ namespace WebSystem.Helpers
 
             fileDir = fileDir + @"\" + FileName;
             request.Files[0].SaveAs(fileDir);
+
+            Thread thread = new Thread(new ParameterizedThreadStart(DoDeleteFile));
+            thread.Start(fileDir);
         }
 
         /// <summary>
@@ -95,7 +112,7 @@ namespace WebSystem.Helpers
         //    };
         //    return resp;
         //}
-        public static void UserDownloadFile(String fileName)
+        public void UserDownloadFile(String fileName)
         {
             string filePath = FileDir + fileName;//路径
             FileInfo fileInfo = new FileInfo(filePath);
@@ -110,13 +127,24 @@ namespace WebSystem.Helpers
             Response.Charset = "UTF-8";
             Response.ContentEncoding = Encoding.UTF8;
             Response.WriteFile(fileInfo.FullName);
-            Response.Flush(); 
+            Response.Flush();
             Response.End();
+
+            Thread thread = new Thread(new ParameterizedThreadStart(DoDeleteFile));
+            thread.Start(filePath);
         }
 
-        public DataTable ExcelData()
+        /// <summary>
+        /// 从Excel中导入
+        /// </summary>
+        /// <param name="excelPath">Excel文件地址</param>
+        /// <returns></returns>
+        public DataTable ExcelData(String excelPath)
         {
-
+            String strconn = String.Format("Provider={0}; Data Source= {1}; Extended Properties= {2};", Microsoft.Office.Interop.Excel.);
+            OleDbConnectionStringBuilder bulder = new OleDbConnectionStringBuilder();
+            //bulder.Provider = 
+            //OleDbConnection 
             return null;
         }
 
@@ -126,7 +154,7 @@ namespace WebSystem.Helpers
         /// </summary>
         /// <param name="datatable">DataTable</param>
         /// <returns>导出文件的物理地址</returns>
-        public static String ExportExcel(DataTable datatable)
+        public String ExportExcel(DataTable datatable)
         {
             if (null == datatable || datatable.Rows.Count == 0)
             {
@@ -135,7 +163,7 @@ namespace WebSystem.Helpers
 
             Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
 
-            if ( null == excelApp )
+            if (null == excelApp)
             {
                 //对此实例进行验证，如果为null则表示运行此代码的机器可能未安装Excel
                 throw new ExcelHelperException("Excel无法打开");
@@ -150,20 +178,22 @@ namespace WebSystem.Helpers
 
             Microsoft.Office.Interop.Excel.Workbooks workbooks = excelApp.Workbooks;
             //这里的Add方法里的参数就是模板的路径
-            Microsoft.Office.Interop.Excel.Workbook workbook = workbooks.Add(Microsoft.Office.Interop.Excel.XlWBATemplate.xlWBATWorksheet);
+            //template.xlsx
+            //Microsoft.Office.Interop.Excel.Workbook workbook = workbooks.Add(Microsoft.Office.Interop.Excel.XlWBATemplate.xlWBATWorksheet);
+            Microsoft.Office.Interop.Excel.Workbook workbook = workbooks.Add(TemplateFileDir);
 
             Microsoft.Office.Interop.Excel.Worksheet worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Worksheets[1];
 
             Microsoft.Office.Interop.Excel.Range range;
 
 
-            for (int i = 1; i <= datatable.Columns.Count; i++)
-            {
-                worksheet.Cells[1, i] = datatable.Columns[i-1].ColumnName;
-                //range = (Microsoft.Office.Interop.Excel.Range)worksheet.Cells[1, i];
-                //range.Interior.ColorIndex = 15;
-                //range.Font.Bold = true;
-            }
+            //for (int i = 1; i <= datatable.Columns.Count; i++)
+            //{
+            //    worksheet.Cells[1, i] = datatable.Columns[i-1].ColumnName;
+            //    //range = (Microsoft.Office.Interop.Excel.Range)worksheet.Cells[1, i];
+            //    //range.Interior.ColorIndex = 15;
+            //    //range.Font.Bold = true;
+            //}
 
             int columnCount = datatable.Columns.Count;
             int rowCount = datatable.Rows.Count;
@@ -173,11 +203,12 @@ namespace WebSystem.Helpers
 
             //创建对象数组存储DataTable的数据，这样的效率比直接将Datateble的数据填充worksheet.Cells[row,col]高
             Object[,] dat = new Object[rowCount, columnCount];
-            for ( int i = 0; i < rowCount; i++)
+            for (int i = 0; i < rowCount; i++)
             {
                 for (int j = 0; j < columnCount; j++)
                 {
-                    dat[i, j] = datatable.Rows[i][j] == null ? "" : datatable.Rows[i][j].ToString();
+                    //dat[i, j] = datatable.Rows[i][j] == null ? "" : datatable.Rows[i][j].ToString();
+                    dat[i, j] = datatable.Rows[i][j];
                 }
 
             }
@@ -190,9 +221,9 @@ namespace WebSystem.Helpers
             String savePath = FileDir + fileName;
             workbook.SaveCopyAs(savePath);
             workbook.Saved = true;
-                        
+
             workbook.Close();
-            
+
             excelApp.Quit();
 
             return fileName;
@@ -207,6 +238,21 @@ namespace WebSystem.Helpers
          * 2. 使用StringWriter将DataGrid读出来，在使用Response的另存为功能，
          *      将html页存为Xls格式的Excel文件。
          */
+
+        /// <summary>
+        /// 用于删除文件
+        /// 注意：要使用其他线程运行
+        /// </summary>
+        /// <param name="filePath">文件路径</param>
+        private void DoDeleteFile(Object filePath)
+        {
+            Thread.Sleep(TimeSpan.FromMinutes(30));
+            String file = filePath as String;
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
+        }
 
 
 
