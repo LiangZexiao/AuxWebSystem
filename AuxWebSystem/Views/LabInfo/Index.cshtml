@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "试验台信息";
+}
+
+<body>
+<div style='padding:4%;clear:both;' class='bg'>
+    <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>试验台信息</strong></div>
+    <div style='width:80%;background:white;height:450px;margin:0 auto;padding-top:2%;'>
+        <div class='col-md-2' data-toggle='modal' data-target='#addshiyantai'><button style='margin-left:62%;' class='btn btn-info'>增加：</button></div>
+        </br></br>
+        <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='shijiancanshu'>
+            <thead style='color:rgb(120,120,120);font-size:13px;'>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>区域</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>台位</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>性质</th>
+
+            </thead>
+            <tr>
+                <td bgcolor="#FFFFFF" style='text-align:center;'>区域一</td>
+                <td bgcolor="#FFFFFF" style='text-align:center;'>台位1</td>
+                <td bgcolor="#FFFFFF" style='text-align:center;'>稳定</td>
+            </tr>
+            <tr>
+                <td bgcolor="#FFFFFF" style='text-align:center;'>区域一</td>
+                <td bgcolor="#FFFFFF" style='text-align:center;'>台位1</td>
+                <td bgcolor="#FFFFFF" style='text-align:center;'>稳定</td>
+            </tr>
+        </table>
+        </br></br>
+
+        <!-- <input placeholder='增加项目'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <input type='time' class='span4'>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至：
+        <input type='time' class='span4'>
+        <button class='btn btn-info' style='float:right;right:20%;border-radius: 5px;'>确定</button> -->
+        <!-- <div class='col-md-4'><input placeholder='请输入项目名称' name='xiangmumingchen'/></div>
+        <div class='col-md-4'><input placeholder='请输入项目时长' name='xiangmushichang'/>小时</div>
+        <div class='col-md-2'><button onclick='addRow()' class='btn btn-info'>确定</button></div> -->
+
+        <div id='addshiyantai' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class='modal-dialog'>
+                <div class='modal-content' style='padding:10%;'>
+                    <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;'>
+                        <thead style='color:rgb(120,120,120);font-size:13px;'>
+                        <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>区域</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>台位</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>性质</th>
+                        </thead>
+                        <tr class='xinxi'>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'><input name='Area' /></td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'><input name='StationName' /></td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'><input name='Property' /></td>
+                        </tr>
+                    </table>
+                    </br>
+                    <div class='text-center'><button data-dismiss='modal' class='btn btn-info' onclick='addRow();'>确定</button></div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+</div>
+
+<script type="text/javascript">
+		$('.canshu').click(function(){
+			$('.peizhi').toggle();
+		})
+
+
+
+                      function addRow() {
+                          //原来的行数    比如：此处获得表格的行数是5，则每一行对应的index是0~4，所以下面在insertRow时，使用的是表格的当前行数
+                          var currentRows = document.getElementById("shijiancanshu").rows.length;
+                          var insertTr = document.getElementById("shijiancanshu").insertRow(currentRows);
+                          if($(".xinxi").children().children("input[name='Area']").val()!==""){
+	                          insertTd = insertTr.insertCell(0);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='Area']").val();
+
+	                          insertTd = insertTr.insertCell(1);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='StationNO']").val();
+
+	                          insertTd = insertTr.insertCell(2);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='ItemNO']").val();
+
+	                          insertTd = insertTr.insertCell(3);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='StationName']").val();
+
+	                          insertTd = insertTr.insertCell(4);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='LastActiveTime']").val();
+
+	                          insertTd = insertTr.insertCell(5);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='MeterChannel']").val();
+
+	                          insertTd = insertTr.insertCell(6);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='Property']").val();
+
+	                          insertTd = insertTr.insertCell(7);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='State']").val();
+
+	                          insertTd = insertTr.insertCell(8);
+	                          insertTd.style.textAlign="center";
+	                          insertTd.innerHTML =$("input[name='Memo']").val();
+
+
+                          }
+                      	  $('.cancel').click(function(){
+				          $(this).parent().parent('tr').remove();
+				                })
+                      }
+        $('.cancel').click(function(){
+            $(this).parent().parent('tr').remove();
+                })
+
+
+
+
+
+</script>
+
+
+</body>
+</html>

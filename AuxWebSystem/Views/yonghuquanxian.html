@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>用户权限</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+	<script type="text/javascript" src='jquery/jquery-1.12.3.js'></script>
+	<style type="text/css">
+	    a{
+			text-decoration:none;
+			color:gray;
+		}
+		#daohanglan li{
+			float:left;
+			position:relative;
+			padding:2% 6%;
+			list-style: none;
+		}
+		#daohanglan div{
+			padding: 5% 0 0;
+		}
+		#daohanglan{
+			background-color: rgba(0, 0, 0, .8);
+    		height: 65px;
+		}
+		#daohanglan .peizhi div a{
+			
+			color: black;
+			
+		}
+		#daohanglan .peizhi div{
+			width: 120px;
+			background-color: rgba(0,0,0,.6);
+			padding:10% 3% 5%;
+			margin-left: -8%;
+			color: #2a6496;
+		}
+
+	</style>
+
+
+
+</head>
+<body>
+
+
+	<ul id='daohanglan'>
+		<li><a href="yonghuguanli.html#yonghuguanli">Web用户管理</a>
+			</div>
+		</li>
+		<li><a href="#" class='canshu'>参数配置</a>
+			<div style='position:absolute;display:none;' class='peizhi'>
+				<div><a href="shijiancanshu.html#shijiancanshu">时间参数</a></div>
+				<div><a href="jiejiari.html#jiejiari">节假日设置</a></div>
+			</div>
+		</li>
+		<li><a href="shujuchakan.html#shujuchakan">数据查看</a>
+			<div style='position:absolute;'>
+			</div>
+		</li>
+		<li style='float:right;'>
+			<a href="#">登录</a>
+		</li>
+		<li>
+        <a href="shiyanxinxi.html#shiyanxinxi">试验台信息</a>
+    	</li>
+    </ul>
+
+<a name="yonghuquanxian"></a>
+
+<div style='padding:8%;clear:both;'>
+		<table class='table table-hover table-bordered table-condensed' style='width:80%;'>
+		<tr>
+			<th bgcolor="#FFFFFF" style='text-align:center;'>总区域</th>
+			<th bgcolor="#FFFFFF" style='text-align:center;'>区域一</th>
+			<th bgcolor="#FFFFFF" style='text-align:center;'>区域二</th>
+			<th bgcolor="#FFFFFF" style='text-align:center;'>区域三</th>
+			<th bgcolor="#FFFFFF" style='text-align:center;'>区域四</th>
+			<th bgcolor="#FFFFFF" style='text-align:center;'>区域n</th>
+		</tr>
+		<tr>
+			<td bgcolor="#FFFFFF" style='text-align:center;'>
+				<input type='checkbox' name='check-all'/>
+			</td>
+			<td bgcolor="#FFFFFF" style='text-align:center;'>
+				<input type='checkbox' name='sub-checkbox'/>
+			</td>
+			<td bgcolor="#FFFFFF" style='text-align:center;'>
+				<input type='checkbox' name='sub-checkbox'/>
+
+			</td>
+			<td bgcolor="#FFFFFF" style='text-align:center;'>
+				<input type='checkbox' name='sub-checkbox'/>
+
+			</td>
+			<td bgcolor="#FFFFFF" style='text-align:center;'>
+				<input type='checkbox' name='sub-checkbox'/>
+
+			</td>
+			<td bgcolor="#FFFFFF" style='text-align:center;'>
+				<input type='checkbox' name='sub-checkbox'/>
+
+			</td>
+		</tr>
+	</table>
+</div>
+
+
+
+
+
+	<script type="text/javascript">
+		$('.canshu').click(function(){
+			$('.peizhi').toggle();
+		})
+
+
+
+
+
+
+
+
+
+$(document).ready(function () {  
+    //checkbox select all  
+    $(document).on('change', '[name=check-all]', function () {  
+        if ($(this).prop('checked')) {  
+            $('[name=sub-checkbox]').prop('checked', true);  
+        } else {  
+            $('[name=sub-checkbox]').prop('checked', false);  
+        }  
+    });  
+  
+    //sub checkbox  
+    $(document).on('change', '[name=sub-checkbox]', function () {  
+        var checkboxnum = $('[name=sub-checkbox]').length;  
+        var checked = $('[name=sub-checkbox]:checked').length;  
+        if (checkboxnum == checked) {  
+            $('[name=check-all]').prop('checked', true);  
+        } else {  
+            $('[name=check-all]').prop('checked', false);  
+        }  
+    });  
+});  
+
+
+
+
+
+
+
+
+	</script>
+
+</body>
+</html>

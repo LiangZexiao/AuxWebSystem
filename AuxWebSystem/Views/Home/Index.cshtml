@@ -1,0 +1,51 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>登录</title>
+    <style type="text/css">
+    </style>
+    <link rel="stylesheet" href="~/Content/css/style.css" />
+    <script type="text/javascript" src="~/Content/jquery/jquery-1.12.3.js"></script>
+</head>
+
+<body>
+    <div>
+        <div id="loginhead">
+            <img class="logo" src="/Images/logo_u5.jpg">
+            <table border="1px" cellpadding="0" cellspacing="0" class="vline"></table>
+            <div align="center" id="coo">
+                <p style="font-size:18px;color:#0099CC;">奥克斯管理系统</p>
+                <p style="font-size:13px;">AUX EXECUTION SYSTEM</p>
+            </div>
+        </div>
+        <div class="lg-container">
+            <h1>用户登录</h1>
+            <form action="/User/Login" id="lg-form" name="lg-form" method="post">
+
+                <div>
+                    <label for="username">用户名:</label>
+                    <input type="text" name="LogName" id="username" placeholder="&nbsp;&nbsp;用户名" value="admin"/>
+                </div>
+
+
+                <div>
+                    <label for="password">密码:</label>
+                    <input type="password" name="Password" id="password" placeholder="&nbsp;&nbsp;密码" value="123456" />
+                </div>
+
+                <div>
+                    <button type="submit" id="login">登 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+                </div>
+
+            </form>
+            <div id="message"></div>
+        </div>
+    </div>
+</body>
+</html>
+

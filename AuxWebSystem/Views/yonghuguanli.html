@@ -1,0 +1,633 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>用户管理</title>
+    <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
+    <script type="text/javascript" src='jquery/jquery-1.12.3.js'></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="jquery/bootstrap.min.js"></script>
+
+
+
+    <script type="text/javascript" src='jquery/dataTables.min.js'></script>
+    <link rel="stylesheet" type="text/css" href="css/dataTables.min.css">
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: '微软雅黑';
+        }
+
+        #daohanglan li {
+            float: left;
+            position: relative;
+            padding: 1.6% 4%;
+            list-style: none;
+            font-size: 20px;
+        }
+
+            #daohanglan li:hover {
+                border-bottom: 5px solid blue;
+            }
+
+            #daohanglan li:first-child:hover {
+                border: 0;
+            }
+
+            #daohanglan li:last-child:hover {
+                border: 0;
+            }
+
+        #daohanglan div {
+            padding: 5% 0 0;
+        }
+
+        #daohanglan {
+            background-color: rgb(255, 255, 255);
+            height: 78px;
+            box-shadow: 1px 1px rgba(0,0,0,.3);
+            background: url(./images/logo_u5.jpg)no-repeat 22px;
+        }
+
+            #daohanglan .peizhi div a {
+                text-decoration: none;
+                color: rgba(255,255,255,0.9);
+            }
+
+                #daohanglan .peizhi div a:hover {
+                    text-decoration: none;
+                    color: black;
+                }
+
+            #daohanglan .peizhi div {
+                width: 120px;
+                background-color: rgba(0,0,0,.6);
+                padding: 10% 3% 5%;
+                margin-left: -8%;
+                color: #2a6496;
+            }
+
+        .bg {
+            background: url(./images/bg.jpg)no-repeat;
+            background-size: 100%;
+            height: 560px;
+        }
+
+        .fenye a {
+            color: black;
+            background: #36608a;
+        }
+    </style>
+
+
+
+</head>
+<body>
+
+
+    <ul id='daohanglan'>
+        <li style='padding-left:10%;'></li>
+        <li style='border-bottom: 5px solid blue;'>
+            <a name='yonghuguanli'>Web用户管理</a>
+        </li>
+        <li>
+            <a href="#" class='canshu'>参数配置</a>
+            <div style='position:absolute;display:none;z-index: 1;' class='peizhi'>
+                <div><a href="shijiancanshu.html#shijiancanshu">标准实验</a></div>
+                <div><a href="jiejiari.html#jiejiari">节假日设置</a></div>
+                <div><a href="xitongcanshu.html#xitongcanshu">系统参数设置</a></div>
+            </div>
+        </li>
+        <li>
+            <a href="shujuchakan.html#shujuchakan">数据查看</a>
+        </li>
+
+        <li>
+            <a href="shiyanxinxi.html#shiyanxinxi">试验台信息</a>
+        </li>
+        <li style='float:right;border-left:1px solid rgba(0,0,0,.3);'>
+            <a href="#">登录</a>
+        </li>
+    </ul>
+    <!--
+    -->
+    <div class='bg' style='padding:1%;clear:both;'>
+        <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>用户管理</strong></div>
+        <div style='width:80%;background:white;height:520px;margin:0 auto;padding-top:2%;overflow:auto;'>
+
+
+            <!-- 	<table id="example" class="display" cellspacing="0" width="100%"> -->
+            <!-- <div style='width:80%;padding-left:10%;'> -->
+            <button class='btn btn-info' style='margin-left: 16%;' data-toggle='modal' data-target='#xiugai'>增加用户</button>
+            <!-- <input placeholder='搜索' style='float:right;display:inline-block;margin-top:1%;'/ > -->
+            <!-- </div> -->
+            </br>
+            <table id="example" class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;'>
+                <thead>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>用户名</th>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>登录名</th>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>用户类型</th>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>部门</th>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>最后登录时间</th>
+                <th colspan='3' bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>管理员操作</th>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>用户权限</th>
+                </thead>
+                <tbody id='table'>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>b</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>c</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>s</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>asdfasd</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>hjku</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>a</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' onclick='return false;'>重置密码</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' onclick='return false;'>删除</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            </br>
+            <!-- <div style='float:right;width:80%;' class='fenye'>
+            <span id="spanFirst">第一页</span> <span id="spanPre">上一页</span> <span id="spanNext">下一页</span> <span id="spanLast">最后一页</span> 第<span id="spanPageNum"></span>页/共<span id="spanTotalPage"></span>页
+            </div> -->
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id='quanxian' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style='padding:12% 10%;border:1px solid;'>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>用户名：a</h3>
+                <h4>用户权限设置：</h4>
+                </br>
+                <table class='table table-hover table-bordered table-condensed' style='width:80%;'>
+                    <tr>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>总区域</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域一</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域二</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域三</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域四</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域n</th>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <input type='checkbox' name='check-all' />
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <input type='checkbox' name='sub-checkbox' />
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <input type='checkbox' name='sub-checkbox' />
+
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <input type='checkbox' name='sub-checkbox' />
+
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <input type='checkbox' name='sub-checkbox' />
+
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <input type='checkbox' name='sub-checkbox' />
+
+                        </td>
+                    </tr>
+                </table>
+                <div><button class='btn btn-info' data-dismiss='modal' style='float:right;'>确定</button></div>
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        //checkbox select all
+                        $(document).on('change', '[name=check-all]', function () {
+                            if ($(this).prop('checked')) {
+                                $('[name=sub-checkbox]').prop('checked', true);
+                            } else {
+                                $('[name=sub-checkbox]').prop('checked', false);
+                            }
+                        });
+
+                        //sub checkbox
+                        $(document).on('change', '[name=sub-checkbox]', function () {
+                            var checkboxnum = $('[name=sub-checkbox]').length;
+                            var checked = $('[name=sub-checkbox]:checked').length;
+                            if (checkboxnum == checked) {
+                                $('[name=check-all]').prop('checked', true);
+                            } else {
+                                $('[name=check-all]').prop('checked', false);
+                            }
+                        });
+                    });
+
+                </script>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id='xiugai' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style='width: 660px;padding: 10% 5%;'>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <table class='table table-hover table-bordered table-condensed' style=''>
+                    <tr>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>登录名</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>姓名</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>部门</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>用户类型</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>邮箱</th>
+                        <th bgcolor="#FFFFFF" style='text-align:center;'>手机</th>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <div>xxx</div>
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <div>xxxx</div>
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <select>
+                                <option selected>人事部</option>
+                                <option>组织部</option>
+                            </select>
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <select>
+                                <option selected>web端用户</option>
+                                <option>曲线端用户</option>
+                                <option>抓取端用户</option>
+                            </select>
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <input type='text' />
+
+                        </td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>
+                            <input type='text' />
+
+                        </td>
+                    </tr>
+                </table>
+                <div><button class='btn btn-info' data-dismiss='modal' style='float:right;'>确定</button></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script type="text/javascript">
+        $('.canshu').click(function () {
+            $('.peizhi').toggle();
+        })
+
+
+        /*分页*/
+        /*	 var theTable = document.getElementById("table");
+         var totalPage = document.getElementById("spanTotalPage");
+         var pageNum = document.getElementById("spanPageNum");
+
+
+         var spanPre = document.getElementById("spanPre");
+         var spanNext = document.getElementById("spanNext");
+         var spanFirst = document.getElementById("spanFirst");
+         var spanLast = document.getElementById("spanLast");
+
+
+         var numberRowsInTable = theTable.rows.length;
+         var pageSize = 3;
+         var page = 1;*/
+
+
+        //下一页
+        /*function next() {
+
+
+            hideTable();
+
+
+            currentRow = pageSize * page;
+            maxRow = currentRow + pageSize;
+            if (maxRow > numberRowsInTable) maxRow = numberRowsInTable;
+            for (var i = currentRow; i < maxRow; i++) {
+                theTable.rows[i].style.display = '';
+            }
+            page++;
+
+
+            if (maxRow == numberRowsInTable) { nextText(); lastText(); }
+            showPage();
+            preLink();
+            firstLink();
+        }*/
+
+
+        //上一页
+        /*     function pre() {
+
+
+                 hideTable();
+
+
+                 page--;
+
+
+                 currentRow = pageSize * page;
+                 maxRow = currentRow - pageSize;
+                 if (currentRow > numberRowsInTable) currentRow = numberRowsInTable;
+                 for (var i = maxRow; i < currentRow; i++) {
+                     theTable.rows[i].style.display = '';
+                 }
+
+
+
+
+                 if (maxRow == 0) { preText(); firstText(); }
+                 showPage();
+                 nextLink();
+                 lastLink();
+             }*/
+
+
+        //第一页
+        /*     function first() {
+                 hideTable();
+                 page = 1;
+                 for (var i = 0; i < pageSize; i++) {
+                     theTable.rows[i].style.display = '';
+                 }
+                 showPage();
+
+
+                 preText();
+                 nextLink();
+                 lastLink();
+             }*/
+
+
+        //最后一页
+        /*     function last() {
+                 hideTable();
+                 page = pageCount();
+                 currentRow = pageSize * (page - 1);
+                 for (var i = currentRow; i < numberRowsInTable; i++) {
+                     theTable.rows[i].style.display = '';
+                 }
+                 showPage();
+
+
+                 preLink();
+                 nextText();
+                 firstLink();
+             }
+
+
+             function hideTable() {
+                 for (var i = 0; i < numberRowsInTable; i++) {
+                     theTable.rows[i].style.display = 'none';
+                 }
+             }
+
+
+             function showPage() {
+                 pageNum.innerHTML = page;
+             }
+        */
+
+        //总共页数
+        /*  function pageCount() {
+              var count = 0;
+              if (numberRowsInTable % pageSize != 0) count = 1;
+              return parseInt(numberRowsInTable / pageSize) + count;
+          }
+     */
+
+        //显示链接
+        /*function preLink() { spanPre.innerHTML = "<a href='javascript:pre();'>上一页</a>"; }
+        function preText() { spanPre.innerHTML = "上一页"; }
+
+
+        function nextLink() { spanNext.innerHTML = "<a href='javascript:next();'>下一页</a>"; }
+        function nextText() { spanNext.innerHTML = "下一页"; }
+
+
+        function firstLink() { spanFirst.innerHTML = "<a href='javascript:first();'>第一页</a>"; }
+        function firstText() { spanFirst.innerHTML = "第一页"; }
+
+
+        function lastLink() { spanLast.innerHTML = "<a href='javascript:last();'>最后一页</a>"; }
+        function lastText() { spanLast.innerHTML = "最后一页"; }*/
+
+
+        //隐藏表格
+        /* function hide() {
+             for (var i = pageSize; i < numberRowsInTable; i++) {
+                 theTable.rows[i].style.display = 'none';
+             }
+
+
+             totalPage.innerHTML = pageCount();
+             pageNum.innerHTML = '1';
+
+
+             nextLink();
+             lastLink();
+         }
+
+
+         hide();*/
+
+        $('.delete').click(function () {
+            alert('确定删除吗？');
+        })
+
+
+
+
+        $(document).ready(function () {
+            $('#example').dataTable({
+                "oLanguage": {//国际语言转化
+                    "oAria": {
+                        "sSortAscending": " - click/return to sort ascending",
+                        "sSortDescending": " - click/return to sort descending"
+                    },
+                    "sLengthMenu": "显示 _MENU_ 记录",
+                    "sZeroRecords": "对不起，查询不到任何相关数据",
+                    "sEmptyTable": "未有相关数据",
+                    "sLoadingRecords": "正在加载数据-请等待...",
+                    "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录。",
+                    "sInfoEmpty": "当前显示0到0条，共0条记录",
+                    "sInfoFiltered": "（数据库中共为 _MAX_ 条记录）",
+                    "sProcessing": "<img src='../resources/user_share/row_details/select2-spinner.gif'/> 正在加载数据...",
+                    "sSearch": "模糊查询：",
+                    "sUrl": "",
+                    //多语言配置文件，可将oLanguage的设置放在一个txt文件中，例：Javascript/datatable/dtCH.txt
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": " 上一页 ",
+                        "sNext": " 下一页 ",
+                        "sLast": " 尾页 "
+                    }
+                },
+                "pagingType": "full_numbers",
+                /*"lengthMenu": [
+                     [8, 6, 8, -1],
+                     [4, 6, 8, "所有"]
+                 ]//每页显示条数设置*/
+
+            });
+        });
+
+
+    </script>
+
+
+</body>
+</html>

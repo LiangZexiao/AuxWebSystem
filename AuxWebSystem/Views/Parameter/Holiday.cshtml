@@ -1,0 +1,318 @@
+﻿@{
+    ViewBag.Title = "节假日设置";
+}
+
+<!DOCTYPE html>
+<html>
+<!--
+<head>
+
+    <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
+    <title>text</title>
+    <script type="text/javascript" src='~/Content/jquery/jquery-1.12.3.js'></script>
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css">
+    <script src="~/Content/jquery/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src='~/Content/jquery/jquery-1.8.3.min.js'></script>
+
+    <link rel="stylesheet" type="text/css" href="~/Content/css/daterangepicker-bs3.css">
+
+
+    <link rel="stylesheet" href="~/Content/themes/base/jquery-ui.css" type="text/css" charset="utf-8" />
+
+
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: '微软雅黑';
+        }
+
+        #daohanglan li {
+            float: left;
+            position: relative;
+            padding: 1.6% 4%;
+            list-style: none;
+            font-size: 20px;
+        }
+
+            #daohanglan li:hover {
+                border-bottom: 5px solid blue;
+            }
+
+            #daohanglan li:first-child:hover {
+                border: 0;
+            }
+
+            #daohanglan li:last-child:hover {
+                border: 0;
+            }
+
+        #daohanglan div {
+            padding: 5% 0 0;
+        }
+
+        #daohanglan {
+            background-color: rgb(255, 255, 255);
+            height: 78px;
+            box-shadow: 1px 1px rgba(0,0,0,.3);
+            background: url(/Images/logo_u5.jpg)no-repeat 22px;
+        }
+
+            #daohanglan .peizhi div a {
+                text-decoration: none;
+                color: rgba(255,255,255,0.9);
+            }
+
+                #daohanglan .peizhi div a:hover {
+                    text-decoration: none;
+                    color: black;
+                }
+
+            #daohanglan .peizhi div {
+                width: 120px;
+                background-color: rgba(0,0,0,.6);
+                padding: 10% 3% 5%;
+                margin-left: -8%;
+                color: #2a6496;
+            }
+
+        .bg {
+            background: url(/Images/bg.jpg)no-repeat;
+            background-size: 100%;
+            height: 660px;
+        }
+    </style>
+
+</head>
+<body>
+
+    <ul id='daohanglan'>
+        <li style='padding-left:10%;'></li>
+        <li>
+            <a href="/User/WebUserManager">Web用户管理</a>
+            </div>
+        </li>
+        <li style='border-bottom: 5px solid blue;'>
+            <a href="#" class='canshu'>参数配置</a>
+            <div style='position:absolute;display:none;z-index:1;' class='peizhi'>
+                <div><a href="shijiancanshu.html#shijiancanshu">标准实验</a></div>
+                <div><a name="jiejiari">节假日设置</a></div>
+                <div><a href="xitongcanshu.html#xitongcanshu">系统参数设置</a></div>
+            </div>
+        </li>
+        <li>
+            <a href="shujuchakan.html#shujuchakan">数据查看</a>
+            <div style='position:absolute;'>
+            </div>
+        </li>
+        <li>
+            <a href="shiyanxinxi.html#shiyanxinxi">试验台信息</a>
+        </li>
+        <li style='float:right;border-left:1px solid rgba(0,0,0,.3);'>
+            <a href="#" data-toggle="modal" data-target="#login">登录</a>
+        </li>
+
+    </ul>
+    -->
+    
+    <div class='bg' style='padding:2%;'>
+        <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>节假日</strong></div>
+        <div style='width:80%;background:white;height:600px;margin:0 auto;padding-top:2%;'>
+            <div class='container'>
+                <form>
+                    <div class="datePicker" style="height:330px;width:450px;margin: 2% auto 0;"></div>
+                </form>
+                <script src="~/Content/jquery/jquery-1.12.3.js"></script>
+                <script src="~/Content/jquery/jquery-ui.min.js" type="text/javascript"></script>
+                <script type="text/javascript">
+          $((function($){
+              $.datepicker.regional['zh-CN'] = {
+                  clearText: '清除',
+                  clearStatus: '清除已选日期',
+                  closeText: '关闭',
+                  closeStatus: '不改变当前选择',
+                  prevText: '<上月',
+                  prevStatus: '显示上月',
+                  prevBigText: '<<',
+                  prevBigStatus: '显示上一年',
+                  nextText: '下月>',
+                  nextStatus: '显示下月',
+                  nextBigText: '>>',
+                  nextBigStatus: '显示下一年',
+                  currentText: '今天',
+                  currentStatus: '显示本月',
+                  monthNames: ['一月','二月','三月','四月','五月','六月', '七月','八月','九月','十月','十一月','十二月'],
+                  monthNamesShort: ['一','二','三','四','五','六', '七','八','九','十','十一','十二'],
+                  monthStatus: '选择月份',
+                  yearStatus: '选择年份',
+                  weekHeader: '周',
+                  weekStatus: '年内周次',
+                  dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+                  dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],
+                  dayNamesMin: ['日','一','二','三','四','五','六'],
+                  dayStatus: '设置 DD 为一周起始',
+                  dateStatus: '选择 m月 d日, DD',
+                  dateFormat: 'yy-mm-dd',
+                  firstDay: 1,
+                  initStatus: '请选择日期',
+                  isRTL: false};
+              $.datepicker.setDefaults($.datepicker.regional['zh-CN']);
+          })(jQuery));
+
+
+          /*节假日以及周末只读*/
+            //TODO:需要添加代码
+               var holidays = ["12/24", "12/25", "1/1", "1/13/2017",
+                      "5/27", "7/4", "9/2", "11/28",
+                      "11/29", "12/24", "12/25"];
+
+                 $( ".datePicker" ).datepicker({
+                      beforeShowDay: function(date){
+                          show = true;
+                          if(date.getDay() == 0 || date.getDay() == 6){show = false;}//No Weekends
+                          for (var i = 0; i < holidays.length; i++) {
+                              if (new Date(holidays[i]).toString() == date.toString()) {show = false;}//No Holidays
+                          }
+                          var display = [show,'',(show)?'':'No Weekends or Holidays'];//With Fancy hover tooltip!
+                          return display;
+                      }
+                  });
+
+
+
+                </script>
+
+
+                <!-- 列表 -->
+                <div style='height:150px;overflow:auto;'>
+                    <table class='table table-hover table-bordered table-condensed' style='width:60%;margin: 0 auto;' id='tb'>
+                        <thead style='color:rgb(120,120,120);font-size:13px;'>
+                        <th style='text-align:center;background:rgb(246,246,246);'>放假原因</th>
+                        <th style='text-align:center;background:rgb(246,246,246);'>放假时间</th>
+                        <th style='text-align:center;background:rgb(246,246,246);'>删除</th>
+                        </thead>
+                        <tbody>
+
+                            <!-- 这里插入数据 -->
+                            @{
+                                int count = 0;
+                                foreach (System.Data.DataRow row in @ViewBag.table.Rows)
+                                {
+                                    count++;
+                                    <tr>
+                                        <td style='text-align:center;'>@row["HolidayReason"]</td>
+                                        <td style='text-align:center;'>@row["StartTime"] - @row["EndTime"]</td>
+                                        <td style='text-align:center;'><button class='btn btn-info cancel'>删除</button> </td>
+                                        <!--<td style='text-align:center;'><a href="/Parameter/DeleteHoliday/@row["ID"]">删除</a></td>-->
+                                    </tr>
+                                }
+
+                            }
+                            <tr>
+                                <td style='text-align:center;'>元旦</td>
+                                <td style='text-align:center;'>01/01/2017 12:00 PM - 01/02/2017 12:00 PM</td>
+                                
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </br>
+                <div class='text-center'>
+                    <a href="#" data-toggle='modal' data-target='#zengjiajiejiari'><button class='btn btn-info'>增加选项</button></a>
+
+                </div>
+                <!-- 	<div class="modal fade text-center" id='add' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"> -->
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade text-center" id='zengjiajiejiari' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class='modal-dialog'>
+            <div class='modal-content' style='padding:20% 15%;'>
+                <form class="form-horizontal">
+                    <fieldset>
+
+                        <div class="control-group">
+                            <label class="control-label" for="reservationtime">节假日设置：</label>
+                            <input placeholder='请输入放假原因' name='yuanyin' />
+                            </br>
+                            <div class="controls">
+                                <div class="input-prepend input-group">
+                                    <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                    <input type="text" style="width: 400px" name="reservation" id="reservationtime" class="form-control" value="08/01/2013 1:00 PM - 08/01/2013 1:30 PM" class="span4">
+                                </div>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+                <script type="text/javascript" src='~/Content/jquery/moment.js'></script>
+                <script type="text/javascript" src='~/Content/jquery/daterangepicker.js'></script>
+                <script type="text/javascript">
+               $(document).ready(function() {
+                  $('#reservationtime').daterangepicker({
+                    timePicker: true,
+                    timePickerIncrement: 30,
+                    format: 'MM/DD/YYYY h:mm A'
+                  }, /*function(start, end, label) {
+                    console.log(start.toISOString(), end.toISOString(), label);
+                  }*/
+                    function(start, end, label) {
+
+                    addRow();
+                      function addRow() {
+                          //原来的行数    比如：此处获得表格的行数是5，则每一行对应的index是0~4，所以下面在insertRow时，使用的是表格的当前行数
+                          var currentRows = document.getElementById("tb").rows.length;
+                          var insertTr = document.getElementById("tb").insertRow(currentRows);
+
+                          insertTd = insertTr.insertCell(0);
+                          insertTd.style.textAlign="center";
+                          insertTd.innerHTML = $("input[name='yuanyin']").val();
+
+                          insertTd = insertTr.insertCell(1);
+                          insertTd.style.textAlign="center";
+                          insertTd.innerHTML = start.format('MM/DD/YYYY h:mm A') + ' - ' + end.format('MM/DD/YYYY h:mm A');
+
+                          insertTd = insertTr.insertCell(2);
+                          insertTd.style.textAlign="center";
+                          insertTd.innerHTML = "<button class='btn btn-info cancel' style='text-align:center;'>删除</button>";
+                          return 0;
+                      }
+                      $('.cancel').click(function(){
+                          $(this).parent().parent('tr').remove();
+
+                        })
+
+                  }
+                  );
+               });
+                </script>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+		$('.canshu').click(function(){
+			$('.peizhi').toggle();
+		})
+    $('.cancel').click(function(){
+      $(this).parent().parent('tr').remove();
+
+        
+        //      /Parameter/DeleteHoliday/["ID"]
+        var xmlHttp;
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+        }
+
+    })
+
+
+    </script>
+</body>
+</html>
