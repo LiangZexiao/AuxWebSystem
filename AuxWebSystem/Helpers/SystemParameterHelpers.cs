@@ -15,6 +15,9 @@ namespace AuxWebSystem.Helpers
         private static SystemParameterHelpers helper;
         private static readonly String cacheKey = "SystemParameterHelpers";
         private static SystemParameterModel systemModel;
+        private static HashSet<String> ChineseSet;
+        private static HashSet<String> EnglishSet;
+        private static Dictionary<String, String> ParameterTypeDic;
 
         private SystemParameterHelpers()
         {
@@ -58,6 +61,9 @@ namespace AuxWebSystem.Helpers
             {
                 HttpRuntime.Cache.Remove(cacheKey);
             }
+            ChineseSet = null;
+            EnglishSet = null;
+            ParameterTypeDic = null;
         }
 
         /// <summary>
@@ -115,6 +121,26 @@ namespace AuxWebSystem.Helpers
         }
 
         /// <summary>
+        /// 根据参数类型(ParameterType)和参数值(Value)获得参数编号(ParameterNO)
+        /// </summary>
+        /// <param name="ParameterType">参数类型</param>
+        /// <param name="Value">参数值</param>
+        /// <returns>参数编号</returns>
+        public int Select(String ParameterType, String Value)
+        {
+            DataTable dt = getDataTable();
+            DataRow[] rows = dt.Select(String.Format("ParameterType = '{0}' and  Value = '{1}' ", ParameterType, Value));
+            if (rows.Length <= 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return (int)rows[0]["ParameterNO"];
+            }
+        }
+
+        /// <summary>
         /// 根据参数类型(ParameterType)和参数编号(ParameterNO)获得参数值(Value)
         /// </summary>
         /// <param name="ParameterType">参数类型</param>
@@ -134,5 +160,75 @@ namespace AuxWebSystem.Helpers
             }
         }
 
+        /// <summary>
+        /// 获得所有参数类型的中文名
+        /// </summary>
+        /// <returns></returns>
+        public HashSet<String> getAllParameterTypeInChinese()
+        {
+            /*参数类型	    ParameterType
+            *              ChineseName
+            *参数编号	    ParameterNO
+            *参数值	    Value
+            *是否可修改	Revisable
+            */
+            if (null == ChineseSet)
+            {
+                DataTable dt = getDataTable();
+                ChineseSet = new HashSet<String>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    ChineseSet.Add(row["ChineseName"].ToString());
+                }
+
+            }
+            return ChineseSet;
+        }
+
+        /// <summary>
+        /// 获得所有参数类型
+        /// </summary>
+        /// <returns></returns>
+        public HashSet<String> getAllParameterTypeInEnglish()
+        {
+            /*参数类型	    ParameterType
+            *              ChineseName
+            *参数编号	    ParameterNO
+            *参数值	    Value
+            *是否可修改	Revisable
+            */
+            if (null == EnglishSet)
+            {
+                DataTable dt = getDataTable();
+                EnglishSet = new HashSet<String>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    EnglishSet.Add(row["ChineseName"].ToString());
+                }
+            }
+            return EnglishSet;
+        }
+
+        /// <summary>
+        /// 获得参数类型的字典,ParameterType, ChineseName
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<String, String> getParameterTypeDictionary()
+        {
+            if (null == ParameterTypeDic)
+            {
+                ParameterTypeDic = new Dictionary<string, string>();
+                DataTable dt = getDataTable();
+                foreach (DataRow row in dt.Rows)
+                {
+                    String key = row["ParameterType"].ToString();
+                    if (!ParameterTypeDic.ContainsKey(key))
+                    {
+                        ParameterTypeDic.Add(key, row["ChineseName"].ToString());
+                    }
+                }
+            }
+            return ParameterTypeDic;
+        }
     }
 }

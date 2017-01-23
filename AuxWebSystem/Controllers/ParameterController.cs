@@ -5,6 +5,7 @@ using System.Web;
 using System.Data.SqlClient;
 using System.Web.Mvc;
 using System.Data;
+using Newtonsoft.Json;
 using AuxWebSystem.Models;
 using AuxWebSystem.Helpers;
 
@@ -26,7 +27,15 @@ namespace AuxWebSystem.Controllers
         /// <returns></returns>
         public ActionResult SystemParameterSetting()
         {
-            ViewBag.SystemTable = SystemParameterHelpers.getInstance().getDataTable();
+            /*参数类型	    ParameterType
+             *              ChineseName
+             *参数编号	    ParameterNO
+             *参数值	    Value
+             *是否可修改	Revisable
+             */
+            SystemParameterHelpers sysHelper = SystemParameterHelpers.getInstance();
+            ViewBag.Parameter = sysHelper.getParameterTypeDictionary();
+            ViewBag.SystemTable = sysHelper.getDataTable();
             return View();
         }
 
@@ -35,20 +44,26 @@ namespace AuxWebSystem.Controllers
         /// </summary>
         /// <param name="form"></param>
         /// <returns></returns>
-        public ActionResult SystemParameterAdding(FormCollection form)
+        public void SystemParameterAdding(FormCollection form)
         {
             /*
-     * 参数类型	    ParameterType	nvarchar(50)
-     * 参数编号	    ParameterNO	    int
-     * 参数值	    Value	        char(100)
-     * 是否可修改	Revisable	    int
-     */
+             * 参数类型	    ParameterType	nvarchar(50)
+             * 参数编号	    ParameterNO	    int
+             * 参数值	    Value	        char(100)
+             * 是否可修改	Revisable	    int
+             */
             String parameterType = form["ParameterType"];
             String value = form["Value"];
-            SystemParameterHelpers helper = SystemParameterHelpers.getInstance();
-            helper.Add(parameterType, value);
-            ViewBag.SystemTable = helper.getDataTable();
-            return View("SystemParameterSetting");
+            try
+            {
+                SystemParameterHelpers helper = SystemParameterHelpers.getInstance();
+                helper.Add(parameterType, value);
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
+            }
+            catch (Exception e)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
+            }
         }
 
         /// <summary>
@@ -57,22 +72,26 @@ namespace AuxWebSystem.Controllers
         /// <param name="id">参数编号 ParameterNO</param>
         /// <param name="value">参数类型 ParameterType</param>
         /// <returns></returns>
-        public ActionResult SystemParameterDelete(int id, String value)
+        public void SystemParameterDelete(int id, String value)
         {
             SystemParameterHelpers helper = SystemParameterHelpers.getInstance();
-            helper.Delect(value, id);
-            ViewBag.SystemTable = SystemParameterHelpers.getInstance().getDataTable();
-            return View("SystemParameterSetting");
+            try
+            {
+                helper.Delect(value, id);
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
+            }
+            catch (Exception e)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
+            }
         }
 
-
-
         /// <summary>
-        /// 显示时间参数
+        /// 标准实验
         /// </summary>
         /// <param name="Form"></param>
         /// <returns></returns>
-        public ActionResult TimeParameter()
+        public ActionResult StandardParameter()
         {
             DataTable dt = DataBaseHelper.getAllRecord(new StandardExperimentModels());
             ViewBag.Standard = dt;
@@ -84,72 +103,120 @@ namespace AuxWebSystem.Controllers
         /// </summary>
         /// <param name="Form"></param>
         /// <returns></returns>
-        public ActionResult AddExperiment(FormCollection Form)
+        public void AddExperiment(FormCollection Form)
         {
             StandardExperimentModels TimeParameter = new StandardExperimentModels();
             TimeParameter.ExperimentName = Form["ExperimentName"];
             TimeParameter.ExperimentNo = Form["ExperimentNo"];
+
+            if ("".Equals(TimeParameter.ExperimentName) || "".Equals(TimeParameter.ExperimentNo))
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "实验名称或实验类型编号为空" }));
+                return;
+            }
+
             if (DataBaseHelper.hasMyKeyRecord(TimeParameter))
             {
-                ViewBag.Delect = "亲，试验类型编号不能重复哦!!!";
-                return View("TimeParameter");
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "试验类型编号重复" }));
+                return;
             }
-            if (null != Form["StandardTestHours"])
-            {
-                TimeParameter.StandardTestHours = float.Parse(Form["StandardTestHours"]);
-            }
-            else
-            {
-                return View();
-            }
-            if (DataBaseHelper.Insert(TimeParameter))
-            { }
-            else
-            {
-                return View("TimeParameter");
-            }
-            return View("TimeParameter");
+            float tempfloat;
 
+            if ( float.TryParse(Form["StandardTestHours"], out tempfloat))
+            {
+                TimeParameter.StandardTestHours = tempfloat;
+            }
+            else
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "标准时间有误" }));
+                return;
+            }
+
+            if (DataBaseHelper.Insert(TimeParameter))
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
+            }
+            else
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "增加不成功" }));
+            }
         }
 
 
-        public ActionResult Delect(string id)
+        public void Delect(string id)
         {
             StandardExperimentModels SE = new StandardExperimentModels();
             SE.ExperimentNo = id;
             if (DataBaseHelper.Delete(SE))
             {
-                ViewBag.Delect = "删除成功";
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "删除成功" }));
             }
             else
             {
-                ViewBag.Delect = "删除失败";
-                return View("TimeParameter");
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "删除不成功" }));
             }
-            return View("TimeParameter");
         }
-
-
 
         public ActionResult Holiday()
         {
-            DataTable dt = DataBaseHelper.getAllRecord(new HolidayModels());
-            ViewBag.table = dt;
-            return View();
+            DateTime nowdate = DateTime.Now;
+            int mouth = nowdate.Month;
+            int year = nowdate.Year;
+            return getHolidayByMouthAndYear(mouth, year);
         }
 
-        public ActionResult Add(FormCollection Form)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">月</param>
+        /// <param name="value">年</param>
+        /// <returns></returns>
+        public ActionResult getHolidayByMouthAndYear(int id, int value)
+        {
+            int year = value;
+            int mouth = id;
+            HolidayModels model = new HolidayModels();
+            model.Time = mouth > 9 ? year + "-" + mouth : year + "-0" + mouth;
+            DataTable mouthTable = DataBaseHelper.getLikeRecord(model);
+
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            //StartTime,EndTime
+            DateTime startTime, endTime;
+            foreach (DataRow row in mouthTable.Rows)
+            {
+                startTime = Convert.ToDateTime(row["StartTime"]);
+                endTime = Convert.ToDateTime(row["EndTime"]);
+                while (startTime <= endTime)
+                {
+                    if (mouth == startTime.Month)
+                    {
+                        builder.AppendFormat("\"{0}\", ", startTime.ToString("MM-dd-yyyy"));
+                    }
+                    startTime = startTime.AddDays(1);
+                }
+            }
+            if (builder.Length > 4)
+            {
+                builder.Remove(builder.Length - 2, 2);
+            }
+            ViewBag.displayDate = year+"-" + mouth + "-1";
+            ViewBag.Mouth = mouthTable;
+            ViewBag.dayString = builder.ToString();
+            return View("Holiday");
+        }
+
+        public void AddHoliday(FormCollection Form)
         {
             HolidayModels Holiday = new HolidayModels();
-            if (null != Form["StartTime"])
+            DateTime tempDate;
+            if (DateTime.TryParse(Form["StartTime"], out tempDate))
             {
-                Holiday.StartTime = DateTime.Parse(Form["StartTime"]);
+                Holiday.StartTime = tempDate;
             }
-            if (null != Form["EndTime"])
+            if (DateTime.TryParse(Form["EndTime"], out tempDate))
             {
-                Holiday.EndTime = DateTime.Parse(Form["EndTime"]);
+                Holiday.EndTime = tempDate;
             }
-
             Holiday.HolidayReason = Form["HolidayReason"];
             //DataTable datatable = DataBaseHelper.getAllRecord(Holiday);
             if (!DataBaseHelper.hasMyKeyRecord(Holiday))
@@ -157,43 +224,36 @@ namespace AuxWebSystem.Controllers
                 //TODO: do eomething
                 if (DataBaseHelper.Insert(Holiday))
                 {
-                    ViewBag.message = "添加成功";
+                    Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "添加成功" }));
+                    return;
                 }
                 else
                 {
-                    ViewBag.message = "未知错误，添加不成功";
+                    Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "添加不成功" }));
                 }
             }
             else
             {
-                ViewBag.message = "放假时间有重叠，您需要重新设置放假时间";
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "放假时间有重叠" }));
             }
-            return View();
         }
+
         /// <summary>
-        /// 节假日
+        /// 删除节假日
         /// </summary>
-        /// <param name="Form"></param>
-        /// <returns></returns>
-        public ActionResult AddHoliday()//添加节假日
-        {
-
-            return View();
-        }
-
-        public ActionResult DeleteHoliday(int id) //删除节假日
+        /// <param name="id"></param>
+        public void DeleteHoliday(int id)
         {
             HolidayModels Holiday = new HolidayModels();
             Holiday.ID = id;
             if (DataBaseHelper.Delete(Holiday))
             {
-                ViewBag.message = "删除成功";
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "删除成功" }));
             }
             else
             {
-                ViewBag.message = "删除不成功";
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "删除不成功" }));
             }
-            return View("index");
         }
 
 

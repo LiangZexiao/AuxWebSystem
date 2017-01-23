@@ -104,7 +104,17 @@ namespace AuxWebSystem.Models
 
         public override string getRecordByKeySQL()
         {
-            return String.Format(@"SELECT UserID, LogName,Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} WHERE UserID = '{1}'", TableName, UserID);
+            return String.Format(@"SELECT UserID, LogName, Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} WHERE UserID = '{1}'", TableName, UserID);
+        }
+
+        public String getAllRecordWithSystemParameter()
+        {
+            return @"SELECT [User].UserID, [User].LogName, [User].RealName, TempDepartment.Value AS Department, TempUserType.Value AS UserType, [User].LastLoginTime
+                    FROM [User]
+                    LEFT JOIN SystemParameter AS TempDepartment
+                    ON 'Department' = TempDepartment.ParameterType AND TempDepartment.ParameterNO = [User].Department
+                    LEFT JOIN SystemParameter AS TempUserType
+                    ON 'UserType' = TempUserType.ParameterType AND TempUserType.ParameterNO = [User].UserType";
         }
 
         /// <summary>

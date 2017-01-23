@@ -79,7 +79,10 @@ namespace AuxWebSystem.Models
 
         public override string getAllRecordSQL()
         {
-            return @"SELECT ParameterType, ParameterNO, Value, Revisable FROM " + TableName;
+            return @"SELECT Dic.ChineseName AS ChineseName, Sysp.ParameterType, Sysp.ParameterNO, Sysp.Value, Sysp.Value
+                        FROM SystemParameter AS Sysp
+                        LEFT JOIN EnglishDictionary as Dic
+                        ON Sysp.ParameterType = Dic.EnglishName;";
         }
 
         /// <summary>

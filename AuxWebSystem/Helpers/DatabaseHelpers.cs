@@ -35,8 +35,8 @@ namespace AuxWebSystem.Helpers
             //TODO: we need it to get connection String from xml
             //Data Source=ALIY-DESKTOP;Initial Catalog=AUX_GROUP_CO;Integrated Security=True
             //String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=sa;Password=123456";
-            String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=guest;Password=guest";
-            //String connectionString = @"Data Source=ALIY-DESKTOP;Initial Catalog=AUX_GROUP_CO;Integrated Security=True";
+            //String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=guest;Password=guest";
+            String connectionString = @"Data Source=PC-201612302113;Initial Catalog=AUX_GROUP_CO;Integrated Security=True";
             return connectionString;
         }
 

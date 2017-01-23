@@ -2,515 +2,916 @@
     ViewBag.Title = "用户管理";
 }
 
-<!DOCTYPE html>
-<html>
-<!--
-<head>
-    <title>用户管理</title>
-    <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
-    <script type="text/javascript" src='~/Content/jquery/jquery-1.12.3.js'></script>
-    <link rel="stylesheet" href="/Content/css/bootstrap.min.css">
-    <script src="~/Content/jquery/bootstrap.min.js"></script>
+<script type="text/javascript">
+    @{
+        //全局变量,保存有错误
+    }
 
 
-
-    <script type="text/javascript" src='~/Content/jquery/dataTables.min.js'></script>
-    <link rel="stylesheet" type="text/css" href="~/Content/css/dataTables.min.css">
-    <style type="text/css">
-        * {
-            margin: 0;
-            padding: 0;
+    function ResetPassWord() {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
 
-        body {
-            font-family: '微软雅黑';
-        }
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                obj = JSON.parse(xmlhttp.responseText);
+                alert(obj.message);
 
-        #daohanglan li {
-            float: left;
-            position: relative;
-            padding: 1.6% 4%;
-            list-style: none;
-            font-size: 20px;
-        }
-
-            #daohanglan li:hover {
-                border-bottom: 5px solid blue;
             }
-
-            #daohanglan li:first-child:hover {
-                border: 0;
-            }
-
-            #daohanglan li:last-child:hover {
-                border: 0;
-            }
-
-        #daohanglan div {
-            padding: 5% 0 0;
         }
-
-        #daohanglan {
-            background-color: rgb(255, 255, 255);
-            height: 78px;
-            box-shadow: 1px 1px rgba(0,0,0,.3);
-            background: url(/Images/logo_u5.jpg)no-repeat 22px;
-        }
-
-            #daohanglan .peizhi div a {
-                text-decoration: none;
-                color: rgba(255,255,255,0.9);
-            }
-
-                #daohanglan .peizhi div a:hover {
-                    text-decoration: none;
-                    color: black;
-                }
-
-            #daohanglan .peizhi div {
-                width: 120px;
-                background-color: rgba(0,0,0,.6);
-                padding: 10% 3% 5%;
-                margin-left: -8%;
-                color: #2a6496;
-            }
-
-        .bg {
-            background: url(/Images/bg.jpg)no-repeat;
-            background-size: 100%;
-            height: 560px;
-        }
-
-        .fenye a {
-            color: black;
-            background: #36608a;
-        }
-    </style>
+        logname = document.getElementById("LogName").value;
+        xmlhttp.open("GET", "/User/ResetPassword/" + resetpassword, true);
+        xmlhttp.send();
+    }
 
 
 
-</head>
-<body>
+    //// prepare the form when the DOM is ready
+    //$(document).ready(function () {
+    //    var options = {
+    //        //target: '#output2',   // target element(s) to be updated with server response
+    //        success: showResponse,   // post-submit callback
+    //        beforeSubmit: showRequest  // pre-submit callback
+    //        //resetForm: true,
+    //        // other available options:
+    //        //url:       url         // override for form's 'action' attribute
+    //        //type:      type        // 'get' or 'post', override for form's 'method' attribute
+    //        //dataType:  null        // 'xml', 'script', or 'json' (expected server response type)
+    //        //clearForm: true        // clear all form fields after successful submit
+    //        //resetForm: true        // reset the form after successful submit
+
+    //        // $.ajax options can be used here too, for example:
+    //        //timeout:   3000
+    //    };
+
+    //    $('#RegisterForm').submit(function () {
+    //        // inside event callbacks 'this' is the DOM element so we first
+    //        // wrap it in a jQuery object and then invoke ajaxSubmit
+    //        $(this).ajaxSubmit(options);
+    //        // !!! Important !!!
+    //        // always return false to prevent standard browser submit and page navigation
+    //        return false;
+    //    });
+    //});
+
+    //// bind to the form's submit event
 
 
-    <ul id='daohanglan'>
-        <li style='padding-left:10%;'></li>
-        <li style='border-bottom: 5px solid blue;'>
-            <a name='yonghuguanli'>Web用户管理</a>
-        </li>
-        <li>
-            <a href="#" class='canshu'>参数配置</a>
-            <div style='position:absolute;display:none;z-index: 1;' class='peizhi'>
-                <div><a href="shijiancanshu.html#shijiancanshu">标准实验</a></div>
-                <div><a href="/Parameter/Holiday">节假日设置</a></div>
-                <div><a href="xitongcanshu.html#xitongcanshu">系统参数设置</a></div>
-            </div>
-        </li>
-        <li>
-            <a href="shujuchakan.html#shujuchakan">数据查看</a>
-        </li>
+    //// pre-submit callback
+    //function showRequest(formData, jqForm, options) {
+    //    // formData is an array; here we use $.param to convert it to a string to display it
+    //    // but the form plugin does this for you automatically when it submits the data
+    //    // var queryString = $.param(formData);
 
-        <li>
-            <a href="/Parameter/SystemParameterSetting">试验台信息</a>
-        </li>
-        <li style='float:right;border-left:1px solid rgba(0,0,0,.3);'>
-            <a href="#">登录</a>
-        </li>
-    </ul>
+    //    // jqForm is a jQuery object encapsulating the form element.  To access the
+    //    // DOM element for the form do this:
+    //    // var formElement = jqForm[0];
+    //    alert("")
+    //    alert('About to submit: \n\n' + queryString);
+    //    // here we could return false to prevent the form from being submitted;
+    //    // returning anything other than false will allow the form submit to continue
+    //    return true;
+    //}
+
+    //// post-submit callback
+    //function showResponse(responseText, statusText, xhr, $form) {
+    //    // for normal html responses, the first argument to the success callback
+    //    // is the XMLHttpRequest object's responseText property
+
+    //    // if the ajaxSubmit method was passed an Options Object with the dataType
+    //    // property set to 'xml' then the first argument to the success callback
+    //    // is the XMLHttpRequest object's responseXML property
+
+    //    // if the ajaxSubmit method was passed an Options Object with the dataType
+    //    // property set to 'json' then the first argument to the success callback
+    //    // is the json data object returned by the server
+
+    //    obj = JSON.parse(responseText);
+
+    //    if (obj.state == 0) {
+    //        $("#add").modal('hide');
+    //        Showbo.Msg.alert("用户添加失败 " + obj.message);
+    //    } else {
+    //        $("#add").modal('hide');
+    //        Showbo.Msg.alert("用户添加成功");
+    //    }
+
+    //}
+
     
-    -->
-<body>
-    <div class='bg' style='padding:1%;clear:both;'>
-        <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>用户管理</strong></div>
-        <div style='width:80%;background:white;height:520px;margin:0 auto;padding-top:2%;overflow:auto;'>
+    //function regesterForm() {
+    //    $("#RegisterForm").ajaxSubmit(function (message) {
+    //        alert(message);
+    //    });
+    //    return false;
+    //}
+
+    function checkLogName() {
+        //CheckUserLogName
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                obj = JSON.parse(xmlhttp.responseText);
+                document.getElementById("LogNameError").innerHTML = obj.message;
+
+            }
+        }
+        logname = document.getElementById("LogName").value;
+        xmlhttp.open("GET", "/User/CheckUserLogName/" + logname, true);
+        xmlhttp.send();
+    }
 
 
-            <!-- 	<table id="example" class="display" cellspacing="0" width="100%"> -->
-            <!-- <div style='width:80%;padding-left:10%;'> -->
-            <button class='btn btn-info' style='margin-left: 16%;' data-toggle='modal' data-target='#xiugai'>增加用户</button>
-            <!-- <input placeholder='搜索' style='float:right;display:inline-block;margin-top:1%;'/ > -->
-            <!-- </div> -->
-            </br>
-            <table id="example" class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;'>
-                <thead>
-                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>用户名</th>
-                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>登录名</th>
-                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>用户类型</th>
-                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>部门</th>
-                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>最后登录时间</th>
-                <th colspan='3' bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>管理员操作</th>
-                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>用户权限</th>
-                </thead>
-                <tbody id='table'>
-                    @{
-                        foreach (System.Data.DataRow row in @ViewBag.userTable.Rows)
-                        {
-                            String Usertype;
-                            if (row["UserType"].Equals(0))
-                            {
-                                Usertype = "管理员";
-                            }
-                            else if (row["UserType"].Equals(1))
-                            {
-                                Usertype = "WEB用户";
-                            }
-                            else
-                            {
-                                Usertype = "曲线用户";
-                            }
+    function checkRealName() {
+        //CheckUserLogName
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function () {
+
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                obj = JSON.parse(xmlhttp.responseText);
+                document.getElementById("RealNameError").innerHTML = obj.message;
+
+            }
+        }
+        RealName = document.getElementById("RealName").value;
+        xmlhttp.open("GET", "/User/CheckUserRealName/" + RealName, true);
+        xmlhttp.send();
+    }
+
+    function ShowTips(sid, smessage) {
+        document.getElementById(sid).innerHTML = smessage;
+    }
+
+    function CheckCellPhone() {
+        phoneNumber = document.getElementById("CellPhone").value;
+        if (phoneNumber.match(/^1(3|4|5|7|8)\d{9}$/)) {
+            document.getElementById("CellphoneError").innerHTML = "正确";
+            hasRegesterError[5] = 1;
+        } else {
+            document.getElementById("CellphoneError").innerHTML = "格式不对";
+            hasRegesterError[5] = 0;
+        }
+    }
+
+
+
+</script>
+
+
+<div class='bg' style='padding:1%;clear:both;'>
+    <div id="errorinformation"></div>
+    <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>用户管理</strong></div>
+    <div style='width:80%;background:white;height:520px;margin:0 auto;padding-top:2%;overflow:auto;' id="content">
+
+        <button class='btn btn-info' style='margin-left: 13%;position: absolute;margin-top: 1%;' data-toggle='modal' data-target='#add'>增加用户</button>
+        <button class='btn btn-info' style='margin-left: 22%;position: absolute;margin-top: 1%;' data-toggle="modal" data-target="#load">从Excel导入</button>
+        <button class='btn btn-info' style='margin-left: 33%;position: absolute;margin-top: 1%;' data-toggle="modal" data-target="#download">excel导出</a></button>
+
+        <div class="modal fade" id='add' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style='width: 660px;padding: 10% 5%;'>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+                 
+                        <table class='table table-hover table-bordered table-condensed' style=''>
                             <tr>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'>@row["RealName"]</td>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'>@row["LogName"]</td>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'>@Usertype</td>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'>@row["Department"]</td>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'>@row["LastLoginTime"]</td>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'><a href="/User/ResetPassword/@row["UserID"]" style='color:blue' onclick='return true;'>重置密码</a></td>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'><a href="/User/DeleteAccount/@row["UserID"]/@row["LogName"]" style='color:blue' class='delete' onclick='return true;'>删除</a></td>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'><a href="/User/AdminModifyUserPage/@row["UserID"]" style='color:blue' data-toggle="modal" data-target="#xiugai" onclick='return false;'>修改</a></td>
-                                <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' onclick='return false;'>管理</a></td>
+                                <th bgcolor="#FFFFFF" style='text-align:center;'>登录名</th>
+                                <th bgcolor="#FFFFFF" style='text-align:center;'>姓名</th>
+                                <th bgcolor="#FFFFFF" style='text-align:center;'>部门</th>
+                                <th bgcolor="#FFFFFF" style='text-align:center;'>用户类型</th>
+                                <th bgcolor="#FFFFFF" style='text-align:center;'>邮箱</th>
+                                <th bgcolor="#FFFFFF" style='text-align:center;'>手机</th>
                             </tr>
+                            <form action="/User/Register" method="post" target="id_iframe">
+                                
+                                <tr>
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                        <input type="text" name="LogName" id="LogName" onchange="checkLogName()" />
+                                        <label id="LogNameError"></label>
+                                    </td>
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                        <input type="text" name="RealName" id="RealName" onchange="checkRealName()" />
+                                        <label id="RealNameError"></label>
+                                    </td>
+                                    <!--
+                ViewBag.Department
+                ViewBag.UserType
+            -->
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                        <input type="hidden" name="Department" id="addDepartment" />
+                                        <select id="addbumen">
+                                            <option>请选择部门</option>
+                                            @{
+                                                var depart = ViewBag.Department as Dictionary<Object, Object>;
+                                                foreach (var ele in depart)
+                                                {
+                                                    <option value="@ele.Key">@ele.Value</option>
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                        <input type="hidden" name="UserType" id="addUserType" />
+                                        <select id="addleixing">
+                                            <option>请选择用户类型</option>
+                                            @{
+                                                var usertype = ViewBag.UserType as Dictionary<Object, Object>;
+                                                foreach (var ele in usertype)
+                                                {
+                                                    if (!@ele.Key.Equals(0))
+                                                    {
+                                                        <option value="@ele.Key">@ele.Value</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                        <input type='email' name="Email" />
+                                        <label id="EmailError"></label>
+                                    </td>
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                        <input type='tel' name="CellPhone" id="CellPhone" onchange="CheckCellPhone()" />
+                                        <label id="CellphoneError"></label>
+                                    </td>
+                                </tr>
+</table>
+                        <br />
+                    <div class="queding"><button class='btn btn-info addqueding' style='float:right;' type="submit">确定</button></div>
+                   </from>
+                    <iframe id="id_iframe" name="id_iframe" onload="onIFrameLoaded(this)" style="display:none;"></iframe>
+                    <script>
+                       
+                       
+                        function onIFrameLoaded(iframe){
+                            var doc =iframe.contentWindow.document;
+                            var html = doc.body.innerHTML;
+                            if (html != '') {
+                                obj = JSON.parse(html);
+                                if (obj.state == 0) {
+                                    alert('添加用户失败，失败原因：' + html.message);
+                                    $("#add").modal("hide");
+                                }
+                                else {
+                                  
+                                    alert('添加用户成功！');
+                                    $("#add").modal("hide");
+                                }
+                            }
+                            $(this).unbind();
+                        }
+                    </script>
+                    <a href="/User/GetExcelTemplate" id="downLoadExcel"><button class='btn btn-info'>获得Excel模板</button></a>
+                    <label id="getExcelTemplate"></label>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#add').on('hide.bs.modal', function () {
+                                $("input").val("");
+                                $("#LogNameError").html("");
+                                $("#RealNameError").html("");
+                                $("#EmailError").html("");
+                                $("#CellphoneError").html("");
+                            })
+
+
+                        });
+                        $(function () {
+                            $("#addbumen").change(function () {
+                                var category = $("#addbumen").find("option:selected").val();
+                                $("#addDepartment").val(category);
+                            })
+                        });
+                        $(function () {
+                            $("#addleixing").change(function () {
+                                var category = $("#addleixing").find("option:selected").val();
+                                $("#addUserType").val(category);
+                            })
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id='load' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style='width: 660px;padding: 10% 5%;text-align:center;'>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h2>提示信息</h2>
+                    <input type="file" name="name" value=" " id="file" />
+                    </br>
+                    <button class="btn btn-info" id="uupload">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-delete" data-dismiss="modal">取消</button>
+
+                    <script>
+                        $("#uupload").click(function () {
+
+                            var formData = new FormData();
+
+                            formData.append("myfile", document.getElementById("file").files[0]);
+                            $.ajax({
+                                url: "/User/UploadFile/",
+                                type: "POST",
+                                data: formData,
+                                /**
+                                *必须false才会自动加上正确的Content-Type
+                                */
+                                contentType: false,
+                                /**
+                                * 必须false才会避开jQuery对 formdata 的默认处理
+                                * XMLHttpRequest会对 formdata 进行正确的处理
+                                */
+                                processData: false,
+                                success: function (data) {
+                                    var obj = JSON.parse(data);
+                                    if (obj.state == 1) {
+                                        alert("上传成功！");
+                                    }
+                                    if (obj.state == 0) {
+                                        alert(data.massege);
+                                    }
+
+                                },
+                                error: function () {
+                                    alert("上传失败！");
+
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="modal fade" id='download' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style='padding:1%;text-align:center;'>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+                    <h3>请确定是否导出？</h3>
+                    <p>请使用浏览器下载，不支持迅雷</p>
+                    </br>
+                    <button class="btn btn-info" onclick="download();">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-delete" data-dismiss="modal">取消</button>
+                    <script>
+                        function download() {
+                            window.location.href = "/User/DownloadExcel/";
                         }
 
+                    </script>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id='dele' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style='padding:1%;text-align:center;'>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+                    <h3>请确定是否删除？</h3>
+
+                    </br>
+                    <button class="btn btn-info modaldelete">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-delete" data-dismiss="modal">取消</button>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+        </br>
+        <table id="example" class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;'>
+            <thead>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>登录名</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>姓名</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>部门</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>用户类型</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>邮箱</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>手机</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>最后登录时间</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>管理员操作</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>管理员操作</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>管理员操作</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>用户权限</th>
+            </thead>
+            <tbody id='table'>
+                @{
+                    object dep;
+                    foreach (System.Data.DataRow row in @ViewBag.userTable.Rows)
+                    {
+                        if (DBNull.Value == @row["Department"])
+                        {
+                            dep = null;
+                        }
+                        else
+                        {
+                            dep = @depart[@row["Department"]];
+                        }
+                        <tr>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>@row["LogName"]</td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>@row["RealName"]</td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>@dep</td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>@usertype[@row["UserType"]]</td>
+
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>@row["Email"]</td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>@row["CellPhone"]</td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>@row["LastLoginTime"]</td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;' name="@row["UserID"]" class="uid"><a href="" style='color:blue' data-toggle="modal" class="reset">重置密码</a></td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'><a href="" style='color:blue' class='delete' data-toggle="modal" name="@row["UserID"]/@row["LogName"]">删除</a></td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;' class="texttext"><a href="" style='color:blue' data-toggle="modal" class="modify" name="@row["LogName"]">修改</a></td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'><a href="#" data-toggle="modal" data-target="#quanxian" style='color:blue' class="manage" name="@row["RealName"]">管理</a></td>
+                        </tr>
                     }
 
-                </tbody>
-            </table>
-            </br>
-            <!-- <div style='float:right;width:80%;' class='fenye'>
-            <span id="spanFirst">第一页</span> <span id="spanPre">上一页</span> <span id="spanNext">下一页</span> <span id="spanLast">最后一页</span> 第<span id="spanPageNum"></span>页/共<span id="spanTotalPage"></span>页
-            </div> -->
-        </div>
+                }
+            </tbody>
+        </table>
+        </br>
+
     </div>
 
+</div>
+<div class="modal fade" id='ResetPassWord' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style=' padding-bottom: 20px; text-align: center;'>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h2>提示信息</h2>
+            <p>是否确定重置密码？</p>
+            <button class="btn btn-info modalreset">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button data-dismiss="modal" class="btn btn-delete">取消</button>
+        </div>
+    </div>
+</div>
 
-
-    <div class="modal fade" id='quanxian' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" style='padding:12% 10%;border:1px solid;'>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h3>用户名：a</h3>
+<div class="modal fade" id='quanxian' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style='padding:12% 10%;border:1px solid;'>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <form action="/User/setUserAreaInformation" method="post">
+                <h3>用户名：<label id="userAreaModifylabel"></label></h3>
                 <h4>用户权限设置：</h4>
                 </br>
+                <input type="" name="UserID" id="UserAreaID" />
                 <table class='table table-hover table-bordered table-condensed' style='width:80%;'>
+                    @{
+                        //ViewBag.Area
+                        var area = @ViewBag.Area as System.Data.DataRow[];
+                    }
+
                     <tr>
                         <th bgcolor="#FFFFFF" style='text-align:center;'>总区域</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域一</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域二</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域三</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域四</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>区域n</th>
+                        @for (int i = 0; i < area.Length; i++)
+                        {
+                            <th bgcolor="#FFFFFF" style='text-align:center;'>@area[i]["Value"]</th>
+                        }
                     </tr>
                     <tr>
                         <td bgcolor="#FFFFFF" style='text-align:center;'>
                             <input type='checkbox' name='check-all' />
                         </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <input type='checkbox' name='sub-checkbox' />
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <input type='checkbox' name='sub-checkbox' />
-
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <input type='checkbox' name='sub-checkbox' />
-
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <input type='checkbox' name='sub-checkbox' />
-
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <input type='checkbox' name='sub-checkbox' />
-
-                        </td>
+                        @for (int i = 0; i < area.Length; i++)
+                        {
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                <input type='checkbox' name='sub-checkbox' id='area@area[i]["ParameterNO"]' value="@area[i]["ParameterNO"]" />
+                            </td>
+                        }
                     </tr>
                 </table>
-                <div><button class='btn btn-info' data-dismiss='modal' style='float:right;'>确定</button></div>
-                <script type="text/javascript">
-                    $(document).ready(function () {
-                        //checkbox select all
-                        $(document).on('change', '[name=check-all]', function () {
-                            if ($(this).prop('checked')) {
-                                $('[name=sub-checkbox]').prop('checked', true);
-                            } else {
-                                $('[name=sub-checkbox]').prop('checked', false);
-                            }
-                        });
+                <div><button class='btn btn-info' style='float:right;'>确定</button></div>
+            </form>
 
-                        //sub checkbox
-                        $(document).on('change', '[name=sub-checkbox]', function () {
-                            var checkboxnum = $('[name=sub-checkbox]').length;
-                            var checked = $('[name=sub-checkbox]:checked').length;
-                            if (checkboxnum == checked) {
-                                $('[name=check-all]').prop('checked', true);
-                            } else {
-                                $('[name=check-all]').prop('checked', false);
-                            }
-                        });
+
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    //checkbox select all
+                    $(document).on('change', '[name=check-all]', function () {
+                        if ($(this).prop('checked')) {
+                            $('[name=sub-checkbox]').prop('checked', true);
+                        } else {
+                            $('[name=sub-checkbox]').prop('checked', false);
+                        }
                     });
 
-                </script>
-            </div>
+                    //sub checkbox
+                    $(document).on('change', '[name=sub-checkbox]', function () {
+                        var checkboxnum = $('[name=sub-checkbox]').length;
+                        var checked = $('[name=sub-checkbox]:checked').length;
+                        if (checkboxnum == checked) {
+                            $('[name=check-all]').prop('checked', true);
+                        } else {
+                            $('[name=check-all]').prop('checked', false);
+                        }
+                    });
+                });
+
+            </script>
         </div>
     </div>
+</div>
 
 
-    <div class="modal fade" id='xiugai' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" style='width: 660px;padding: 10% 5%;'>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <table class='table table-hover table-bordered table-condensed' style=''>
-                    <tr>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>登录名</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>姓名</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>部门</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>用户类型</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>邮箱</th>
-                        <th bgcolor="#FFFFFF" style='text-align:center;'>手机</th>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <div>xxx</div>
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <div>xxxx</div>
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <select>
-                                <option selected>人事部</option>
-                                <option>组织部</option>
-                            </select>
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <select>
-                                <option selected>web端用户</option>
-                                <option>曲线端用户</option>
-                                <option>抓取端用户</option>
-                            </select>
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <input type='text' />
+<div class="modal fade" id='xiugai' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style='width: 700px;padding: 10% 5%;'>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <table class='table table-hover table-bordered table-condensed' style=''>
+                <tr>
+                    <th bgcolor="#FFFFFF" style='text-align:center;'>登录名</th>
+                    <th bgcolor="#FFFFFF" style='text-align:center;'>姓名</th>
+                    <th bgcolor="#FFFFFF" style='text-align:center;'>部门</th>
+                    <th bgcolor="#FFFFFF" style='text-align:center;'>用户类型</th>
+                    <th bgcolor="#FFFFFF" style='text-align:center;'>邮箱</th>
+                    <th bgcolor="#FFFFFF" style='text-align:center;'>手机</th>
+                </tr>
+                <tbody>
+                    <form action="/User/ModifyUser" method="post">
+                        <tr>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                <div class="modifylogname" name=""></div>
+                            </td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                <div class="modifyrealname"></div>
+                            </td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                <select class="modifyDepartment">
+                                    @{
+                                        foreach (var ele in depart)
+                                        {
+                                            <option value="@ele.Key">@ele.Value</option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                <select class="modifyUsertype">
+                                    @{
+                                        foreach (var ele in usertype)
+                                        {
+                                            if (!@ele.Key.Equals(0))
+                                            {
+                                                <option value="@ele.Key">@ele.Value</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                <input type='text' class="modifyEmail" value="" name="Email" />
+                               
 
-                        </td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'>
-                            <input type='text' />
+                            </td>
+                            <td bgcolor="#FFFFFF" style='text-align:center;'>
+                                <input type='text' class="modifyCellPhone" value="" name="CellPhone" />
 
-                        </td>
-                    </tr>
-                </table>
-                <div><button class='btn btn-info' data-dismiss='modal' style='float:right;'>确定</button></div>
-            </div>
+                            </td>
+                        </tr>
+                    </form>
+                </tbody>
+
+
+            </table>
+            <div><button class='btn btn-info' data-dismiss='modal' style='float:right;'>确定</button></div>
         </div>
     </div>
+</div>
 
+<script>
+    $(document).ready(function () {
+        $('.modify').click(function () {
+            $("#xiugai").modal();
+            var a = $(this).parent().siblings('.uid').attr('name');
 
-
-
-    <script type="text/javascript">
-        $('.canshu').click(function () {
-            $('.peizhi').toggle();
-        })
-
-
-        /*分页*/
-        /*	 var theTable = document.getElementById("table");
-         var totalPage = document.getElementById("spanTotalPage");
-         var pageNum = document.getElementById("spanPageNum");
-
-
-         var spanPre = document.getElementById("spanPre");
-         var spanNext = document.getElementById("spanNext");
-         var spanFirst = document.getElementById("spanFirst");
-         var spanLast = document.getElementById("spanLast");
-
-
-         var numberRowsInTable = theTable.rows.length;
-         var pageSize = 3;
-         var page = 1;*/
-
-
-        //下一页
-        /*function next() {
-
-
-            hideTable();
-
-
-            currentRow = pageSize * page;
-            maxRow = currentRow + pageSize;
-            if (maxRow > numberRowsInTable) maxRow = numberRowsInTable;
-            for (var i = currentRow; i < maxRow; i++) {
-                theTable.rows[i].style.display = '';
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
             }
-            page++;
+            else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
 
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    obj = JSON.parse(xmlhttp.responseText);
 
-            if (maxRow == numberRowsInTable) { nextText(); lastText(); }
-            showPage();
-            preLink();
-            firstLink();
-        }*/
+                    $('.modifylogname').html(obj.LogName);
+                    $('.modifyrealname').html(obj.RealName);
+                    $('.modifyDepartment').val(obj.Department);
+                    $('.modifyUserType').val(obj.UserType);
+                    $('.modifyCellPhone').val(obj.CellPhone);
+                    $('.modifyEmail').val(obj.Email);
 
+                }
+            }
+            xmlhttp.open("GET", "/User/AdminModifyUserPage/" + a, true);
+            xmlhttp.send();
+        });
 
-        //上一页
-        /*     function pre() {
+        $('.reset').click(function () {
+            $('#ResetPassWord').modal();
+            var c = this;
+            var b = $(this).parent('.uid').attr('name');
+            $('.modalreset').click(function () {
+                var xmlhttp;
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                }
+                else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
 
-
-                 hideTable();
-
-
-                 page--;
-
-
-                 currentRow = pageSize * page;
-                 maxRow = currentRow - pageSize;
-                 if (currentRow > numberRowsInTable) currentRow = numberRowsInTable;
-                 for (var i = maxRow; i < currentRow; i++) {
-                     theTable.rows[i].style.display = '';
-                 }
-
-
-
-
-                 if (maxRow == 0) { preText(); firstText(); }
-                 showPage();
-                 nextLink();
-                 lastLink();
-             }*/
-
-
-        //第一页
-        /*     function first() {
-                 hideTable();
-                 page = 1;
-                 for (var i = 0; i < pageSize; i++) {
-                     theTable.rows[i].style.display = '';
-                 }
-                 showPage();
-
-
-                 preText();
-                 nextLink();
-                 lastLink();
-             }*/
-
-
-        //最后一页
-        /*     function last() {
-                 hideTable();
-                 page = pageCount();
-                 currentRow = pageSize * (page - 1);
-                 for (var i = currentRow; i < numberRowsInTable; i++) {
-                     theTable.rows[i].style.display = '';
-                 }
-                 showPage();
-
-
-                 preLink();
-                 nextText();
-                 firstLink();
-             }
-
-
-             function hideTable() {
-                 for (var i = 0; i < numberRowsInTable; i++) {
-                     theTable.rows[i].style.display = 'none';
-                 }
-             }
-
-
-             function showPage() {
-                 pageNum.innerHTML = page;
-             }
-        */
-
-        //总共页数
-        /*  function pageCount() {
-              var count = 0;
-              if (numberRowsInTable % pageSize != 0) count = 1;
-              return parseInt(numberRowsInTable / pageSize) + count;
-          }
-     */
-
-        //显示链接
-        /*function preLink() { spanPre.innerHTML = "<a href='javascript:pre();'>上一页</a>"; }
-        function preText() { spanPre.innerHTML = "上一页"; }
-
-
-        function nextLink() { spanNext.innerHTML = "<a href='javascript:next();'>下一页</a>"; }
-        function nextText() { spanNext.innerHTML = "下一页"; }
-
-
-        function firstLink() { spanFirst.innerHTML = "<a href='javascript:first();'>第一页</a>"; }
-        function firstText() { spanFirst.innerHTML = "第一页"; }
-
-
-        function lastLink() { spanLast.innerHTML = "<a href='javascript:last();'>最后一页</a>"; }
-        function lastText() { spanLast.innerHTML = "最后一页"; }*/
-
-
-        //隐藏表格
-        /* function hide() {
-             for (var i = pageSize; i < numberRowsInTable; i++) {
-                 theTable.rows[i].style.display = 'none';
-             }
-
-
-             totalPage.innerHTML = pageCount();
-             pageNum.innerHTML = '1';
-
-
-             nextLink();
-             lastLink();
-         }
-
-
-         hide();*/
-
-        $('.delete').click(function () {
-            alert('确定删除吗？');
-        })
-
-
-
-
-        $(document).ready(function () {
-            $('#example').dataTable({
-                "oLanguage": {//国际语言转化
-                    "oAria": {
-                        "sSortAscending": " - click/return to sort ascending",
-                        "sSortDescending": " - click/return to sort descending"
-                    },
-                    "sLengthMenu": "显示 _MENU_ 记录",
-                    "sZeroRecords": "对不起，查询不到任何相关数据",
-                    "sEmptyTable": "未有相关数据",
-                    "sLoadingRecords": "正在加载数据-请等待...",
-                    "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录。",
-                    "sInfoEmpty": "当前显示0到0条，共0条记录",
-                    "sInfoFiltered": "（数据库中共为 _MAX_ 条记录）",
-                    "sProcessing": "<img src='../resources/user_share/row_details/select2-spinner.gif'/> 正在加载数据...",
-                    "sSearch": "模糊查询：",
-                    "sUrl": "",
-                    //多语言配置文件，可将oLanguage的设置放在一个txt文件中，例：Javascript/datatable/dtCH.txt
-                    "oPaginate": {
-                        "sFirst": "首页",
-                        "sPrevious": " 上一页 ",
-                        "sNext": " 下一页 ",
-                        "sLast": " 尾页 "
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        obj = JSON.parse(xmlhttp.responseText);
+                        alert(obj.message);
+                        $('#ResetPassWord').modal('hide');
                     }
-                },
-                "pagingType": "full_numbers",
-                /*"lengthMenu": [
-                     [8, 6, 8, -1],
-                     [4, 6, 8, "所有"]
-                 ]//每页显示条数设置*/
-
+                }
+                xmlhttp.open("GET", "/User/ResetPassword/" + b, true);
+                xmlhttp.send();
+                $(this).unbind();
+              
             });
         });
 
+        $('.delete').click(function () {
+            var c = $(this).attr('name');
+            $('#dele').modal();
+            $('.modaldelete').click(function () {
+                $('#dele').modal('hide');
+                var xmlhttp;
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                }
+                else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
 
-    </script>
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        obj = JSON.parse(xmlhttp.responseText);
+                        Showbo.Msg.alert(obj.message);
+
+                    }
+                }
+                xmlhttp.open("GET", "/User/DeleteAccount/" + c, true);
+                xmlhttp.send();
+                $(this).unbind();
+            });
+        });
+    });
 
 
-</body>
-</html>
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    $('.canshu').click(function () {
+        $('.peizhi').toggle();
+    })
+
+
+    /*分页*/
+    /*	 var theTable = document.getElementById("table");
+     var totalPage = document.getElementById("spanTotalPage");
+     var pageNum = document.getElementById("spanPageNum");
+
+
+     var spanPre = document.getElementById("spanPre");
+     var spanNext = document.getElementById("spanNext");
+     var spanFirst = document.getElementById("spanFirst");
+     var spanLast = document.getElementById("spanLast");
+
+
+     var numberRowsInTable = theTable.rows.length;
+     var pageSize = 3;
+     var page = 1;*/
+
+
+    //下一页
+    /*function next() {
+
+
+        hideTable();
+
+
+        currentRow = pageSize * page;
+        maxRow = currentRow + pageSize;
+        if (maxRow > numberRowsInTable) maxRow = numberRowsInTable;
+        for (var i = currentRow; i < maxRow; i++) {
+            theTable.rows[i].style.display = '';
+        }
+        page++;
+
+
+        if (maxRow == numberRowsInTable) { nextText(); lastText(); }
+        showPage();
+        preLink();
+        firstLink();
+    }*/
+
+
+    //上一页
+    /*     function pre() {
+
+
+             hideTable();
+
+
+             page--;
+
+
+             currentRow = pageSize * page;
+             maxRow = currentRow - pageSize;
+             if (currentRow > numberRowsInTable) currentRow = numberRowsInTable;
+             for (var i = maxRow; i < currentRow; i++) {
+                 theTable.rows[i].style.display = '';
+             }
+
+
+
+
+             if (maxRow == 0) { preText(); firstText(); }
+             showPage();
+             nextLink();
+             lastLink();
+         }*/
+
+
+    //第一页
+    /*     function first() {
+             hideTable();
+             page = 1;
+             for (var i = 0; i < pageSize; i++) {
+                 theTable.rows[i].style.display = '';
+             }
+             showPage();
+
+
+             preText();
+             nextLink();
+             lastLink();
+         }*/
+
+
+    //最后一页
+    /*     function last() {
+             hideTable();
+             page = pageCount();
+             currentRow = pageSize * (page - 1);
+             for (var i = currentRow; i < numberRowsInTable; i++) {
+                 theTable.rows[i].style.display = '';
+             }
+             showPage();
+
+
+             preLink();
+             nextText();
+             firstLink();
+         }
+
+
+         function hideTable() {
+             for (var i = 0; i < numberRowsInTable; i++) {
+                 theTable.rows[i].style.display = 'none';
+             }
+         }
+
+
+         function showPage() {
+             pageNum.innerHTML = page;
+         }
+    */
+
+    //总共页数
+    /*  function pageCount() {
+          var count = 0;
+          if (numberRowsInTable % pageSize != 0) count = 1;
+          return parseInt(numberRowsInTable / pageSize) + count;
+      }
+ */
+
+    //显示链接
+    /*function preLink() { spanPre.innerHTML = "<a href='javascript:pre();'>上一页</a>"; }
+    function preText() { spanPre.innerHTML = "上一页"; }
+
+
+    function nextLink() { spanNext.innerHTML = "<a href='javascript:next();'>下一页</a>"; }
+    function nextText() { spanNext.innerHTML = "下一页"; }
+
+
+    function firstLink() { spanFirst.innerHTML = "<a href='javascript:first();'>第一页</a>"; }
+    function firstText() { spanFirst.innerHTML = "第一页"; }
+
+
+    function lastLink() { spanLast.innerHTML = "<a href='javascript:last();'>最后一页</a>"; }
+    function lastText() { spanLast.innerHTML = "最后一页"; }*/
+
+
+    //隐藏表格
+    /* function hide() {
+         for (var i = pageSize; i < numberRowsInTable; i++) {
+             theTable.rows[i].style.display = 'none';
+         }
+
+
+         totalPage.innerHTML = pageCount();
+         pageNum.innerHTML = '1';
+
+
+         nextLink();
+         lastLink();
+     }
+
+
+     hide();*/
+
+
+    $(document).ready(function () {
+        $('#example').dataTable({
+            "oLanguage": {//国际语言转化
+                "oAria": {
+                    "sSortAscending": " - click/return to sort ascending",
+                    "sSortDescending": " - click/return to sort descending"
+                },
+                "sLengthMenu": "显示 _MENU_ 记录",
+                "sZeroRecords": "对不起，查询不到任何相关数据",
+                "sEmptyTable": "未有相关数据",
+                "sLoadingRecords": "正在加载数据-请等待...",
+                "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录。",
+                "sInfoEmpty": "当前显示0到0条，共0条记录",
+                "sInfoFiltered": "（数据库中共为 _MAX_ 条记录）",
+                "sProcessing": "<img src='../resources/user_share/row_details/select2-spinner.gif'/> 正在加载数据...",
+                "sSearch": "模糊查询：",
+                "sUrl": "",
+                //多语言配置文件，可将oLanguage的设置放在一个txt文件中，例：Javascript/datatable/dtCH.txt
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": " 上一页 ",
+                    "sNext": " 下一页 ",
+                    "sLast": " 尾页 "
+                }
+            },
+            "pagingType": "full_numbers",
+            /*"lengthMenu": [
+                 [8, 6, 8, -1],
+                 [4, 6, 8, "所有"]
+             ]//每页显示条数设置*/
+
+        });
+    });
+
+
+</script>

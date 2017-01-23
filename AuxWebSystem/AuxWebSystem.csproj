@@ -39,7 +39,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\NPIO\Net40\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NPOI">
+      <HintPath>..\NPIO\Net40\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\NPIO\Net40\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\NPIO\Net40\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\NPIO\Net40\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -110,7 +125,7 @@
   <ItemGroup>
     <Compile Include="Controllers\DataviewController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LabInfoController.cs" />
+    <Compile Include="Controllers\LabinfoController.cs" />
     <Compile Include="Controllers\ParameterController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
@@ -123,9 +138,11 @@
     <Compile Include="Helpers\ProcedureHelper.cs" />
     <Compile Include="Helpers\SqlCommandHelper.cs" />
     <Compile Include="Helpers\SystemParameterHelpers.cs" />
+    <Compile Include="Helpers\UserAreaHelper.cs" />
     <Compile Include="Helpers\UserSecurityHelper.cs" />
     <Compile Include="Models\DataViewModel.cs" />
     <Compile Include="Models\HolidayModels.cs" />
+    <Compile Include="Models\LabInfoModel.cs" />
     <Compile Include="Models\StandardExperimentModels.cs" />
     <Compile Include="Models\SystemParameterModel.cs" />
     <Compile Include="Models\TableModel.cs" />
@@ -141,7 +158,9 @@
     <Content Include="Content\css\dataTables.min.css" />
     <Content Include="Content\css\daterangepicker-bs3.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\showBo.css" />
     <Content Include="Content\css\style.css" />
+    <Content Include="Content\jquery\ajaxfrom.js" />
     <Content Include="Content\jquery\bootstrap.min.js" />
     <Content Include="Content\jquery\data.js" />
     <Content Include="Content\jquery\dataTables.min.js" />
@@ -152,6 +171,7 @@
     <Content Include="Content\jquery\jquery-1.8.3.min.js" />
     <Content Include="Content\jquery\jquery-ui.min.js" />
     <Content Include="Content\jquery\moment.js" />
+    <Content Include="Content\jquery\showBo.js" />
     <Content Include="Content\laydate\laydate.js" />
     <Content Include="Content\laydate\need\laydate.css" />
     <Content Include="Content\laydate\skins\dahong\icon.png" />
@@ -553,6 +573,7 @@
     <Content Include="Views\shijiancanshu.html" />
     <Content Include="Views\shiyanxinxi.html" />
     <Content Include="Views\shujuchakan.html" />
+    <Content Include="Views\xitongcanshu.html" />
     <Content Include="Views\yonghuguanli.html" />
     <Content Include="Views\yonghuquanxian.html" />
     <Content Include="Views\zengjiajiejiari.html" />
@@ -566,7 +587,7 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Content Include="Views\Shared\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -581,19 +602,19 @@
     <Content Include="Views\User\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
+    <COMReference Include="Office">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>8</VersionMinor>
+      <VersionMajor>99</VersionMajor>
+      <VersionMinor>1</VersionMinor>
       <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
+      <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Excel">
-      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>9</VersionMinor>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
@@ -616,25 +637,28 @@
     <Content Include="Views\Parameter\Holiday.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Parameter\SystemParameterSetting.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Shared\_Layout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Parameter\TimeParameter.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Parameter\SystemParameterSetting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Dataview\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\LabInfo\Index.cshtml" />
+    <Content Include="Views\Parameter\StandardParameter.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Labinfo\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Data\template.xlsx" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

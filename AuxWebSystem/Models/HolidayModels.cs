@@ -24,6 +24,7 @@ namespace AuxWebSystem.Models
      */
     public class HolidayModels : TableModel
     {
+        
         public HolidayModels()
         {
             TableName = @"HolidaySetting";
@@ -39,7 +40,7 @@ namespace AuxWebSystem.Models
         {
             //return String.Format(@"SELECT * FROM {0} WHERE (StartTime<'{1}' AND EndTime>'{2}')OR (StartTime >'{3}'AND StartTime <'{4}')", TableName, StartTime.ToString("yyyy-mm-dd HH:mm:ss"), StartTime.ToString("yyyy-mm-dd HH:mm:ss"), StartTime.ToString("yyyy-mm-dd HH:mm:ss"), EndTime.ToString("yyyy-mm-dd HH:mm:ss"));
             return String.Format(@"SELECT * FROM {0} WHERE (StartTime < N'{1}' AND EndTime > N'{2}' ) OR ( StartTime >= N'{3}' AND StartTime < N'{4}' )", TableName, StartTime.ToString("yyyy-MM-dd HH:mm:ss"), StartTime.ToString("yyyy-MM-dd HH:mm:ss"), StartTime.ToString("yyyy-MM-dd HH:mm:ss"), EndTime.ToString("yyyy-MM-dd HH:mm:ss"));
-            // return String.Format(@"SELECT * FROM {0} WHERE (StartTime<'{1}' AND EndTime>'{2}')OR (StartTime >'{3}'AND StartTime <'{4}')", TableName, StartTime, StartTime, StartTime, EndTime);
+            //return String.Format(@"SELECT * FROM {0} WHERE (StartTime<'{1}' AND EndTime>'{2}')OR (StartTime >'{3}'AND StartTime <'{4}')", TableName, StartTime, StartTime, StartTime, EndTime);
         }
         public override string getInsertSQL()
         {
@@ -50,6 +51,16 @@ namespace AuxWebSystem.Models
             //DELETE FROM Person WHERE LastName = 'Wilson' 
             return String.Format(@"DELETE FROM {0} WHERE ID = '{1}' ", TableName, ID);
         }
+
+        public override string getLikeRecordSQL()
+        {
+            return @"SELECT ID, HolidayReason, StartTime, EndTime FROM HolidaySetting Where CONVERT(varchar(20),StartTime,120) LIKE '%" + Time + "%' OR CONVERT(varchar(20),EndTime,120) LIKE '%" + Time + "%'";
+        }
+
+        /// <summary>
+        /// 年份-月份
+        /// </summary>
+        public string Time { get; set; } 
 
         /// <summary>
         /// 放假开始时间

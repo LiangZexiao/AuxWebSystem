@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data;
 using System.Net.Http;
+using Newtonsoft.Json;
 using AuxWebSystem.Models;
 using AuxWebSystem.Helpers;
 using AuxWebSystem.Filters;
@@ -25,26 +26,99 @@ namespace AuxWebSystem.Controllers
         public ActionResult WebUserManager()
         {
             //web用户管理
-            DataTable userTable;
-            if (null == HttpRuntime.Cache[UserTableModel.CacheName])
+            ViewBag.userTable = UserSecurityHelper.GetUserDataTable();
+            SystemParameterHelpers helper = SystemParameterHelpers.getInstance();
+            DataRow[] departmentRows = helper.Select("Department");
+            Dictionary<Object, Object> department = new Dictionary<Object, Object>();
+            for (int i = 0; i < departmentRows.Length; i++)
             {
-                UserTableModel usm = new UserTableModel();
-                userTable = DataBaseHelper.getAllRecord(usm);
-                HttpRuntime.Cache[UserTableModel.CacheName] = userTable;
+                department.Add(departmentRows[i]["ParameterNO"], departmentRows[i]["Value"]);
+            }
+            DataRow[] userTypeRows = helper.Select("UserType");
+            Dictionary<Object, Object> userType = new Dictionary<Object, Object>();
+            for (int i = 0; i < userTypeRows.Length; i++)
+            {
+                userType.Add(userTypeRows[i]["ParameterNO"], userTypeRows[i]["Value"]);
+            }
+            ViewBag.Area = helper.Select("Area");
+            ViewBag.Department = department;
+            ViewBag.UserType = userType;
+            return View();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">用户登录名</param>
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
+        public void CheckUserLogName(String id)
+        {
+            DataTable dt = UserSecurityHelper.GetUserDataTable();
+            DataRow[] rows = dt.Select(String.Format(" LogName = '{0}' ", id));
+            if (rows.Length > 0)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "姓名重复" }));
             }
             else
             {
-                userTable = HttpRuntime.Cache[UserTableModel.CacheName] as DataTable;
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
             }
-            ViewBag.userTable = userTable;
-            return View();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">用户姓名</param>
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
+        public void CheckUserRealName(String id)
+        {
+            DataTable dt = UserSecurityHelper.GetUserDataTable();
+            DataRow[] rows = dt.Select(String.Format(" RealName = '{0}' ", id));
+            if (rows.Length > 0)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "姓名重复" }));
+            }
+            else
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
+            }
+        }
+
+        /// <summary>
+        /// 获得User的区域信息
+        /// </summary>
+        /// <param name="id"></param>
+        public void getUserAreaInfomation(int id)
+        {
+            UserAreaModel uarea = new UserAreaModel(id);
+            DataTable dt = DataBaseHelper.getRecordByKey(uarea);
+            Response.Write(JsonConvert.SerializeObject(dt));
+        }
+
+
+        public void setUserAreaInformation(FormCollection form)
+        {
+            String userID = form["UserID"];
+            String[] area = form["sub-checkbox"].Split(new Char[] { ',' });
+            try{
+                DataBaseHelper.Delete(new UserAreaModel(int.Parse(userID)));
+                for (int i = 0; i < area.Length; i++)
+                {
+                    DataBaseHelper.Insert(new UserAreaModel(int.Parse(userID), int.Parse(area[i])));
+                }
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
+            }
+            catch (Exception e)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
+            }
+        }       
+        
 
 
         public ActionResult CurveJurisdictionManager()
         {
             //远程曲线权限管理
-            
             return View();
         }
 
@@ -53,7 +127,7 @@ namespace AuxWebSystem.Controllers
         /// </summary>
         /// <returns></returns>
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = false)]
-        public ActionResult ModifyUser(FormCollection form)
+        public void ModifyUser(FormCollection form)
         {
             UserTableModel user = (UserTableModel)Session[UserSecurityHelper.sessionName];
             ModifyUserTableModel modiUser = new ModifyUserTableModel();
@@ -82,10 +156,13 @@ namespace AuxWebSystem.Controllers
                 modiUser.ConfirmPassword = user.Password;
             }
             modiUser.UserID = user.UserID;
-            ViewBag.LogName = user.LogName;
-            ViewBag.CellPhone = user.CellPhone;
-            ViewBag.Email = user.Email;
-            ViewBag.RealName = user.RealName;
+
+
+            List<Object> serList = new List<Object>();
+            serList.Add(new { LogName = user.LogName });
+            serList.Add(new { CellPhone = user.CellPhone });
+            serList.Add(new { Email = user.Email });
+            serList.Add(new { RealName = user.Email });
 
             try
             {
@@ -93,26 +170,22 @@ namespace AuxWebSystem.Controllers
                 UserSecurityHelper.Logout();
                 UserSecurityHelper.Login(new LoginModel(modiUser.LogName, modiUser.NewPassword));
                 Session.Remove(ModifyUserTableModel.sessioName);
-                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
+                UserSecurityHelper.ClearUserDataTableCache();
                 UserSecurityHelper.Logout();
                 UserSecurityHelper.Login(new LoginModel(modiUser.LogName, modiUser.NewPassword));
-                ViewBag.message = "修改成功";
-                return View("index");
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功", error = new ModifyUserTableModel() }));
             }
             catch (UserSecurityException e)
             {
-                ViewBag.Error = e.Error;
-                ViewBag.message = e.Message;
-                return View("ModityUserPage");
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = e.Message, error = e.Error }));
             }
         }
 
 
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public ActionResult AdminModifyUser(FormCollection form)
+        public void AdminModifyUser(FormCollection form)
         {
             var ust = Session[UserTableModel.SessionName] as UserTableModel;
-            ViewBag.User = ust;
             var model = new ModifyUserTableModel();
             model.Password = ust.Password;
             model.NewPassword = ust.Password;
@@ -127,38 +200,42 @@ namespace AuxWebSystem.Controllers
             }
             model.Email = form["Email"];
             model.CellPhone = form["CellPhone"];
+            String ser;
             try
             {
                 UserSecurityHelper.ModifyUser(model, ust);
-                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
+                UserSecurityHelper.ClearUserDataTableCache();
+                ser = JsonConvert.SerializeObject(new { state = 1, message = "成功" });
+                Response.Write(ser);
             }
             catch (UserSecurityException e)
             {
+                //ser = JsonConvert.SerializeObject( new  )
                 ViewBag.Error = e.Error;
                 ViewBag.User = model;
                 Session[UserTableModel.SessionName] = model;
-                ViewBag.Area = SystemParameterHelpers.getInstance().Select("Area");
-                return View();
             }
-
-            var helper = SystemParameterHelpers.getInstance();
-            ViewBag.Area = helper.Select("Area");
-            Response.Redirect("/User/WebUserManager");
-            return null;
         }
 
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public ActionResult AdminModifyUserPage(int id)
+        public void AdminModifyUserPage(int id)
         {
             UserTableModel ust = new UserTableModel();
             ust.UserID = id;
             DataBaseHelper.fillOneRecordByKeyToModel(ust);
             Session[UserTableModel.SessionName] = ust;
-            ViewBag.User = ust;
-            ViewBag.Area = SystemParameterHelpers.getInstance().Select("Area");
-            return View("AdminModifyUser");
+            Response.Write(JsonConvert.SerializeObject(
+                new
+                {
+                    UserID = ust.UserID,
+                    LogName = ust.LogName,
+                    RealName = ust.RealName,
+                    Department = ust.Department,
+                    UserType = ust.UserType,
+                    Email = ust.Email,
+                    CellPhone = ust.CellPhone
+                }));
         }
-
 
         /// <summary>
         /// 修改用户信息页面
@@ -192,31 +269,52 @@ namespace AuxWebSystem.Controllers
         /// <param name="form"></param>
         /// <returns></returns>
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public ActionResult Register(FormCollection form)
+        public void Register(FormCollection form)
         {
             UserTableModel mode = new UserTableModel();
             mode.LogName = form["LogName"];
             mode.Email = form["Email"];
             mode.CellPhone = form["CellPhone"];
             mode.RealName = form["RealName"];
-            String dd = form["UserType"];
-            mode.UserType = int.Parse(form["UserType"]);
+            String mess = "";
+
+            int temp;
+            if (int.TryParse(form["UserType"], out temp))
+            {
+                mode.UserType = temp;
+            }
+            else
+            {
+                mess += " 用户类型为空";
+            }
+
+            if (int.TryParse(form["Department"], out temp))
+            {
+                mode.Department = temp;
+            }
+            else
+            {
+                mess += " 部门为空";
+            }
+
+            if (mess.Length > 2)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = mess }));
+                return;
+            }
+
             try
             {
                 UserSecurityHelper.Register(mode);
-                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
+                UserSecurityHelper.ClearUserDataTableCache();
                 Session.Remove(UserTableModel.SessionRegister);
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
             }
             catch (UserSecurityException e)
             {
-                ViewBag.message = e.Message;
-                ViewBag.Error = e.Error;
-                Session[UserTableModel.SessionRegister] = mode;
-                ViewBag.User = mode;
-                return View("RegisterPage");
+                //TODO: e.Message 为空
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message, error = e.Error }));
             }
-            ViewBag.message = "添加成功";
-            return View("Index");
         }
 
         [HttpPost]
@@ -229,21 +327,14 @@ namespace AuxWebSystem.Controllers
             }
             catch (UserSecurityException e)
             {
-                ViewBag.message = e.Message;
+                TempData["loginError"] = e.Message;
                 Response.Redirect("/Home");
             }
             return View("Index");
         }
 
-
-        public ActionResult LoginPage()
-        {
-            //用户登录
-            return View();
-        }
-
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public ActionResult DeleteAccount(int id, String value)
+        public void DeleteAccount(int id, String value)
         {
             try
             {
@@ -251,55 +342,59 @@ namespace AuxWebSystem.Controllers
                 tablemodel.UserID = id;
                 tablemodel.LogName = value;
                 UserSecurityHelper.DeleteAccount(tablemodel);
-                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
+                UserSecurityHelper.ClearUserDataTableCache();
             }
             catch (UserSecurityException e)
             {
-                ViewBag.message = e.Message;
-                return View("Index");
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
+                return;
             }
-            ViewBag.message = "删除成功";
-            return View("Index");
+            Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
         }
 
         [HttpPost]
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public ActionResult UploadFile(FormCollection form)
+        public void UploadFile(FormCollection form)
         {
             ExcelHelper helper = new ExcelHelper();
             try
             {
                 String fileName = helper.SaveExcelFile();
                 DataTable dt = helper.getExcelData(fileName);
-
+                helper.addDataTableToDatabase(dt);
+                UserSecurityHelper.ClearUserDataTableCache();
             }
             catch (ExcelHelperException e)
             {
-                ViewBag.message = e.Message;
-                return View("index");
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
+                return;
             }
-            return View("index");
+            Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
         }
 
+        [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
+        public void GetExcelTemplate()
+        {
+            ExcelHelper excelHelper = new ExcelHelper();
+            excelHelper.UserDownloadFile(ExcelHelper.templateName, "UserInfo.xlsx");
+        }
 
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public ActionResult DownloadExcel()
+        public void DownloadExcel()
         {
-            UserTableModel usm = new UserTableModel();
-            DataTable datatable = DataBaseHelper.getAllRecord(usm);
             ExcelHelper helper = new ExcelHelper();
             try
             {
-                String fileName = helper.ExportExcel(datatable);
-                helper.UserDownloadFile(fileName);
+                DataTable dt = helper.getUserTable();
+                String fileName = helper.ExportExcel(dt);
+                helper.UserDownloadFile(fileName, fileName);
             }
             catch (ExcelHelperException e)
             {
-                ViewBag.message = e.Message;
-                return View("index");
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
             }
-            return null;
             //Response.RedirectToRoute("/ExcelFile/636198609306488823.xlsx");
+            Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
         }
 
         public void Logoff()
@@ -307,18 +402,16 @@ namespace AuxWebSystem.Controllers
             //用户登出
             UserSecurityHelper.Logout();
             Response.Redirect("/Home/Index");
-            return;
         }
 
-        [HttpGet]
-        public ActionResult SearchName(FormCollection form)
-        {
-            UserTableModel users = new UserTableModel();
-            users.LogName = form["SearchName"];
-            ViewBag.userTable = DataBaseHelper.getLikeRecord(users);
-            return View("WebUserManager");
-        }
-
+        //[HttpGet]
+        //public ActionResult SearchName(FormCollection form)
+        //{
+        //    UserTableModel users = new UserTableModel();
+        //    users.LogName = form["SearchName"];
+        //    ViewBag.userTable = DataBaseHelper.getLikeRecord(users);
+        //    return View("WebUserManager");
+        //}
 
         /// <summary>
         /// 重设密码
@@ -326,22 +419,17 @@ namespace AuxWebSystem.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public ActionResult ResetPassword(int id)
+        public void ResetPassword(int id)
         {
             try
             {
                 UserSecurityHelper.ResetPassword(id);
-                ViewBag.message = "重置密码成功";
-                return View("index");
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "重置密码成功" }));
             }
             catch (UserSecurityException e)
             {
-                ViewBag.message = e.Message;
-                return View("index");
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = e.Message }));
             }
         }
-
-
-
     }
 }

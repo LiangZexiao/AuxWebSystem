@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "标准实验";
+}
+
+<div style='padding:4%;clear:both;' class='bg'>
+    <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>标准实验</strong></div>
+    <div style='width:80%;background:white;height:450px;margin:0 auto;padding-top:2%;'>
+        <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='shijiancanshu'>
+            <thead style='color:rgb(120,120,120);font-size:13px;'>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验名称</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验类型编号</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>标准工时</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>操作</th>
+            </thead>
+            @{
+                /*
+                 * ExperimentName
+                 * ExperimentNo
+                 * StandardTestHours
+                 */
+                var standar = ViewBag.Standard as System.Data.DataTable;
+                foreach (System.Data.DataRow row in standar.Rows)
+                {
+                    <tr>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>@row["ExperimentName"]</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>@row["ExperimentNo"]</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>@row["StandardTestHours"]</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel' name="@row["ExperimentNo"]">删除</button></td>
+                    </tr>
+                }
+            }
+        </table>
+        </br></br>
+        <div style='width:80%;width: 80%;margin: 0 auto;' class='row'>
+            <!-- <input placeholder='增加项目'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <input type='time' class='span4'>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至：
+            <input type='time' class='span4'>
+            <button class='btn btn-info' style='float:right;right:20%;border-radius: 5px;'>确定</button> -->
+
+            <div class='col-md-2'><span>增加项目：</span></div>
+            <form action='/Parameter/AddExperiment' method='POST'>
+                <div class='col-md-3'><input placeholder='请输入试验名称' name='ExperimentName' /></div>
+                <div class='col-md-3'><input placeholder='请输入试验类型编号' name='ExperimentNO' /></div>
+                <div class='col-md-3'><input placeholder='请输入标准工时' name='StandardTestHours' style='width:120px;' pattern='([0-9]{1,4})(\.[0-9]+)*' />小时</div>
+                <div class='col-md-1'><button class='btn btn-info' onsubmit='return addRow();'>确定</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('.canshu').click(function () {
+        $('.peizhi').toggle();
+    })
+
+    function addRow() {
+        //原来的行数    比如：此处获得表格的行数是5，则每一行对应的index是0~4，所以下面在insertRow时，使用的是表格的当前行数
+        var currentRows = document.getElementById("shijiancanshu").rows.length;
+        var insertTr = document.getElementById("shijiancanshu").insertRow(currentRows);
+        insertTd = insertTr.insertCell(0);
+        insertTd.style.textAlign = "center";
+        insertTd.innerHTML = $("input[name='ExperimentName']").val();
+
+        insertTd = insertTr.insertCell(1);
+        insertTd.style.textAlign = "center";
+        insertTd.innerHTML = $("input[name='ExperimentNO']").val();
+
+
+        insertTd = insertTr.insertCell(2);
+        insertTd.style.textAlign = "center";
+        insertTd.innerHTML = $("input[name='StandardTestHours']").val() + '小时';
+
+
+        insertTd = insertTr.insertCell(3);
+        insertTd.style.textAlign = "center";
+        insertTd.innerHTML = "<button class='btn btn-info cancel' style='text-align:center;'>删除</button>";
+
+
+        $('.cancel').click(function () {
+            $(this).parent().parent('tr').remove();
+        })
+        
+    }
+    $('.cancel').click(function () {
+
+        var xmlhttp;
+        var me = this;
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                jobj = JSON.parse(xmlhttp.responseText);
+                alert(jobj.message);
+                if (jobj.state == 0) {
+                    alert(jobj.message);
+                    return false;
+                } else {
+                    $(me).parent().parent('tr').remove();
+                    return true;
+                }
+            }
+        }
+        /// 参数编号 ParameterNO
+        /// 参数类型 ParameterType
+        xmlhttp.open("GET", "/Parameter/SystemParameterDelete/" + $(this).attr('name'), true);
+        xmlhttp.send();
+
+    });
+
+</script>

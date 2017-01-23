@@ -1,103 +1,188 @@
 ﻿@{
     ViewBag.Title = "系统参数";
 }
+<div style='padding:4%;clear:both;' class='bg'>
+    <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>系统参数</strong></div>
+    <div style='width:80%;background:white;height:450px;margin:0 auto;padding-top:2%;'>
+        <select id='leixing' style='margin-left: 10%;'>
+            <option selected>请选择参数类型</option>
+            @{
+                //ViewBag.Parameter
+                var parameter = ViewBag.Parameter as Dictionary<String, String>;
+                foreach (var dat in parameter)
+                {
+                    <option name='@dat.Key'>@dat.Value</option>
+                }
+            }
+        </select>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#leixing').change(function () {
+                    @{
+                    foreach (var dat in parameter)
+                      { 
+                        String str = String.Format(@"
+                            if( $('#leixing option:selected').val() == '{0}' ) {{
+                                $('.{2}').parent('tr').siblings().hide();
+                                $('.{1}').parent('tr').show();
+                                $('.ParameterTypeClass').val('{3}');
+                                }}", dat.Value, dat.Key, dat.Key, dat.Value);
+                        Output.Write(str+"\n");
+                      }
+                      }
+                    /*if ($('#leixing option:selected').val() == '部门') {
+                        $('.bumen').parent('tr').show();
+                        $('.bumen').parent('tr').siblings().hide();
+                        $('.canshuleixing').val('部门');
+                    }
+                    */
 
-<body>
-    <div style='padding:4%;clear:both;' class='bg'>
-        <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>系统参数</strong></div>
-        <div style='width:80%;background:white;height:450px;margin:0 auto;padding-top:2%;'>
-            <select id='leixing' style='margin-left: 10%;'>
-                <option>参数类型</option>
-                <option name='bumen' class='bumen' selected>部门</option>
-                <option name='xingming' class='xingming'>姓名</option>
-            </select>
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    $(document).on('change', '#leixing option:selected', function () {
-                        if ($(this).val() == '部门') {
-                            alert('yes');
-                        }
-                    });
                 })
-            </script>
-            </br></br>
-            <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='shijiancanshu'>
-                <!-- <thead style='color:rgb(120,120,120);font-size:13px;'>
 
-                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验类型编号</th>
-                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>标准工时</th>
-                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>操作</th>
-                </thead> -->
-                <tr>
-                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);' class='bumen'>部门</th>
-                    <td bgcolor="#FFFFFF" style='text-align:center;'>&nbsp;</td>
-                    <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel'>删除</button></td>
-                </tr>
-                <tr>
-                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);' class='xingming'>姓名</th>
-                    <td bgcolor="#FFFFFF" style='text-align:center;'>&nbsp;</td>
-                    <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel'>删除</button></td>
-                </tr>
-            </table>
+            })
+        </script>
+        </br></br>
+        <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='shijiancanshu'>
+            <!-- <thead style='color:rgb(120,120,120);font-size:13px;'>
 
-            </br></br>
-            <div style='width:80%;width: 80%;margin: 0 auto;' class='row'>
-                <!-- <input placeholder='增加项目'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验类型编号</th>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>标准工时</th>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>操作</th>
+            </thead> -->
+            @{
+                //ViewBag.SystemTable
+                /*参数类型	    ParameterType
+                 *              ChineseName
+                 *参数编号	    ParameterNO
+                 *参数值	    Value
+                 *是否可修改	Revisable
+                 */
 
-                <input type='time' class='span4'>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至：
-                <input type='time' class='span4'>
-                <button class='btn btn-info' style='float:right;right:20%;border-radius: 5px;'>确定</button> -->
+                var sysTable = ViewBag.SystemTable as System.Data.DataTable;
+                foreach (System.Data.DataRow row in sysTable.Rows)
+                {
+                    <tr style='display:none;'>
+                        <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);' class='@row["ParameterType"]'>@row["ChineseName"]</th>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'>@row["Value"]</td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel' name="@row["ParameterNO"]/@row["ParameterType"]">删除</button></td>
+                    </tr>
+                }
+            }
+            <tr style='display:none;'>
+                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);' class='xingming'>姓名</th>
+                <td bgcolor="#FFFFFF" style='text-align:center;'>&nbsp;</td>
+                <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel'>删除</button></td>
+            </tr>
+        </table>
 
-                <div class='col-md-2'><span>增加项目：</span></div>
-                <div class='col-md-3'>
-                    <select class='canshuleixing'>
-                        请输入参数类型:
-                        <option>部门</option>
-                        <option>姓名</option>
-                    </select>
-                </div>
-                <div class='col-md-3'><input placeholder='请输入参数值' name='ExperimentNO' /></div>
-                <div class='col-md-1'><button onclick='addRow()' class='btn btn-info'>确定</button></div>
+        </br></br>
+        <form action="/P"
+        <div style='width:80%;width: 80%;margin: 0 auto;' class='row'>
+            <!-- <input placeholder='增加项目'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <input type='time' class='span4'>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至：
+            <input type='time' class='span4'>
+            <button class='btn btn-info' style='float:right;right:20%;border-radius: 5px;'>确定</button> -->
+
+            <div class='col-md-2'><span>增加项目：</span></div>
+            <div class='col-md-3'>
+                <select class='ParameterTypeClass'>
+                    请输入参数类型:
+                    @foreach (var dat in parameter)
+                    {
+                    <option value="@dat.Key">@dat.Value</option>
+                    }
+                </select>
             </div>
+            <div class='col-md-3'><input placeholder='请输入参数值' name='ExperimentNO' /></div>
+            <div class='col-md-1'><button onclick='addRow()' class='btn btn-info'>确定</button></div>
+
+            @{
+                /*
+             * 参数类型	    ParameterType	nvarchar(50)
+             * 参数编号	    ParameterNO	    int
+             * 参数值	    Value	        char(100)
+             * 是否可修改	Revisable	    int
+             */
+                //"ParameterType"
+                //"Value"
+            }
         </div>
     </div>
+</div>
 
-    <script type="text/javascript">
-        $('.canshu').click(function () {
-            $('.peizhi').toggle();
-        })
-
-        function addRow() {
-            //原来的行数    比如：此处获得表格的行数是5，则每一行对应的index是0~4，所以下面在insertRow时，使用的是表格的当前行数
-            var currentRows = document.getElementById("shijiancanshu").rows.length;
-            var insertTr = document.getElementById("shijiancanshu").insertRow(currentRows);
-            insertTd = insertTr.insertCell(0);
-            insertTd.style.textAlign = "center";
-            insertTd.style.background = "rgb(246,246,246)";
-            insertTd.style.color = "#333";
-            insertTd.innerHTML = $(".canshuleixing").val();
+<script type="text/javascript">
+    $('.canshu').click(function () {
+        $('.peizhi').toggle();
+    })
 
 
-            insertTd = insertTr.insertCell(1);
-            insertTd.style.textAlign = "center";
-            insertTd.innerHTML = $("input[name='ExperimentNO']").val();
 
-            insertTd = insertTr.insertCell(2);
-            insertTd.style.textAlign = "center";
-            insertTd.innerHTML = "<button class='btn btn-info cancel' style='text-align:center;'>删除</button>";
+    function addRow() {
+        //原来的行数    比如：此处获得表格的行数是5，则每一行对应的index是0~4，所以下面在insertRow时，使用的是表格的当前行数
+        var currentRows = document.getElementById("shijiancanshu").rows.length;
+        var insertTr = document.getElementById("shijiancanshu").insertRow(currentRows);
+        insertTd = insertTr.insertCell(0);
+        insertTd.style.textAlign = "center";
+        insertTd.style.background = "rgb(246,246,246)";
+        insertTd.style.color = "#333";
+        insertTd.innerHTML = $(".canshuleixing").val();
 
-            $("input[name='ExperimentName']").innerHTML = "<div>text</div>";
-            $("input[name='ExperimentName']").innerHTML = "<div>text</div>";
 
 
-            $('.cancel').click(function () {
-                $(this).parent().parent('tr').remove();
-            })
-        }
+        insertTd = insertTr.insertCell(1);
+        insertTd.style.textAlign = "center";
+        insertTd.innerHTML = $("input[name='ExperimentNO']").val();
+
+        insertTd = insertTr.insertCell(2);
+        insertTd.style.textAlign = "center";
+        insertTd.innerHTML = "<button class='btn btn-info cancel' style='text-align:center;'>删除</button>";
+
+        $("input[name='ExperimentNO']").text("");
+
         $('.cancel').click(function () {
             $(this).parent().parent('tr').remove();
         })
-    </script>
-</body>
+    }
+    $('.cancel').click(function () {
+
+        var xmlhttp;
+        var me = this;
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                jobj = JSON.parse(xmlhttp.responseText);
+                alert(jobj.message);
+                if (jobj.state == 0) {
+                    alert(jobj.message);
+                    return false;
+                } else {
+                    $(me).parent().parent('tr').remove();
+                    return true;
+                }
+            }
+        }
+        /// 参数编号 ParameterNO
+        /// 参数类型 ParameterType
+        xmlhttp.open("GET", "/Parameter/SystemParameterDelete/" + $(this).attr('name'), true);
+        xmlhttp.send();
+
+    });
+
+
+
+
+
+
+
+</script>
 

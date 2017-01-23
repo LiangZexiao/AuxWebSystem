@@ -127,6 +127,7 @@ namespace AuxWebSystem.Helpers
             {
                 throw new UserSecurityException("删除失败");
             }
+            DataBaseHelper.Delete(new UserAreaModel(model.UserID));
         }
 
         /// <summary>
@@ -192,6 +193,37 @@ namespace AuxWebSystem.Helpers
             {
                 throw new UserSecurityException("重置密码失败");
             }
+        }
+
+        /// <summary>
+        /// 用于清除用户表缓存
+        /// </summary>
+        public static void ClearUserDataTableCache()
+        {
+            if (null != HttpRuntime.Cache[UserTableModel.CacheName])
+            {
+                HttpRuntime.Cache.Remove(UserTableModel.CacheName);
+            }
+        }
+
+        /// <summary>
+        /// 用于获得用户表,相关字段已通过SystemParameter转换
+        /// </summary>
+        /// <returns></returns>
+        public static DataTable GetUserDataTable()
+        {
+            DataTable userTable;
+            if (null == HttpRuntime.Cache[UserTableModel.CacheName])
+            {
+                UserTableModel usm = new UserTableModel();
+                userTable = DataBaseHelper.getAllRecord(usm);
+                HttpRuntime.Cache[UserTableModel.CacheName] = userTable;
+            }
+            else
+            {
+                userTable = HttpRuntime.Cache[UserTableModel.CacheName] as DataTable;
+            }
+            return userTable;
         }
     }
 

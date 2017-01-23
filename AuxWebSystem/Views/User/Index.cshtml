@@ -1,151 +1,19 @@
 ﻿@{
-    ViewBag.Title = "欢迎";
+   ViewBag.Title="欢迎！";
 }
-
-<!DOCTYPE html>
-<html>
-<!--
-<head>
-
-    <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
-    <title>Welcome!</title>
-    <script type="text/javascript" src='~/Content/jquery/jquery-1.12.3.js'></script>
-    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css">
-    <script src="~/Content/jquery/bootstrap.min.js"></script>
-    <style type="text/css">
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: '微软雅黑';
-        }
-
-        #daohanglan li {
-            float: left;
-            position: relative;
-            padding: 1.6% 4%;
-            list-style: none;
-            font-size: 20px;
-        }
-
-            #daohanglan li:hover {
-                border-bottom: 5px solid blue;
-            }
-
-            #daohanglan li:first-child:hover {
-                border: 0;
-            }
-
-            #daohanglan li:last-child:hover {
-                border: 0;
-            }
-
-        #daohanglan div {
-            padding: 5% 0 0;
-        }
-
-        #daohanglan {
-            background-color: rgb(255, 255, 255);
-            height: 78px;
-            box-shadow: 1px 1px rgba(0,0,0,.3);
-            background: url(/Images/logo_u5.jpg)no-repeat 22px;
-        }
-
-            #daohanglan .peizhi div a {
-                text-decoration: none;
-                color: black;
-            }
-
-                #daohanglan .peizhi div a:hover {
-                    text-decoration: none;
-                    color: black;
-                }
-
-            #daohanglan .peizhi div {
-                width: 120px;
-                background-color: rgba(0,0,0,.6);
-                padding: 10% 3% 5%;
-                margin-left: -8%;
-                color: #2a6496;
-            }
-
-        .bg {
-            background: url(/Images/bg.jpg)no-repeat;
-            background-size: 100%;
-            height: 560px;
-        }
-    </style>
-
-
-</head>
 <body>
 
-    <ul id='daohanglan'>
-        <li style='padding-left:10%;'></li>
-        <li>
-            <a href="/User/WebUserManager">Web用户管理</a>
-            </div>
-        </li>
-        <li>
-            <a href="#" class='canshu'>参数配置</a>
-            <div style='position:absolute;display:none;' class='peizhi'>
-                <div><a href="shijiancanshu.html#shijiancanshu">标准实验</a></div>
-                <div><a href="jiejiari.html#jiejiari">节假日设置</a></div>
-                <div><a href="xitongcanshu.html#xitongcanshu">系统参数设置</a></div>
-            </div>
-        </li>
-        <li>
-            <a href="">数据查看</a>
-            <div style='position:absolute;'>
-            </div>
-        </li>
-        <li>
-            <a href="shiyanxinxi.html#shiyanxinxi">试验台信息</a>
-        </li>
-        <li style='float:right;border-left:1px solid rgba(0,0,0,.3);'>
-            <a href="#" data-toggle="modal" data-target="#login">登录</a>
-        </li>
-
-    </ul>
+    <div style="background: url(/Images/u0.jpg); background-size: 100%; height: 570px;"></div>
     
 
-    <div class='bg'></div>
-    <div class="modal fade text-center" id='login' tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" style='padding:20% 15%;'>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <p class='text-center'>用户名：<input></p>
-                </br>
-                <p class='text-center'>密&nbsp;码：<input></p>
-                </br></br></br>
-                <button class='btn btn-block btn-info' data-dismiss="modal">登陆</button>
-            </div>
-        </div>
-    </div>
-
     <script type="text/javascript">
-        $('.canshu').click(function(){
+        $('.canshu').click(function () {
             $('.peizhi').toggle();
         })
     </script>
 </body>
-</html>
-</body>
-</html>
--->
 
-<body>
-    <br />
-    <br />
-    <form method="POST" action="/User/UploadFile" enctype="multipart/form-data">
-        <label>上传Excel文件</label><input type="file" name="excelUpload" value="Upload" />
-        <input type="submit" value="Upload" />
-    </form>
-    <br />
-    <br />
-    <a href="~/User/DownloadExcel">DownloadExcel</a>
-</body>
+
+
 
 

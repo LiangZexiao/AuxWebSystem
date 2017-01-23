@@ -1,5 +1,5 @@
 ﻿@{
-    
+
     String sessString = AuxWebSystem.Helpers.UserSecurityHelper.sessionName;
     Object obj = Session[sessString];
     if (null == obj)
@@ -12,9 +12,23 @@
     {
         AuxWebSystem.Models.UserTableModel user = (AuxWebSystem.Models.UserTableModel)obj;
         <text>
-            你好，@user.LogName
-            <a href="/User/Logoff">注销</a>
-            <a href="/User/ModityUserPage">修改</a>
+<style>
+    .conte a:hover{
+        color:black;
+    }
+</style>
+<div class="loginn" style=" cursor: pointer;">
+    你好，@user.LogName
+</div>      
+<div style="border: 0; display: none; position: absolute; background-color: rgba(0,0,0,.6); color: white; padding: 0 10%;" class="conte">
+    <div><a href="/User/Logoff" style=" color: rgba(255,255,255,0.9);">注销</a></div>
+    <div><a href="/User/ModityUserPage" style=" color: rgba(255,255,255,0.9);">修改</a></div>
+</div>
+<script>
+    $('.loginn').click(function () {
+        $('.conte').toggle();
+    })
+</script>
         </text>
     }
 }

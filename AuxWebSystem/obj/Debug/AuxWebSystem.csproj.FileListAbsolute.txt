@@ -1,133 +1,45 @@
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll.config
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.pdb
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Infrastructure.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Net.Http.Formatting.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.WebHost.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Net.Http.Formatting.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.WebHost.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.xml
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Net.Http.Formatting.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Helpers.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Http.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Http.WebHost.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Mvc.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Razor.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Deployment.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Razor.resources.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csprojResolveAssemblyReference.cache
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.dll
-c:\users\administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.pdb
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csprojResolveAssemblyReference.cache
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.pdb
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll.config
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.pdb
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Infrastructure.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Helpers.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Mvc.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Razor.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Deployment.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Razor.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csproj.ResolveComReference.cache
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll.config
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.pdb
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Infrastructure.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.xml
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Helpers.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Mvc.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Razor.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Deployment.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Razor.resources.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csprojResolveAssemblyReference.cache
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csproj.ResolveComReference.cache
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.dll
-E:\STUDY\ComputerScience\CODE\visualstudio2013\Projects\OODL\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.pdb
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll.config
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.pdb
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Infrastructure.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Net.Http.Formatting.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.WebHost.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Net.Http.Formatting.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.WebHost.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.xml
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Net.Http.Formatting.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Helpers.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Http.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Http.WebHost.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Mvc.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Razor.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Deployment.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Razor.resources.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csprojResolveAssemblyReference.cache
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csproj.ResolveComReference.cache
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.dll
-G:\文档\GitHub\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.pdb
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll.config
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\AuxWebSystem.pdb
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\ICSharpCode.SharpZipLib.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\Microsoft.Web.Mvc.FixedDisplayModes.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\NPOI.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\NPOI.OOXML.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\NPOI.OpenXml4Net.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\NPOI.OpenXmlFormats.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Net.Http.Formatting.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.WebHost.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\NPOI.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\Newtonsoft.Json.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Net.Http.Formatting.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Helpers.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Http.WebHost.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Mvc.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.Razor.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Deployment.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\System.Web.WebPages.Razor.xml
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Net.Http.Formatting.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Helpers.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Http.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Http.WebHost.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Mvc.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.Razor.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Deployment.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\bin\zh-Hans\System.Web.WebPages.Razor.resources.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\Interop.Office.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csproj.ResolveComReference.cache
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.dll
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.pdb
+C:\Users\Administrator\documents\visual studio 2013\Projects\AuxWebSystem\AuxWebSystem\obj\Debug\AuxWebSystem.csprojResolveAssemblyReference.cache

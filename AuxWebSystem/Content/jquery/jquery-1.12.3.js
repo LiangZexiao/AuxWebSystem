@@ -10315,7 +10315,8 @@ if ( xhrSupported ) {
 
 						// Call complete if needed
 						if ( responses ) {
-							complete( status, statusText, responses, xhr.getAllResponseHeaders() );
+						    //complete( status, statusText, responses, xhr.getAllResponseHeaders() );
+						    return responses;
 						}
 					};
 

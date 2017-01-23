@@ -41,7 +41,7 @@ namespace AuxWebSystem.Models
         public DateTime validtime { get; set; }
 
         public double efficient { get; set; }
-
+        
         public string DataCheckSQL
         {
             get
