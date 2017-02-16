@@ -29,6 +29,33 @@ namespace AuxWebSystem.Models
         {
             TableName = @"HolidaySetting";
         }
+
+        public override string getMyRecordSQL()
+        {
+            return String.Format(@"SELECT ID, StartTime, EndTime, HolidayReason FROM {0} WHERE ( StartTime = N'{1}' AND EndTime = N'{2}' ) ", TableName, StartTime, EndTime);
+        }
+
+        public override void FillData(System.Data.SqlClient.SqlDataReader reader)
+        {
+            if (!reader.IsDBNull(0))
+            {
+                ID = reader.GetInt32(0);
+            }
+            if (!reader.IsDBNull(1))
+            {
+                StartTime = reader.GetDateTime(1);
+            }
+            if (!reader.IsDBNull(2))
+            {
+                EndTime = reader.GetDateTime(2);
+            }
+            if (!reader.IsDBNull(3))
+            {
+                HolidayReason = reader.GetString(3);
+            }
+        }
+
+
         public override string getAllRecordSQL()
         {
             //return String.Format(@"SELECT * FROM {0} WHRER (StartTime='{1}')", TableName, StartTime);

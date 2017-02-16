@@ -68,9 +68,8 @@ namespace AuxWebSystem.Models
         public override string getDeleteSQL()
         {
             //DELETE FROM 表名称 WHERE 列名称 = 值
-            return String.Format(@"DELETE FROM {0} WHERE ParameterType = '{1}' AND ParameterNO = '{2}' ", TableName, ParameterType, ParameterNO);
+            return String.Format(@"DELETE FROM {0} WHERE ParameterType = '{1}' AND ParameterNO = '{2}' AND Revisable <> '0' ", TableName, ParameterType, ParameterNO);
         }
-
 
         public SystemParameterModel()
         {
@@ -79,7 +78,7 @@ namespace AuxWebSystem.Models
 
         public override string getAllRecordSQL()
         {
-            return @"SELECT Dic.ChineseName AS ChineseName, Sysp.ParameterType, Sysp.ParameterNO, Sysp.Value, Sysp.Value
+            return @"SELECT Dic.ChineseName AS ChineseName, Sysp.ParameterType, Sysp.ParameterNO, Sysp.Value, Sysp.Value, Sysp.Revisable AS Revisable
                         FROM SystemParameter AS Sysp
                         LEFT JOIN EnglishDictionary as Dic
                         ON Sysp.ParameterType = Dic.EnglishName;";

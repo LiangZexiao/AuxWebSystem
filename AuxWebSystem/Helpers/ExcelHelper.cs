@@ -51,6 +51,10 @@ namespace AuxWebSystem.Helpers
         /// </summary>
         public static readonly String TemplateFileDir = FileDir + @"template.xlsx";
 
+        /// <summary>
+        /// 影响行数
+        /// </summary>
+        public long effectRows = 0;
         public ExcelHelper()
         {
 
@@ -89,9 +93,9 @@ namespace AuxWebSystem.Helpers
             }
 
             //如果文件存在，删除文件
-            if (File.Exists( floderName + FileName))
+            if (File.Exists(floderName + FileName))
             {
-                File.Delete( floderName + FileName);
+                File.Delete(floderName + FileName);
             }
             String filePAth = FileDir + FileName;
             request.Files[0].SaveAs(filePAth);
@@ -183,6 +187,7 @@ namespace AuxWebSystem.Helpers
 
             //LastRowNum 是当前表的总行数-1（注意）
             DataTable datatable = new DataTable();
+            DataTable userTable = UserSecurityHelper.GetUserDataTable();
             //datatable.Columns.Add("UserID");
             datatable.Columns.Add("LogName");
             datatable.Columns.Add("RealName");
@@ -192,53 +197,64 @@ namespace AuxWebSystem.Helpers
             datatable.Columns.Add("CellPhone");
             datatable.Columns.Add("LastLoginTime");
             DataRow dataRow;
-            for (int i = 1; i <= sheet.LastRowNum; i++)
+            try
             {
-                row = sheet.GetRow(i);
-                if (null != row)
+                for (int i = 1; i <= sheet.LastRowNum; i++)
                 {
-                    //LastCellNum 是当前行的总列数
-                    dataRow = datatable.NewRow();
-                    dataRow["LogName"] = row.GetCell(0);
-                    dataRow["RealName"] = row.GetCell(1);
-                    dataRow["Department"] = getDepartment(row.GetCell(2));
-                    dataRow["UserType"] = getUserType(row.GetCell(3));
-                    dataRow["Email"] = row.GetCell(4);
-                    dataRow["CellPhone"] = row.GetCell(5);
-                    datatable.Rows.Add(dataRow);
+                    //TODO: 应该对数据进行过滤处理
+                    row = sheet.GetRow(i);
+                    if (null != row)
+                    {
+                        //LastCellNum 是当前行的总列数
+                        dataRow = datatable.NewRow();
+                        dataRow["LogName"] = row.GetCell(0);
+                        dataRow["RealName"] = row.GetCell(1);
+                        dataRow["Department"] = getDepartment(row.GetCell(2));
+                        dataRow["UserType"] = getUserType(row.GetCell(3));
+                        dataRow["Email"] = row.GetCell(4);
+                        dataRow["CellPhone"] = row.GetCell(5);
+
+                        if (userTable.Select(String.Format(@"LogName = '{0}' OR RealName = '{1}' ", dataRow["LogName"], dataRow["RealName"])).Length > 0
+                            || datatable.Select(String.Format(@"LogName = '{0}' OR RealName = '{1}' ", dataRow["LogName"], dataRow["RealName"])).Length > 0 )
+                        {
+                            throw new ExcelHelperException("登录名或真实姓名重复 <br/> 请检查 登录名：" + dataRow["LogName"] + " 真实姓名：" + dataRow["RealName"] );
+                        }
+                        if (!(dataRow["UserType"].Equals("1") || dataRow["UserType"].Equals("2")))
+                        {
+                            throw new ExcelHelperException("用户类型有误");
+                        }
+                        if (String.IsNullOrWhiteSpace(dataRow["LogName"].ToString()) || String.IsNullOrWhiteSpace(dataRow["RealName"].ToString()))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            effectRows += 1;
+                            datatable.Rows.Add(dataRow);
+                        }
+                    }
                 }
+            }catch(Exception e){
+                throw e;
             }
-
-            fstream.Close();
-
+            finally
+            {
+                fstream.Close();
+            }
             return datatable;
-
-            /*
-             * 		//读取当前表数据
-		ISheet sheet = wk.GetSheetAt(0);
-
-		IRow row = sheet.GetRow(0);  //读取当前行数据
-		//LastRowNum 是当前表的总行数-1（注意）
-		int offset = 0;
-		for (int i = 0; i <= sheet.LastRowNum; i++)
-		{
-			row = sheet.GetRow(i);  //读取当前行数据
-			if (row != null)
-			{
-				//LastCellNum 是当前行的总列数
-				for (int j = 0; j < row.LastCellNum; j++)
-				{
-					//读取该行的第j列数据
-					string value = row.GetCell(j).ToString();
-					Console.Write(value.ToString() + " ");
-				}
-				Console.WriteLine("\n");
-			}
-		}
-	}
-             */
-
         }
+
+        ///// <summary>
+        ///// 用于判断是否有该条记录
+        ///// </summary>
+        ///// <returns></returns>
+        //private bool hasSameRecord(DataTable newTable, String logName, String realName)
+        //{
+        //    //TODO: 要不要把userTable弄成类的变量?
+        //    DataTable userTable = UserSecurityHelper.GetUserDataTable();
+        //    var rows = userTable.Select(String.Format(@"LogName = '{0}' OR RealName = '{1}' ", logName, realName ));
+        //    return rows.Length > 0;
+        //}
 
         /// <summary>
         /// 把Datatable添加到数据库
@@ -275,7 +291,7 @@ namespace AuxWebSystem.Helpers
                 {
                     tran.Rollback();
                 }
-                throw e;
+                throw new ExcelHelperException("数据库写入失败");
             }
         }
 
@@ -288,7 +304,7 @@ namespace AuxWebSystem.Helpers
         {
             if (null == value)
             {
-                return null;
+                throw new ExcelHelperException("数据错误");
             }
             return SystemParameterHelpers.getInstance().Select("UserType", value.ToString());
         }
@@ -302,7 +318,7 @@ namespace AuxWebSystem.Helpers
         {
             if (null == value)
             {
-                return null;
+                throw new ExcelHelperException("数据错误");
             }
             return SystemParameterHelpers.getInstance().Select("Department", value.ToString());
         }
@@ -332,7 +348,7 @@ namespace AuxWebSystem.Helpers
                             LEFT JOIN SystemParameter AS TempDepartment
                             ON 'Department' = TempDepartment.ParameterType AND TempDepartment.ParameterNO = [User].Department
                             LEFT JOIN SystemParameter AS TempUserType
-                            ON 'UserType' = TempUserType.ParameterType AND TempUserType.ParameterNO = [User].UserType";
+                            ON 'UserType' = TempUserType.ParameterType AND TempUserType.ParameterNO = [User].UserType AND [User].UserType <> 0";
             return DataBaseHelper.getDataTableBySql(sql);
         }
 
@@ -355,14 +371,13 @@ namespace AuxWebSystem.Helpers
             {
                 File.Delete(filePath);
             }
-            //File.Create(fileName);
-            File.Copy(TemplateFileDir, filePath);
 
-            FileStream fstream = File.Open(filePath, FileMode.Open);
-            
+            FileStream fstream = File.Open(TemplateFileDir, FileMode.Open, FileAccess.ReadWrite);
+
             IWorkbook workbook = new XSSFWorkbook(fstream);
+            fstream.Close();
             //创建工作薄 
-            ICellStyle style = workbook.CreateCellStyle();//样式
+            //ICellStyle style = workbook.CreateCellStyle();//样式
 
             int columnCount = 6;
 
@@ -373,18 +388,24 @@ namespace AuxWebSystem.Helpers
             foreach (DataRow dataRow in datatable.Rows)
             {
                 row = sheet.CreateRow(rowCounter);
+                //row = sheet.GetRow(rowCounter);
                 rowCounter += 1;
                 for (int i = 0; i < columnCount; i++)
                 {
+                    //cell = row.CreateCell(i);
+                    //cell = row.GetCell(i);
                     cell = row.CreateCell(i);
                     cell.SetCellValue(dataRow[i] == null ? "" : dataRow[i].ToString());
                 }
+               
             }
 
             fstream.Close();
-            fstream = File.OpenWrite(filePath);
+            fstream = File.Create(filePath);
             workbook.Write(fstream);
+            workbook.Close();
             fstream.Close();
+            
 
             Thread thread = new Thread(new ParameterizedThreadStart(DoDeleteFile));
             thread.Start(FileDir + fileName);
@@ -408,7 +429,7 @@ namespace AuxWebSystem.Helpers
         /// <param name="filePath">文件路径</param>
         private void DoDeleteFile(Object filePath)
         {
-            Thread.Sleep(TimeSpan.FromMinutes(1));
+            Thread.Sleep(TimeSpan.FromMinutes(10));
             String file = filePath as String;
             if (File.Exists(file))
             {

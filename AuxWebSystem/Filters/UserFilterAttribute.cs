@@ -31,6 +31,11 @@ namespace AuxWebSystem.Filters
         public bool AdminRequire { set; get; }
 
         /// <summary>
+        /// 普通用户登录
+        /// </summary>
+        public static String NotAdminUrl = @"/Dataview";
+
+        /// <summary>
         /// 请求授权时执行
         /// 在Action执行之前由 MVC 框架调用
         /// </summary>
@@ -45,12 +50,12 @@ namespace AuxWebSystem.Filters
             }
             else
             {
+                bool visitDataView = filterContext.RouteData.Values["controller"].ToString().Equals("Dataview", StringComparison.CurrentCultureIgnoreCase);
                 UserTableModel model = (UserTableModel)obj;
-                if (AdminRequire && !model.isAdminUser() )
+                if (AdminRequire && !model.isAdminUser() && visitDataView)
                 {
-                    filterContext.Result = new RedirectResult(FailUrl);
+                    filterContext.Result = new RedirectResult(NotAdminUrl);
                 }
-
             }
             
         }

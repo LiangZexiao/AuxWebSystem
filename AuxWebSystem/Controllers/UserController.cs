@@ -12,6 +12,7 @@ using AuxWebSystem.Filters;
 
 namespace AuxWebSystem.Controllers
 {
+
     public class UserController : Controller
     {
         //
@@ -40,7 +41,8 @@ namespace AuxWebSystem.Controllers
             {
                 userType.Add(userTypeRows[i]["ParameterNO"], userTypeRows[i]["Value"]);
             }
-            ViewBag.Area = helper.Select("Area");
+            //ViewBag.Area = helper.Select("Area");
+            ViewBag.Area = helper.Select("Department");
             ViewBag.Department = department;
             ViewBag.UserType = userType;
             return View();
@@ -90,17 +92,35 @@ namespace AuxWebSystem.Controllers
         /// <param name="id"></param>
         public void getUserAreaInfomation(int id)
         {
+
+            UserTableModel userTable = new UserTableModel();
+            userTable.UserID = id;
             UserAreaModel uarea = new UserAreaModel(id);
-            DataTable dt = DataBaseHelper.getRecordByKey(uarea);
-            Response.Write(JsonConvert.SerializeObject(dt));
+            DataTable userDt = DataBaseHelper.getRecordByKey(userTable);
+            DataTable areaDt = DataBaseHelper.getMyRecord(uarea);
+            List<Object> areaList = new List<Object>();
+            foreach (DataRow row in areaDt.Rows)
+            {
+                areaList.Add(row["Area"]);
+            }
+            Response.Write(JsonConvert.SerializeObject(new { userID = id, logName = userDt.Rows[0]["LogName"], area = areaList }));
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="form"></param>
         public void setUserAreaInformation(FormCollection form)
         {
             String userID = form["UserID"];
+            if (null == form["sub-checkbox"])
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "区域为空" }));
+                return;
+            }
             String[] area = form["sub-checkbox"].Split(new Char[] { ',' });
-            try{
+            try
+            {
                 DataBaseHelper.Delete(new UserAreaModel(int.Parse(userID)));
                 for (int i = 0; i < area.Length; i++)
                 {
@@ -112,8 +132,7 @@ namespace AuxWebSystem.Controllers
             {
                 Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
             }
-        }       
-        
+        }
 
 
         public ActionResult CurveJurisdictionManager()
@@ -132,17 +151,18 @@ namespace AuxWebSystem.Controllers
             UserTableModel user = (UserTableModel)Session[UserSecurityHelper.sessionName];
             ModifyUserTableModel modiUser = new ModifyUserTableModel();
             modiUser.LogName = user.LogName;
-            modiUser.Password = form["Password"];
+            modiUser.Password = user.Password;
+            modiUser.UserType = user.UserType;
+            modiUser.Department = user.Department;
+            modiUser.UserID = user.UserID;
+
             modiUser.RealName = form["RealName"];
             modiUser.OldPassword = form["OldPassword"];
             modiUser.NewPassword = form["NewPassword"];
             modiUser.ConfirmPassword = form["ConfirmPassword"];
             modiUser.CellPhone = form["CellPhone"];
             modiUser.Email = form["Email"];
-            if (null == modiUser.Password || "".Equals(modiUser.Password))
-            {
-                modiUser.Password = user.Password;
-            }
+
             if (null == modiUser.NewPassword || "".Equals(modiUser.NewPassword))
             {
                 modiUser.NewPassword = user.Password;
@@ -155,29 +175,31 @@ namespace AuxWebSystem.Controllers
             {
                 modiUser.ConfirmPassword = user.Password;
             }
-            modiUser.UserID = user.UserID;
-
-
-            List<Object> serList = new List<Object>();
-            serList.Add(new { LogName = user.LogName });
-            serList.Add(new { CellPhone = user.CellPhone });
-            serList.Add(new { Email = user.Email });
-            serList.Add(new { RealName = user.Email });
 
             try
             {
                 UserSecurityHelper.ModifyUser(modiUser, user);
-                UserSecurityHelper.Logout();
-                UserSecurityHelper.Login(new LoginModel(modiUser.LogName, modiUser.NewPassword));
                 Session.Remove(ModifyUserTableModel.sessioName);
                 UserSecurityHelper.ClearUserDataTableCache();
                 UserSecurityHelper.Logout();
                 UserSecurityHelper.Login(new LoginModel(modiUser.LogName, modiUser.NewPassword));
-                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功", error = new ModifyUserTableModel() }));
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
             }
             catch (UserSecurityException e)
             {
-                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = e.Message, error = e.Error }));
+                Response.Write(JsonConvert.SerializeObject(new
+                {
+                    state = 0,
+                    message = "修改失败",
+                    error = new
+                    {
+                        Password = e.Error.Password,
+                        NewPassword = e.Error.NewPassword,
+                        ConfirmPassword = e.Error.ConfirmPassword,
+                        CellPhone = e.Error.CellPhone,
+                        Email = e.Error.Email
+                    }
+                }));
             }
         }
 
@@ -193,20 +215,33 @@ namespace AuxWebSystem.Controllers
             model.ConfirmPassword = ust.Password;
             model.UserID = ust.UserID;
             model.LogName = ust.LogName;
+
+            model.UserType = ust.UserType;
+            model.Department = ust.Department;
+
             model.RealName = form["RealName"];
             if (null != form["Department"])
             {
                 model.Department = int.Parse(form["Department"]);
             }
+
+            if (null != form["UserType"] && !"".Equals(form["UserType"]))
+            {
+
+                model.UserType = Convert.ToInt32(form["UserType"]);
+                if (model.isAdminUser())
+                {
+                    Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "修改不成功" }));
+                    return;
+                }
+            }
             model.Email = form["Email"];
             model.CellPhone = form["CellPhone"];
-            String ser;
             try
             {
                 UserSecurityHelper.ModifyUser(model, ust);
                 UserSecurityHelper.ClearUserDataTableCache();
-                ser = JsonConvert.SerializeObject(new { state = 1, message = "成功" });
-                Response.Write(ser);
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
             }
             catch (UserSecurityException e)
             {
@@ -214,6 +249,7 @@ namespace AuxWebSystem.Controllers
                 ViewBag.Error = e.Error;
                 ViewBag.User = model;
                 Session[UserTableModel.SessionName] = model;
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "修改失败" }));
             }
         }
 
@@ -252,17 +288,6 @@ namespace AuxWebSystem.Controllers
             return View();
         }
 
-
-        [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
-        public ActionResult RegisterPage()
-        {
-            //用户注册
-            ViewBag.message = "用户添加";
-            ViewBag.User = Session[UserTableModel.SessionRegister];
-            return View();
-        }
-
-
         /// <summary>
         /// 添加用户
         /// </summary>
@@ -276,7 +301,6 @@ namespace AuxWebSystem.Controllers
             mode.Email = form["Email"];
             mode.CellPhone = form["CellPhone"];
             mode.RealName = form["RealName"];
-            String mess = "";
 
             int temp;
             if (int.TryParse(form["UserType"], out temp))
@@ -285,7 +309,21 @@ namespace AuxWebSystem.Controllers
             }
             else
             {
-                mess += " 用户类型为空";
+                Response.Write(JsonConvert.SerializeObject(new
+                {
+                    state = 0,
+                    message = "添加失败",
+                    error = new
+                    {
+                        Department = "",
+                        UserType = "用户类型为空",
+                        LogName = "",
+                        RealName = "",
+                        Email = "",
+                        CellPhone = ""
+                    }
+                }));
+                return;
             }
 
             if (int.TryParse(form["Department"], out temp))
@@ -294,12 +332,20 @@ namespace AuxWebSystem.Controllers
             }
             else
             {
-                mess += " 部门为空";
-            }
-
-            if (mess.Length > 2)
-            {
-                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = mess }));
+                Response.Write(JsonConvert.SerializeObject(new
+                {
+                    state = 0,
+                    message = "添加失败",
+                    error = new
+                    {
+                        Department = "部门为空",
+                        UserType = "",
+                        LogName = "",
+                        RealName = "",
+                        Email = "",
+                        CellPhone = ""
+                    }
+                }));
                 return;
             }
 
@@ -313,7 +359,25 @@ namespace AuxWebSystem.Controllers
             catch (UserSecurityException e)
             {
                 //TODO: e.Message 为空
-                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message, error = e.Error }));
+                Response.Write(JsonConvert.SerializeObject(new
+                {
+                    state = 0,
+                    message = e.Message,
+                    error = new
+                    {
+                        Department = "",
+                        UserType = "",
+                        LogName = e.Error.LogName,
+                        RealName = e.Error.RealName,
+                        Email = e.Error.Email,
+                        CellPhone = e.Error.CellPhone
+                    }
+                }));
+            }
+            catch (Exception e)
+            {
+                //TODO: e.Message 为空
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
             }
         }
 
@@ -324,13 +388,25 @@ namespace AuxWebSystem.Controllers
             try
             {
                 UserSecurityHelper.Login(model);
+                UserTableModel ust = new UserTableModel();
+                ust.LogName = model.LogName;
+                DataBaseHelper.fillOneRecordToModel(ust);
+                if (ust.isAdminUser())
+                {
+                    return View("index");
+                }
+                else
+                {
+                    Response.Redirect(@"/Dataview");
+                    return null;
+                }
             }
             catch (UserSecurityException e)
             {
                 TempData["loginError"] = e.Message;
                 Response.Redirect("/Home");
+                return null;
             }
-            return View("Index");
         }
 
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
@@ -363,13 +439,12 @@ namespace AuxWebSystem.Controllers
                 DataTable dt = helper.getExcelData(fileName);
                 helper.addDataTableToDatabase(dt);
                 UserSecurityHelper.ClearUserDataTableCache();
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功导入" + helper.effectRows + "行" }));
             }
             catch (ExcelHelperException e)
             {
                 Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
-                return;
             }
-            Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
         }
 
         [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
@@ -391,10 +466,10 @@ namespace AuxWebSystem.Controllers
             }
             catch (ExcelHelperException e)
             {
-                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
+                //Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
             }
             //Response.RedirectToRoute("/ExcelFile/636198609306488823.xlsx");
-            Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
+            //Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
         }
 
         public void Logoff()
@@ -428,8 +503,16 @@ namespace AuxWebSystem.Controllers
             }
             catch (UserSecurityException e)
             {
-                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = e.Message }));
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
             }
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            // 标记异常已处理
+            filterContext.ExceptionHandled = true;
+            // 跳转到错误页
+            filterContext.Result = new HttpStatusCodeResult(404);
         }
     }
 }

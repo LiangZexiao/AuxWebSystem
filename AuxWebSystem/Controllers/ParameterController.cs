@@ -8,14 +8,15 @@ using System.Data;
 using Newtonsoft.Json;
 using AuxWebSystem.Models;
 using AuxWebSystem.Helpers;
+using AuxWebSystem.Filters;
 
 namespace AuxWebSystem.Controllers
 {
+    [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
     public class ParameterController : Controller
     {
         //
         // GET: /Parameter/
-
         public ActionResult Index()
         {
             return View();
@@ -30,8 +31,8 @@ namespace AuxWebSystem.Controllers
             /*参数类型	    ParameterType
              *              ChineseName
              *参数编号	    ParameterNO
-             *参数值	    Value
-             *是否可修改	Revisable
+             *参数值	        Value
+             *是否可修改	    Revisable
              */
             SystemParameterHelpers sysHelper = SystemParameterHelpers.getInstance();
             ViewBag.Parameter = sysHelper.getParameterTypeDictionary();
@@ -57,12 +58,12 @@ namespace AuxWebSystem.Controllers
             try
             {
                 SystemParameterHelpers helper = SystemParameterHelpers.getInstance();
-                helper.Add(parameterType, value);
-                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
+                int experimentNo = helper.Add(parameterType, value);
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功", ExperimentNo = experimentNo }));
             }
             catch (Exception e)
             {
-                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message }));
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = e.Message, ExperimentNo = -1 }));
             }
         }
 
@@ -89,7 +90,6 @@ namespace AuxWebSystem.Controllers
         /// <summary>
         /// 标准实验
         /// </summary>
-        /// <param name="Form"></param>
         /// <returns></returns>
         public ActionResult StandardParameter()
         {
@@ -103,7 +103,7 @@ namespace AuxWebSystem.Controllers
         /// </summary>
         /// <param name="Form"></param>
         /// <returns></returns>
-        public void AddExperiment(FormCollection Form)
+        public void StandardExperimentAdd(FormCollection Form)
         {
             StandardExperimentModels TimeParameter = new StandardExperimentModels();
             TimeParameter.ExperimentName = Form["ExperimentName"];
@@ -142,8 +142,11 @@ namespace AuxWebSystem.Controllers
             }
         }
 
-
-        public void Delect(string id)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">ExperimentNo</param>
+        public void StandardExperimentDelect(string id)
         {
             StandardExperimentModels SE = new StandardExperimentModels();
             SE.ExperimentNo = id;
@@ -186,7 +189,7 @@ namespace AuxWebSystem.Controllers
             {
                 startTime = Convert.ToDateTime(row["StartTime"]);
                 endTime = Convert.ToDateTime(row["EndTime"]);
-                while (startTime <= endTime)
+                while (startTime.Day <= endTime.Day)
                 {
                     if (mouth == startTime.Month)
                     {
@@ -208,23 +211,27 @@ namespace AuxWebSystem.Controllers
         public void AddHoliday(FormCollection Form)
         {
             HolidayModels Holiday = new HolidayModels();
-            DateTime tempDate;
-            if (DateTime.TryParse(Form["StartTime"], out tempDate))
+            String startTime = Form["StartTime"];
+            String endTime = Form["EndTime"];
+
+            if (String.IsNullOrWhiteSpace(startTime) || String.IsNullOrWhiteSpace(endTime))
             {
-                Holiday.StartTime = tempDate;
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "请检查放假时间" }));
+                return;
             }
-            if (DateTime.TryParse(Form["EndTime"], out tempDate))
-            {
-                Holiday.EndTime = tempDate;
-            }
+
+            Holiday.StartTime = Convert.ToDateTime(startTime);
+            Holiday.EndTime = Convert.ToDateTime(endTime);
+
             Holiday.HolidayReason = Form["HolidayReason"];
+
             //DataTable datatable = DataBaseHelper.getAllRecord(Holiday);
             if (!DataBaseHelper.hasMyKeyRecord(Holiday))
             {
-                //TODO: do eomething
                 if (DataBaseHelper.Insert(Holiday))
                 {
-                    Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "添加成功" }));
+                    DataBaseHelper.fillOneRecordToModel(Holiday);
+                    Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "添加成功", holidayID = Holiday.ID }));
                     return;
                 }
                 else
@@ -256,10 +263,13 @@ namespace AuxWebSystem.Controllers
             }
         }
 
-
-
-
-
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            // 标记异常已处理
+            filterContext.ExceptionHandled = true;
+            // 跳转到错误页
+            filterContext.Result = new HttpStatusCodeResult(404);
+        }
 
     }
 }

@@ -7,29 +7,45 @@ using System.Web.Mvc;
 using Newtonsoft.Json;
 using AuxWebSystem.Helpers;
 using AuxWebSystem.Models;
+using AuxWebSystem.Filters;
 
 namespace AuxWebSystem.Controllers
 {
-
+    [UserFilter(FailUrl = "/Home/Index", AdminRequire = true)]
     public class LabInfoController : Controller
     {
         //
         // GET: /LabInfo/
         public ActionResult Index()
         {
-            DataTable LabInfo;
-            if (null == HttpRuntime.Cache[LabInfoModel.cacheName])
+            ViewBag.Area = SystemParameterHelpers.getInstance().Select("Area");
+            ViewBag.LabInfo = AreaStationHelper.getAreaStationDatatable();
+            return View();
+        }
+
+        /// <summary>
+        /// 用于检查灯号
+        /// </summary>
+        /// <param name="id"></param>
+        public void checkLampNO(int id)
+        {
+            DataTable dt = AreaStationHelper.getAreaStationDatatable();
+            if (null == dt)
             {
-                LabInfo = DataBaseHelper.getAllRecord(new LabInfoModel());
-                HttpRuntime.Cache[LabInfoModel.cacheName] = LabInfo;
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "发生错误, 请刷新后" }));
+                return;
+            }
+
+            DataRow[] rows = dt.Select(String.Format("LampNO = '{0}'", id));
+            if (rows.Length > 0)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "灯号重复" }));
             }
             else
             {
-                LabInfo = HttpRuntime.Cache[LabInfoModel.cacheName] as DataTable;
+                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "成功" }));
             }
-            ViewBag.Area = SystemParameterHelpers.getInstance().Select("Area");
-            ViewBag.LabInfo = LabInfo;
-            return View();
+
         }
 
         /// <summary>
@@ -57,8 +73,26 @@ namespace AuxWebSystem.Controllers
 
             
             SystemParameterHelpers helper = SystemParameterHelpers.getInstance();
-            model.Area = helper.Select("Area", Value);
-            if (DataBaseHelper.hasMyKeyRecord(model))      //寻找是否有相同灯号的灯
+            //model.Area = helper.Select("Area", Value);
+
+            if (null == Value)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "区域为空" }));
+                return;
+            }
+
+            try
+            {
+                model.Area = Convert.ToInt32(Value);
+            }
+            catch (Exception e)
+            {
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "请选择区域" }));
+                return;
+            }
+            
+
+            if (DataBaseHelper.hasMyRecord(model))      //寻找是否有相同灯号的灯
             {
                 Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "灯号或者灯名不能重复" }));
                 return;
@@ -67,11 +101,13 @@ namespace AuxWebSystem.Controllers
             {
                 if (DataBaseHelper.Insert(model))
                 {
-                    Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "插入成功" }));
+                    DataBaseHelper.fillOneRecordToModel(model);
+                    Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "插入成功", StationNO = model.StationNO }));
+                    AreaStationHelper.removeAreaStationTable();
                 }
                 else
                 {
-                    Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "插入失败" }));
+                    Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "插入失败" }));
                 }
             }
         }
@@ -79,19 +115,27 @@ namespace AuxWebSystem.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">StationNO</param>
         public void DelectLabInFo(int id)
         {
-            LabInfoModel LabInFo = new LabInfoModel();
-            LabInFo.StationNO = id;
+            LabInfoModel LabInFo = new LabInfoModel(id);
             if (DataBaseHelper.Delete(LabInFo))
             {
                 Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "删除成功" }));
+                AreaStationHelper.removeAreaStationTable();
             }
             else
             {
-                Response.Write(JsonConvert.SerializeObject(new { state = 1, message = "删除失败" }));
+                Response.Write(JsonConvert.SerializeObject(new { state = 0, message = "删除失败" }));
             }
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            // 标记异常已处理
+            filterContext.ExceptionHandled = true;
+            // 跳转到错误页
+            filterContext.Result = new HttpStatusCodeResult(404);
         }
 
     }

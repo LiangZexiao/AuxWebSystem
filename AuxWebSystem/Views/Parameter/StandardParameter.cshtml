@@ -4,13 +4,16 @@
 
 <div style='padding:4%;clear:both;' class='bg'>
     <div style='position:absolute;font-size:24px;color:rgb(6,55,108);'><strong>标准实验</strong></div>
-    <div style='width:80%;background:white;height:450px;margin:0 auto;padding-top:2%;'>
-        <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='shijiancanshu'>
+    <div style='width:80%;background:white;height:520px;margin:0 auto;padding-top:2%;overflow:auto;'>
+        <div class='col-md-2' data-toggle='modal' data-target='#addStandarExperimentModelId'><button style='margin-left:62%;' class='btn btn-info'>增加</button></div>
+        <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='StandardParameterTableID'>
             <thead style='color:rgb(120,120,120);font-size:13px;'>
-            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验名称</th>
-            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验类型编号</th>
-            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>标准工时</th>
-            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>操作</th>
+                <tr>
+                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验名称</th>
+                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验类型编号</th>
+                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>标准工时</th>
+                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>操作</th>
+                </tr>
             </thead>
             @{
                 /*
@@ -25,27 +28,126 @@
                         <td bgcolor="#FFFFFF" style='text-align:center;'>@row["ExperimentName"]</td>
                         <td bgcolor="#FFFFFF" style='text-align:center;'>@row["ExperimentNo"]</td>
                         <td bgcolor="#FFFFFF" style='text-align:center;'>@row["StandardTestHours"]</td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel' name="@row["ExperimentNo"]">删除</button></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info' onclick='deleteExperiment( "@row["ExperimentNo"]", this )'>删除</button></td>
                     </tr>
                 }
             }
         </table>
-        </br></br>
-        <div style='width:80%;width: 80%;margin: 0 auto;' class='row'>
-            <!-- <input placeholder='增加项目'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <br />
+        <style type="text/css">
+            td {
+                background-color: '#FFFFFF';
+                text-align: center;
+            }
+        </style>
 
-            <input type='time' class='span4'>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至：
-            <input type='time' class='span4'>
-            <button class='btn btn-info' style='float:right;right:20%;border-radius: 5px;'>确定</button> -->
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#StandardParameterTableID').DataTable({
+                    "oLanguage": {//国际语言转化
+                        "oAria": {
+                            "sSortAscending": " - click/return to sort ascending",
+                            "sSortDescending": " - click/return to sort descending"
+                        },
+                        "sLengthMenu": "显示 _MENU_ 记录",
+                        "sZeroRecords": "对不起，查询不到任何相关数据",
+                        "sEmptyTable": "未有相关数据",
+                        "sLoadingRecords": "正在加载数据-请等待...",
+                        "sInfo": "当前显示 _START_ 到 _END_ 条，共 _TOTAL_ 条记录。",
+                        "sInfoEmpty": "当前显示0到0条，共0条记录",
+                        "sInfoFiltered": "（数据库中共为 _MAX_ 条记录）",
+                        "sProcessing": "<img src='../resources/user_share/row_details/select2-spinner.gif'/> 正在加载数据...",
+                        "sSearch": "查询：",
+                        "sUrl": "",
+                        //多语言配置文件，可将oLanguage的设置放在一个txt文件中，例：Javascript/datatable/dtCH.txt
+                        "oPaginate": {
+                            "sFirst": "首页",
+                            "sPrevious": " 上一页 ",
+                            "sNext": " 下一页 ",
+                            "sLast": " 尾页 "
+                        }
+                    },
+                    "pagingType": "full_numbers"
+                });
+            });
+        </script>
 
-            <div class='col-md-2'><span>增加项目：</span></div>
-            <form action='/Parameter/AddExperiment' method='POST'>
-                <div class='col-md-3'><input placeholder='请输入试验名称' name='ExperimentName' /></div>
-                <div class='col-md-3'><input placeholder='请输入试验类型编号' name='ExperimentNO' /></div>
-                <div class='col-md-3'><input placeholder='请输入标准工时' name='StandardTestHours' style='width:120px;' pattern='([0-9]{1,4})(\.[0-9]+)*' />小时</div>
-                <div class='col-md-1'><button class='btn btn-info' onsubmit='return addRow();'>确定</button></div>
-            </form>
+        <div id='deleExperimentModelID' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class='modal-dialog'>
+                <div class='modal-content' style='padding:10%;'>
+                    <h3>请确定是否删除？</h3>
+                    <input type="hidden" id="experimentNumberID" />
+                    <button class="btn btn-info" onclick="doDeledeleExperiment();">删除</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-delete" onclick=" $('#deleExperimentModelID').modal('hide'); ">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var nowRow = undefined;
+            function deleteExperiment(experimentNumber, obj) {
+                $('#experimentNumberID').val(experimentNumber);
+                nowRow = $(obj);
+                $('#deleExperimentModelID').modal('show');
+            }
+
+            function doDeledeleExperiment() {
+
+                var xmlhttp;
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                }
+                else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        jobj = JSON.parse(xmlhttp.responseText);
+                        if (jobj.state == 1) {
+                            $("#deleExperimentModelID").modal("hide");
+                            $('#StandardParameterTableID').DataTable().row(nowRow.parents('tr')).remove().draw();
+                        }
+                        Showbo.Msg.alert(jobj.message);
+                    }
+                }
+                /// 参数编号 ParameterNO
+                /// 参数类型 ParameterType
+                xmlhttp.open("GET", "/Parameter/StandardExperimentDelect/" + $('#experimentNumberID').val(), true);
+                xmlhttp.send();
+            }
+        </script>
+
+        <div id='addStandarExperimentModelId' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class='modal-dialog'>
+                <div class='modal-content' style='padding:10%;'>
+                    <form action='' method='POST' id="addStandardParameter" onsubmit='return addProject();'>
+                        <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='StandardParameterTableID'>
+                            <thead style='color:rgb(120,120,120);font-size:13px;'>
+                                <tr>
+                                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验名称</th>
+                                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验类型编号</th>
+                                    <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>标准工时(/小时)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table">
+                                <tr>
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'><input placeholder='10个字符以内' name='ExperimentName' pattern="^.{1,10}$" /></td>
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'><input placeholder='10个字符以内' name='ExperimentNO' pattern="^.{1,10}$" /></td>
+                                    <td bgcolor="#FFFFFF" style='text-align:center;'><input placeholder='10个数字以内' name='StandardTestHours' style='width:120px;' pattern='([0-9]{1,10})(\.[0-9]+)*' /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="addExperimentError"></div>
+                        <br />
+                        <div class='text-center'><button class='btn btn-info' type="submit">确定</button></div>
+                    </form>
+                    <br />
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -53,67 +155,50 @@
 <script type="text/javascript">
     $('.canshu').click(function () {
         $('.peizhi').toggle();
-    })
-
-    function addRow() {
-        //原来的行数    比如：此处获得表格的行数是5，则每一行对应的index是0~4，所以下面在insertRow时，使用的是表格的当前行数
-        var currentRows = document.getElementById("shijiancanshu").rows.length;
-        var insertTr = document.getElementById("shijiancanshu").insertRow(currentRows);
-        insertTd = insertTr.insertCell(0);
-        insertTd.style.textAlign = "center";
-        insertTd.innerHTML = $("input[name='ExperimentName']").val();
-
-        insertTd = insertTr.insertCell(1);
-        insertTd.style.textAlign = "center";
-        insertTd.innerHTML = $("input[name='ExperimentNO']").val();
-
-
-        insertTd = insertTr.insertCell(2);
-        insertTd.style.textAlign = "center";
-        insertTd.innerHTML = $("input[name='StandardTestHours']").val() + '小时';
-
-
-        insertTd = insertTr.insertCell(3);
-        insertTd.style.textAlign = "center";
-        insertTd.innerHTML = "<button class='btn btn-info cancel' style='text-align:center;'>删除</button>";
-
-
-        $('.cancel').click(function () {
-            $(this).parent().parent('tr').remove();
-        })
-        
-    }
-    $('.cancel').click(function () {
-
-        var xmlhttp;
-        var me = this;
-        if (window.XMLHttpRequest) {
-            // code for IE7+, Firefox, Chrome, Opera, Safari
-            xmlhttp = new XMLHttpRequest();
-        }
-        else {
-            // code for IE6, IE5
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                jobj = JSON.parse(xmlhttp.responseText);
-                alert(jobj.message);
-                if (jobj.state == 0) {
-                    alert(jobj.message);
-                    return false;
-                } else {
-                    $(me).parent().parent('tr').remove();
-                    return true;
-                }
-            }
-        }
-        /// 参数编号 ParameterNO
-        /// 参数类型 ParameterType
-        xmlhttp.open("GET", "/Parameter/SystemParameterDelete/" + $(this).attr('name'), true);
-        xmlhttp.send();
-
     });
 
+    $('#addStandarExperimentModelId').on('hide.bs.modal', function () {
+        $("#addStandarExperimentModelId input").val("");
+        $('#addExperimentError').text('');
+    });
+
+    function addRow(experimentNumber) {
+        var t = $('#StandardParameterTableID').DataTable();
+        var row = t.row.add([
+            $("input[name='ExperimentName']").val(),
+            $("input[name='ExperimentNO']").val(),
+            $("input[name='StandardTestHours']").val(),
+            "<button class='btn btn-info' onclick='deleteExperiment(\"" + experimentNumber + "\", this )'>删除</button>"
+        ]).draw();
+    }
+
+
+    function addProject() {
+        var cont = $("#addStandardParameter").serialize();
+        $.ajax({
+            url: '/Parameter/StandardExperimentAdd',
+            type: 'post',
+            dataType: 'json',
+            data: cont,
+            beforeSend: function () {
+                if ($("input[name='ExperimentNO']").val().match(/\S/) && $("input[name='ExperimentName']").val().match(/\S/)) {
+                    return true;
+                }
+                return false;
+            },
+            success: function (data) {
+                //obj = JSON.parse(data);
+                if (data.state == 1) {
+                    addRow($("input[name='ExperimentNO']").val());
+                    $('#addStandarExperimentModelId').modal("hide");
+                    Showbo.Msg.alert(data.message);
+                }else{
+                   
+                    $('#addExperimentError').text(data.message);
+                }
+
+            }
+        });
+        return false;
+    }
 </script>

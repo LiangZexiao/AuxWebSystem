@@ -12,7 +12,7 @@ namespace AuxWebSystem.Models
         /// <summary>
         /// 表的名字
         /// </summary>
-        public static String TableName;
+        public String TableName;
 
         /// <summary>
         /// 获得全部记录的SQL

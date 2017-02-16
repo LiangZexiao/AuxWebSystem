@@ -128,12 +128,14 @@
     <Compile Include="Controllers\LabinfoController.cs" />
     <Compile Include="Controllers\ParameterController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\ViewDataController.cs" />
+    <Compile Include="Filters\DataViewFilterAttribute.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AreaStationHelper.cs" />
     <Compile Include="Helpers\DatabaseHelpers.cs" />
-    <Compile Include="Helpers\DateviewHelper.cs" />
     <Compile Include="Helpers\ExcelHelper.cs" />
     <Compile Include="Helpers\ProcedureHelper.cs" />
     <Compile Include="Helpers\SqlCommandHelper.cs" />
@@ -154,6 +156,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\css\basecount.css" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\dataTables.min.css" />
     <Content Include="Content\css\daterangepicker-bs3.css" />
@@ -162,6 +165,7 @@
     <Content Include="Content\css\style.css" />
     <Content Include="Content\jquery\ajaxfrom.js" />
     <Content Include="Content\jquery\bootstrap.min.js" />
+    <Content Include="Content\jquery\countUp.min.js" />
     <Content Include="Content\jquery\data.js" />
     <Content Include="Content\jquery\dataTables.min.js" />
     <Content Include="Content\jquery\daterangepicker.js" />
@@ -169,6 +173,7 @@
     <Content Include="Content\jquery\highcharts.js" />
     <Content Include="Content\jquery\jquery-1.12.3.js" />
     <Content Include="Content\jquery\jquery-1.8.3.min.js" />
+    <Content Include="Content\jquery\jquery-3.0.0.min.js" />
     <Content Include="Content\jquery\jquery-ui.min.js" />
     <Content Include="Content\jquery\moment.js" />
     <Content Include="Content\jquery\showBo.js" />
@@ -567,16 +572,6 @@
     <Content Include="Images\u0.jpg" />
     <Content Include="Images\u11.png" />
     <Content Include="Images\yes.png" />
-    <Content Include="Views\jiejiari.html" />
-    <Content Include="Views\Login.html" />
-    <Content Include="Views\Orkes.html" />
-    <Content Include="Views\shijiancanshu.html" />
-    <Content Include="Views\shiyanxinxi.html" />
-    <Content Include="Views\shujuchakan.html" />
-    <Content Include="Views\xitongcanshu.html" />
-    <Content Include="Views\yonghuguanli.html" />
-    <Content Include="Views\yonghuquanxian.html" />
-    <Content Include="Views\zengjiajiejiari.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -659,6 +654,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\template.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\ModityUserPage.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

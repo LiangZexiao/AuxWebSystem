@@ -31,9 +31,43 @@ namespace AuxWebSystem.Helpers
                 UserTableModel usermodel = new UserTableModel();
                 usermodel.LogName = model.LogName;
                 usermodel.Password = model.Password;
-                DataBaseHelper.Update(model);
                 DataBaseHelper.fillOneRecordToModel(usermodel);
-                session[sessionName] = usermodel;
+
+                var request = HttpContext.Current.Request;
+
+                String IP = request.ServerVariables["HTTP_VIA"] != null
+                    ? request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString()
+                    : request.ServerVariables["REMOTE_ADDR"].ToString();
+                double t1=6.0;
+                DateTime now = DateTime.Now;
+                if(null!=usermodel.LastLoginTime)
+                {
+                    TimeSpan t = now - usermodel.LastLoginTime;
+                     t1 = t.TotalMinutes;
+                }
+                if (null == usermodel.LastLoginIP || null == usermodel.LastLoginTime || t1>5 || usermodel.LastLoginIP==IP)
+                {
+                    /*
+                    if (request.ServerVariables["HTTP_VIA"] != null) 
+                        // using proxy 
+                    {
+                        ip = request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString(); // Return real client IP.u 
+                    }
+                    else
+                        // not using proxy or can't get the Client IP 
+                    {
+                        ip = request.ServerVariables["REMOTE_ADDR"].ToString(); //While it can't get the Client IP, it will return proxy IP. 
+                    } 
+                     */
+                    model.LastLoginIP = IP;
+                    DataBaseHelper.Update(model);
+                    DataBaseHelper.fillOneRecordToModel(usermodel);
+                    session[sessionName] = usermodel;
+                }
+                else
+                {
+                    throw new UserSecurityException("该用户已登录");
+                }
             }
             else
             {
@@ -59,7 +93,7 @@ namespace AuxWebSystem.Helpers
         public static void Register(UserTableModel model)
         {
             //TODO: can do better
-            UserSecurityException exce = new UserSecurityException();
+            UserSecurityException exce = new UserSecurityException("添加不成功");
             bool hasErr = false;
             if (null == model.LogName || "".Equals(model.LogName))
             {
@@ -67,7 +101,7 @@ namespace AuxWebSystem.Helpers
                 exce.Error.LogName = "登录名为空";
             }
 
-            if (null == model.RealName || "".Equals(model.RealName) )
+            if (null == model.RealName || "".Equals(model.RealName))
             {
                 hasErr = true;
                 exce.Error.RealName = "真实姓名为空";
@@ -85,11 +119,9 @@ namespace AuxWebSystem.Helpers
                 exce.Error.CellPhone = "手机号码不符合规范";
             }
 
-
-
             var table = HttpRuntime.Cache[UserTableModel.CacheName] as DataTable;
-            
-            var row = table.Select(String.Format(" {0} = '{1}' ", "LogName", model.LogName ));
+
+            var row = table.Select(String.Format(" {0} = '{1}' ", "LogName", model.LogName));
             if (row.Length >= 1)
             {
                 hasErr = true;
@@ -137,24 +169,27 @@ namespace AuxWebSystem.Helpers
         /// <param name="orign">原来的信息</param>
         public static void ModifyUser(ModifyUserTableModel model, UserTableModel orign)
         {
-            UserSecurityException exec = new UserSecurityException();
-            if (null == model.Password || !model.Password.Equals(orign.Password))
+            UserSecurityException exec = new UserSecurityException("修改失败");
+            if (null != model.OldPassword && !model.OldPassword.Equals(orign.Password))
             {
-                exec.Error.Password = "原始密码不正确";
+                exec.Error.Password = "旧密码不正确";
                 throw exec;
             }
 
             bool haserr = false;
-            if (null == model.NewPassword )
+            if (null != model.NewPassword)
             {
-                exec.Error.NewPassword = "请检查新密码";
-                haserr = true;
-            }
+                if (!System.Text.RegularExpressions.Regex.IsMatch(model.NewPassword, "[a-zA-Z0-9]{4,8}"))
+                {
+                    exec.Error.NewPassword = "新密码不符合规范";
+                    haserr = true;
+                }
 
-            if (null == model.ConfirmPassword || !model.ConfirmPassword.Equals(model.NewPassword))
-            {
-                exec.Error.ConfirmPassword = "密码输入不一致";
-                haserr = true;
+                if (null != model.ConfirmPassword && !model.ConfirmPassword.Equals(model.NewPassword))
+                {
+                    exec.Error.ConfirmPassword = "密码输入不一致";
+                    haserr = true;
+                }
             }
 
             if (null != model.CellPhone && !"".Equals(model.CellPhone) && !model.checkCellPhone())
@@ -225,6 +260,8 @@ namespace AuxWebSystem.Helpers
             }
             return userTable;
         }
+
+
     }
 
     /// <summary>
@@ -236,15 +273,24 @@ namespace AuxWebSystem.Helpers
             : base(message)
         {
             Error = new ModifyUserTableModel();
+            Error.RealName = "";
+            Error.LogName = "";
+            Error.Email = "";
+            Error.CellPhone = "";
+            Error.Password = "";
+            Error.OldPassword = "";
+            Error.NewPassword = "";
+            Error.ConfirmPassword = "";
         }
-        public UserSecurityException()
-            : base("")
+        public UserSecurityException(String message, ModifyUserTableModel errorMessage)
+            : base(message)
         {
-            Error = new ModifyUserTableModel();
+            Error = errorMessage;
         }
         /// <summary>
         /// 错误信息
         /// </summary>
         public ModifyUserTableModel Error { get; set; }
+
     }
 }

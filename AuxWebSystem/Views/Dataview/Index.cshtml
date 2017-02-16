@@ -4,73 +4,132 @@
 
 <div class='bg'>
     <div class='text-center' style='width:80%;position:absolute;top:16%;'>
-        <select>
-            <option>试验台的电量统计</option>
-            <option>设备利用率统计</option>
-            <option>有效利用率统计</option>
-            <option>测试样机有效率</option>
-            <option>委托单有效率</option>
-            <option>测试合格率</option>
-        </select>
+        <form action="" method="post" onsubmit="return searchLv();" id="index">
+            <select class="selt" style="float:left;margin-left:50px;">
+                <option>请选择查询项</option>  
+                <option value="/DataView/StationUseratio">试验台利用率</option>
+                <option value="/DataView/StationEffectiveUseratio">试验台有效利用率</option>
+                <option value="/DataView/TestOrderEffectiveUseratio">委托单有效率</option>
+                <option value="/DataView/MachineUseEffectiveratio">样机有效率</option>
+                <option value="/DataView/stationElectric">试验台电量</option>
+                <option value="/DataView/testOrderElectic">委托单电量</option>
+                <option value="/DataView/Passpercent">合格率</option>  
+            </select>
+            <span class="divideOne">
+                <select class="quyu">
 
-        <select>
-            <option>区域</option>
-        </select>
-        <select>
-            <option>试验台</option>
-        </select>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        设置日期：<input type="text" readonly style="width: 200px;cursor:pointer;" name="reservation" id="reservation" value="2017-1-15 - 2017-1-15" />
+                    <option value=" ">请选择相应区域</option>
+                    @{
+                        //UserID, UserInfo.LogName, UserArea., SysPara.Value AS Value
+                        System.Data.DataTable userAreas = ViewBag.userAreas as System.Data.DataTable;
+                        foreach (System.Data.DataRow row in userAreas.Rows)
+                        {
+                            <option value="@row["Area"]">@row["Value"]</option>
+                        }
+                    }
+                </select>
+                <select class="shiyantai">
+                    <option value=" ">请选择试验台</option>
+                    <option value="-1">所有试验台</option>
+                </select>
+                <input type="hidden" name="name" value="" class="lv" />
+                <input type="hidden" name="Area" value="" class="shiyantaiyuqu" />
+                <input type="hidden" name="StationNo" value="" class="shiyantaitai" />
+                <input type="hidden" name="StartTime" value="" class="start" />
+                <input type="hidden" name="EndTime" value="" class="end" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                设置日期：<input type="text" readonly style="width: 260px;cursor:pointer;" name="reservation" id="reservation" />
+                <button type="submit" class="btn btn-info quding">确定</button>
+            </span>
+            
+           
+            
+          
+        </form>
+       
+        <br/><br />
+        <div class="divideTwo" style="display: none; float: left; margin-left: 50px;">
+            请输入委托单号：<input type="text" class="sdivideTwo" placeholder="30个字符以内" maxlength="30" style="width:275px;"/>
+            <button class="btn btn-info qudingTwo">确定</button>
+        </div>
+        <span class="divideThree" style="display: none; float: left; margin-left: 50px; ">
+            请输入样机类型：<input type="text" class="sdivideThree" placeholder="30个字符以内" maxlength="30" style="width:275px;"  />
+            <button class="btn btn-info qudingThree">确定</button>
+        </span>
+        <span class="divideFour" style="display: none; float: left; margin-left: 50px; ">
+            请输入委托单号：<input type="text" class="sdivideFour" placeholder="30个字符以内" maxlength="30" style="width:275px;"  />
+            <button class="btn btn-info qudingFour">确定</button>
+        </span>
+
+
+
         <script type="text/javascript">
             $(document).ready(function () {
-                $('#reservation').daterangepicker(null, function (start, end, label) {
-                    console.log(start.toISOString(), end.toISOString(), label);
-                });
+                $('#reservation').daterangepicker({
+                    timePicker: true,
+                    timePickerIncrement: 30,
+                    format: 'YYYY-MM-DD hh:mm'
+                }, /*function(start, end, label) {
+                            console.log(start.toISOString(), end.toISOString(), label);
+                          }*/
+                  function (start, end, label) {
+
+                      //alert('start: ' + start.format('YYYY-MM-DD hh:mm:ss') + '\n' + 'end: ' + end.format('YYYY-MM-DD hh:mm:ss'));
+                      //alert(start.format('YYYY-MM-DD hh:mm:ss'));
+                      //alert(end.format('YYYY-MM-DD hh:mm:ss'));
+                      $(".startTime").html(start.format('YYYY-MM-DD hh:mm:ss'));
+                      $(".start").val(start.format('YYYY-MM-DD hh:mm:ss'));
+                      $(".endTime").html(end.format('YYYY-MM-DD hh:mm:ss'));
+                      $(".end").val(end.format('YYYY-MM-DD hh:mm:ss'));
+                  }
+                );
             });
+
         </script>
 
-        </span>
     </div>
     </br></br></br></br>
 
-    <div class='text-center'>
-        <table class='table table-hover table-bordered table-condensed' style='display:inline;' id='datatable'>
+    
+
+
+  
+
+
+
+
+
+    <div class='text-center' style="height: 500px; overflow: auto; ">
+        <table class='table table-hover table-bordered table-condensed' style='width: 46%;margin-left:2%;' id='datatable'>
             <thead style='color:rgb(120,120,120);font-size:13px;'>
             <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>区域</th>
             <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验台</th>
             <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>起始时间</th>
             <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>结束时间</th>
-            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>委托单有效率</th>
+            <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);' class="gelv">委托单有效率</th>
             </thead>
-            <tr>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>区域一</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>试验台一</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>2017-01-01</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>2017-01-02</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>70%</td>
-
-            </tr>
-            <tr>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>区域一</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>试验台二</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>2017-01-01</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>2017-01-02</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>70%</td>
-
-            </tr>
-            <tr>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>区域三</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>试验台一</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>2017-01-01</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>2017-01-02</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>70%</td>
-
-            </tr>
+            <tbody id="datatablele">
+                
+            </tbody>
+        </table>
+        </div>
+        <table id="table" style="display:none;">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th style='text-align:center;background:rgb(246,246,246);' class="gelv">委托单有效率</th>
+                </tr>
+            </thead>
+            <tbody id="tablele">
+                <tr>
+                    
+                </tr>  
+               
+            </tbody>   
         </table>
 
 
-
-        <span id="chart" style="width:600px;height:400px;float:right;margin-right:5%;"></span>
+        <span id="chart" style="width: 650px; height: 450px; float: right; margin-right: 2%; margin-top: -34%;"></span>
 
 
     </div>
@@ -80,75 +139,364 @@
     $('.canshu').click(function () {
         $('.peizhi').toggle();
     })
-    $(function () {
-        // Create the chart
-        Highcharts.chart('chart', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: '相关数据'
-            },
-            /*subtitle: {
-                text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
-            },*/
-            xAxis: {
-                type: 'category'
-            },
-            yAxis: {
-                title: {
-                    text: '电量统计'
+
+    $('.quyu').on("change", function () {
+        $(".shiyantaiyuqu").val($(".quyu").val());
+        for (j = 0; j < 100; j++) {
+            $(".shiyantai option[index="+j+"]").remove();
+        }
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                //alert(xmlhttp.responseText);
+                jobj = JSON.parse(xmlhttp.responseText);
+               // alert(jobj.stations[0].stationName);
+                //alert(jobj.stations[0].stationNO);
+                var x = jobj.stations.length;
+                for (i = 0; i < x; i++) {
+                    $('.shiyantai').append("<option value='" + jobj.stations[i].stationNO+ "' index='"+i+"'>" +jobj.stations[i].stationName + "</option>");
                 }
-            },
-            legend: {
-                enabled: false
-            },
-            /*plotOptions: {
-                series: {
-                    borderWidth: 0,
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.y:.1f}%'
+               
+            }
+        }
+        /// 参数编号 ParameterNO
+        /// 参数类型 ParameterType
+        xmlhttp.open("GET", "/Dataview/getStationByArea/" + $(".quyu").val(), true);
+        xmlhttp.send();
+       
+        
+    })
+   
+    $('.shiyantai').on("change", function () {
+        $(".shiyantaitai").val($(".shiyantai").val());
+    })
+    $('.quyu').on("change", function () {
+        $(".shiyantaitai").val("");
+
+    })
+  
+
+    $('.selt').on("change", function () {
+      
+        if ($('.selt').val() == "/DataView/StationUseratio") {
+            $(".lv").val("试验台利用率");
+            $(".gelv").html("试验台利用率(%)");
+            $(".divideTwo").css("display", "none");
+            $(".divideOne").css("display", "inline");
+            $(".divideThree").css("display", "none");
+            $(".divideFour").css("display", "none");
+            $("#chart").css("display", "inline");
+            $("#datatable").css("display", "block");
+        }
+        if ($('.selt').val() == "/DataView/StationEffectiveUseratio") {
+            $(".lv").val("试验台有效利用率");
+            $(".gelv").html("试验台有效利用率(%)");
+            $(".divideTwo").css("display", "none");
+            $(".divideOne").css("display", "inline");
+            $(".divideThree").css("display", "none");
+            $(".divideFour").css("display", "none");
+            $("#chart").css("display", "inline");
+            $("#datatable").css("display", "block");
+        }
+        if ($('.selt').val() == "/DataView/TestOrderEffectiveUseratio") {
+            $(".lv").val("委托单有效率");
+            $(".gelv").html("委托单有效率(%)");
+            $(".divideTwo").css("display", "block");
+            $(".divideOne").css("display", "none");
+            $(".divideThree").css("display", "none");
+            $(".divideFour").css("display", "none");
+            $("#datatable").css("display", "none");
+            $("#chart").css("display", "none");
+            $('.sdivideTwo').val("");
+            
+        }
+        if ($('.selt').val() == "/DataView/MachineUseEffectiveratio") {
+            $(".lv").val("样机有效率");
+            $(".gelv").html("样机有效率(%)");
+            $(".divideTwo").css("display", "none");
+            $(".divideOne").css("display", "none");
+            $(".divideThree").css("display", "block");
+            $(".divideFour").css("display", "none");
+            $("#datatable").css("display", "none");
+            $("#chart").css("display", "none");
+            $('.sdivideThree').val("");
+            
+        }
+        if ($('.selt').val() == "/DataView/stationElectric") {
+            $(".lv").val("试验台电量");
+            $(".gelv").html("试验台电量");
+            $(".divideTwo").css("display", "none");
+            $(".divideOne").css("display", "inline");
+            $(".divideThree").css("display", "none");
+            $(".divideFour").css("display", "none");
+            $("#chart").css("display", "inline");
+            $("#datatable").css("display", "block");
+        }
+        if ($('.selt').val() == "/DataView/testOrderElectic") {
+            $(".lv").val("委托单电量");
+            $(".gelv").html("委托单电量");
+            $(".divideTwo").css("display", "none");
+            $(".divideOne").css("display", "none");
+            $(".divideThree").css("display", "none");
+            $(".divideFour").css("display", "block");
+            $("#datatable").css("display", "none");
+            $('.sdivideFour').val("");
+            $("#chart").css("display", "none");
+            $(".qudingFour").click(function () {
+                var textNumberFour = $('.sdivideFour').val();
+                $.get("/DataView/testOrderElectic?TestOrderNO=" + textNumberFour, function (data) {
+                    obj = JSON.parse(data);
+                    if (obj.Value == null) {
+                        Showbo.Msg.alert("没有此数据");
                     }
-                }
-            },*/
-            credits: {
-                text: '',
-                href: ''
-            },
-            tooltip: {
-                /*headerFormat: '<span style="font-size:11px">{series.name}</span><br>',*/
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
-            },
-            series: [{
-                name: 'Brands',
-                colorByPoint: true,
-                data: [{
-                    name: '试验台一',
-                    y: 56.33,
-                    drilldown: '试验台一'
-                }, {
-                    name: '试验台二',
-                    y: 24.03,
-                    drilldown: '试验台二'
-                }, {
-                    name: '试验台三',
-                    y: 10.38,
-                    drilldown: '试验台三'
-                }, {
-                    name: '试验台四',
-                    y: 4.77,
-                    drilldown: '试验台四'
-                }, {
-                    name: '试验台n',
-                    y: 0.91,
-                    drilldown: '试验台n'
-                }]
-            }],
+                    else {
+                        Showbo.Msg.alert(obj.Value +"");
+                    }
+                    $(this).unbind();
+                })
+            })
+        }
+        if ($('.selt').val() == "/DataView/Passpercent") {
+            $(".lv").val("合格率");
+            $(".gelv").html("合格率(%)");
+            $(".divideTwo").css("display", "none");
+            $(".divideOne").css("display", "inline");
+            $(".divideThree").css("display", "none");
+            $(".divideFour").css("display", "none");
+            $("#chart").css("display", "inline");
+            $("#datatable").css("display", "block");
+        }
+    })
+   
+    $(".qudingTwo").click(function () {
+        var textNumberTwo = $('.sdivideTwo').val();
+        $.get("/DataView/TestOrderEffectiveUseratio?TestOrderNO=" + textNumberTwo, function (data) {
+            obj = JSON.parse(data);
+            if (obj.Value == null) {
+                Showbo.Msg.alert("没有此数据");
+            }
+            else {
 
-
-        });
+                Showbo.Msg.alert(obj.Value + "");
+            }
+            $(this).unbind();
+        })
     });
 
+    $(".qudingThree").click(function () {
+        var textNumberThree = $('.sdivideThree').val();
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+           
+            xmlhttp = new XMLHttpRequest();
+        }
+        else {
+
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                obj = JSON.parse(xmlhttp.responseText);
+                if (obj.Value == null) {
+
+                    Showbo.Msg.alert("没有此数据");
+                }
+                else {
+                    Showbo.Msg.alert(obj.Value + "");
+                }
+
+                $(this).unbind();
+                
+
+            }
+        }
+        xmlhttp.open("GET", "/DataView/MachineUseEffectiveratio?MachineType=" + textNumberThree, true);
+        xmlhttp.send();
+
+    })
+
+    function searchLv() {
+       
+       
+            var cont = $("#index").serialize();
+                $.ajax({
+                    url: ''+$('.selt').val()+'',
+                    type: 'post',
+                    dataType: 'json',
+                    data: cont,
+                    success: function (data) {
+                        $('#datatable tbody').empty();
+                        $('#table tbody').empty();
+                        var l = data.length;
+                        for (i = 0; i < l; i++) {
+                            
+                            var datatableRows = document.getElementById("datatablele").rows.length;
+                            var datatableTr = document.getElementById("datatablele").insertRow(datatableRows);
+
+                            insertTd = datatableTr.insertCell(0);
+                            insertTd.style.textAlign = "center";
+                            insertTd.innerHTML = data[i].AreaName;
+
+                            insertTd = datatableTr.insertCell(1);
+                            insertTd.style.textAlign = "center";
+                            insertTd.innerHTML = data[i].StationName;
+
+                            insertTd = datatableTr.insertCell(2);
+                            insertTd.style.textAlign = "center";
+                            insertTd.innerHTML = $(".start").val();
+
+                            insertTd = datatableTr.insertCell(3);
+                            insertTd.style.textAlign = "center";
+                            insertTd.innerHTML = $(".end").val();
+
+                            insertTd = datatableTr.insertCell(4);
+                            insertTd.style.textAlign = "center";
+                            insertTd.innerHTML = data[i].Value;
+
+
+
+
+
+                            var currentRows = document.getElementById("tablele").rows.length;
+                            var insertTr = document.getElementById("tablele").insertRow(currentRows);
+
+                            insertTd = insertTr.insertCell(0);
+                            insertTd.style.textAlign = "center";
+                            insertTd.innerHTML = data[i].StationName;
+
+                            insertTd = insertTr.insertCell(1);
+                            insertTd.style.textAlign = "center";
+                            insertTd.innerHTML = data[i].Value;
+                        }
+
+                        chart = new Highcharts.Chart({
+                            data: {
+                                table: 'table'
+                            },
+                            chart: {
+                                //设置曲线 线条类型 
+                                // defaultSeriesType: 'spline',
+                                type: 'column',
+                                //曲线图放到 id 为container的 div 中显示 
+                                renderTo: "chart",
+                            },
+                            title: {
+                                text: '相关数据'
+                            },
+                            /*subtitle: {
+                                text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
+                            },*/
+                            xAxis: {
+                                type: 'category'
+                            },
+                           
+                            legend: {
+                                enabled: false
+                            },
+                            /*plotOptions: {
+                                series: {
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.y:.1f}%'
+                                    }
+                                }
+                            },*/
+                            credits: {
+                                text: '',
+                                href: ''
+                            },
+                            tooltip: {
+                                /*headerFormat: '<span style="font-size:11px">{series.name}</span><br>',*/
+                                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}</b><br/>'
+
+                            },
+                            /*series: [{
+                                name: 'Brands',
+                                colorByPoint: true,
+                                data: [{
+                                    name: '试验台一',
+                                    y: 56
+                                }, {
+                                    name: '试验台二',
+                                    y: 24.03
+                                }, {
+                                    name: '试验台三',
+                                    y: 10.38
+                                }, {
+                                    name: '试验台四',
+                                    y: 4.77
+                                }, {
+                                    name: '试验台n',
+                                    y: 0.91
+                                }]
+                            }],*/
+                            /*series: [{
+                                name: 'Brands',
+                                colorByPoint: true,
+                                data: eval(datass)
+                            }]*/
+                        });
+                        //alert(data[0].AreaName);
+                        //alert(data[0].StationName);
+                        //alert(data[0].Value);
+                        //obj = JSON.parse(data);
+                      
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        objj = JSON.parse(XMLHttpRequest.responseText);
+                        //alert(XMLDocument);
+                        Showbo.Msg.alert(objj.message);
+                        //alert(XMLHttpRequest.status);
+                        //alert(XMLHttpRequest.readyState);
+                       // alert(textStatus);
+                       // alert(errorThrown);
+                    }
+                });
+                return false;
+        }
+  
+            
+           
+           
+       /* $.ajax({
+            url: '/Parameter/StandardExperimentAdd',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                "size": 5
+            },
+            success: function (data) {
+                //obj = JSON.parse(data);
+                if (data.state == 1) {
+                    addRow($("input[name='ExperimentNO']").val());
+                    $('#addStandarExperimentModelId').modal("hide");
+                    Showbo.Msg.alert(data.message);
+                } else {
+
+                    $('#addExperimentError').text(data.message);
+                }
+
+            }
+        });
+        return false;*/
+  
+
+
+
+
+
+    
 
 </script>

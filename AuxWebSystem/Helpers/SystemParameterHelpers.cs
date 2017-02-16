@@ -71,7 +71,8 @@ namespace AuxWebSystem.Helpers
         /// </summary>
         /// <param name="ParameterType">参数类型</param>
         /// <param name="Value">参数值</param>
-        public void Add(String ParameterType, String Value)
+        /// <returns>参数编号 ParameterNO</returns>
+        public int Add(String ParameterType, String Value)
         {
             DataTable dt = getDataTable();
             //int ParameterNO = (int)dt.Compute("Max(Value)", String.Format(" ParameterType = {0} ", ParameterType));
@@ -87,6 +88,7 @@ namespace AuxWebSystem.Helpers
             sysmodel.Value = Value;
             DataBaseHelper.Insert(sysmodel);
             removeDataTable();
+            return ParameterNO+1;
         }
 
 
@@ -132,7 +134,7 @@ namespace AuxWebSystem.Helpers
             DataRow[] rows = dt.Select(String.Format("ParameterType = '{0}' and  Value = '{1}' ", ParameterType, Value));
             if (rows.Length <= 0)
             {
-                return 0;
+                return -1;
             }
             else
             {
@@ -203,7 +205,7 @@ namespace AuxWebSystem.Helpers
                 EnglishSet = new HashSet<String>();
                 foreach (DataRow row in dt.Rows)
                 {
-                    EnglishSet.Add(row["ChineseName"].ToString());
+                    EnglishSet.Add(row["EnglishName"].ToString());
                 }
             }
             return EnglishSet;
@@ -222,7 +224,7 @@ namespace AuxWebSystem.Helpers
                 foreach (DataRow row in dt.Rows)
                 {
                     String key = row["ParameterType"].ToString();
-                    if (!ParameterTypeDic.ContainsKey(key))
+                    if (!ParameterTypeDic.ContainsKey(key) && row["Revisable"].Equals(1))
                     {
                         ParameterTypeDic.Add(key, row["ChineseName"].ToString());
                     }

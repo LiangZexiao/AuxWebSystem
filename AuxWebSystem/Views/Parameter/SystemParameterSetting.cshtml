@@ -20,12 +20,13 @@
                 $('#leixing').change(function () {
                     @{
                     foreach (var dat in parameter)
-                      { 
+                      {
                         String str = String.Format(@"
                             if( $('#leixing option:selected').val() == '{0}' ) {{
                                 $('.{2}').parent('tr').siblings().hide();
                                 $('.{1}').parent('tr').show();
-                                $('.ParameterTypeClass').val('{3}');
+                                $('#addParameterTypeId').val('{2}');
+                                $('#ParameterTypeChineseId').val('{3}');
                                 }}", dat.Value, dat.Key, dat.Key, dat.Value);
                         Output.Write(str+"\n");
                       }
@@ -42,14 +43,15 @@
             })
         </script>
         </br></br>
-        <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='shijiancanshu'>
-            <!-- <thead style='color:rgb(120,120,120);font-size:13px;'>
+        <div style="height:300px;overflow:auto;">
+            <table class='table table-hover table-bordered table-condensed' style='width:80%;margin:0 auto;' id='shijiancanshu'>
+                <!-- <thead style='color:rgb(120,120,120);font-size:13px;'>
 
                 <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>试验类型编号</th>
                 <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>标准工时</th>
                 <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);'>操作</th>
             </thead> -->
-            @{
+                @{
                 //ViewBag.SystemTable
                 /*参数类型	    ParameterType
                  *              ChineseName
@@ -64,51 +66,58 @@
                     <tr style='display:none;'>
                         <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);' class='@row["ParameterType"]'>@row["ChineseName"]</th>
                         <td bgcolor="#FFFFFF" style='text-align:center;'>@row["Value"]</td>
-                        <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel' name="@row["ParameterNO"]/@row["ParameterType"]">删除</button></td>
+                        <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel' name="@row["ParameterNO"]/@row["ParameterType"]" data-toggle="modal">删除</button></td>
                     </tr>
                 }
-            }
-            <tr style='display:none;'>
-                <th bgcolor="#FFFFFF" style='text-align:center;background:rgb(246,246,246);' class='xingming'>姓名</th>
-                <td bgcolor="#FFFFFF" style='text-align:center;'>&nbsp;</td>
-                <td bgcolor="#FFFFFF" style='text-align:center;'><button class='btn btn-info cancel'>删除</button></td>
-            </tr>
-        </table>
-
-        </br></br>
-        <form action="/P"
-        <div style='width:80%;width: 80%;margin: 0 auto;' class='row'>
-            <!-- <input placeholder='增加项目'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            <input type='time' class='span4'>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至：
-            <input type='time' class='span4'>
-            <button class='btn btn-info' style='float:right;right:20%;border-radius: 5px;'>确定</button> -->
-
-            <div class='col-md-2'><span>增加项目：</span></div>
-            <div class='col-md-3'>
-                <select class='ParameterTypeClass'>
-                    请输入参数类型:
-                    @foreach (var dat in parameter)
-                    {
-                    <option value="@dat.Key">@dat.Value</option>
-                    }
-                </select>
+                }
+            </table>
+        </div>
+        <div id='deleSystem' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class='modal-dialog'>
+                <div class='modal-content' style='padding:10%;'>
+                    <h3>请确定是否删除？</h3>
+                    <input type="hidden" id="experimentNumberID" />
+                    <button class="btn btn-info cancelSystem">删除</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-delete" onclick=" $('#deleExperimentModelID').modal('hide'); ">取消</button>
+                </div>
             </div>
-            <div class='col-md-3'><input placeholder='请输入参数值' name='ExperimentNO' /></div>
-            <div class='col-md-1'><button onclick='addRow()' class='btn btn-info'>确定</button></div>
+        </div>
+        </br></br>
+        <form action="#" id="addParameterform" onsubmit="return addParameter();">
+            <div style='width:80%;width: 80%;margin: 0 auto;' class='row'>
+                <!-- <input placeholder='增加项目'/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-            @{
-                /*
+                <input type='time' class='span4'>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至：
+                <input type='time' class='span4'>
+                <button class='btn btn-info' style='float:right;right:20%;border-radius: 5px;'>确定</button> -->
+
+                <div class='col-md-2'><span>增加</span></div>
+               
+                @{
+    /* 参数类型	    ParameterType	nvarchar(50)
+             * 参数编号	    ParameterNO	    int
+             * 参数值	    Value	        char(100)
+             * 是否可修改	Revisable	    int
+             */
+                }
+                <input type="hidden" name="ParameterTypeChinese" id="ParameterTypeChineseId" />
+                <input type="hidden" name="ParameterType" id="addParameterTypeId" />
+                <div class='col-md-3'><input placeholder='请输入10个字符以内的值' name='Value' pattern="^.{1,10}$" /></div>
+                <div class='col-md-1'><button type="submit" class='btn btn-info'>确定</button></div>
+
+                @{
+    /*
              * 参数类型	    ParameterType	nvarchar(50)
              * 参数编号	    ParameterNO	    int
              * 参数值	    Value	        char(100)
              * 是否可修改	Revisable	    int
              */
-                //"ParameterType"
-                //"Value"
-            }
-        </div>
+    //"ParameterType"
+    //"Value"
+                }
+            </div>
+        </form>
     </div>
 </div>
 
@@ -118,63 +127,132 @@
     })
 
 
+    
 
-    function addRow() {
+    function addParameter() {
+        var cont = $("#addParameterform").serialize();
+        $.ajax({
+            url: '/Parameter/SystemParameterAdding',
+            type: 'post',
+            dataType: 'json',
+            data: cont,
+            beforeSend: function () {
+                if ($("input[name='ParameterType']").val().match(/\S/) && $("input[name='Value']").val().match(/\S/)) {
+                    return true;
+                }
+                Showbo.Msg.alert("请检查输入");
+                return false;
+            },
+            success: function (data) {
+                //obj = JSON.parse(data);
+                if (data.state = 0) {
+                    Showbo.Msg.alert('增加失败!');
+                }
+                else {
+                    Showbo.Msg.alert('增加成功！');
+                    addRow(data.ExperimentNo);
+                    $("input[name='Value']").val('');
+                }
+            }
+        });
+        return false;
+    }
+
+    function addRow(experimentNumber) {
         //原来的行数    比如：此处获得表格的行数是5，则每一行对应的index是0~4，所以下面在insertRow时，使用的是表格的当前行数
         var currentRows = document.getElementById("shijiancanshu").rows.length;
         var insertTr = document.getElementById("shijiancanshu").insertRow(currentRows);
+
         insertTd = insertTr.insertCell(0);
         insertTd.style.textAlign = "center";
         insertTd.style.background = "rgb(246,246,246)";
-        insertTd.style.color = "#333";
-        insertTd.innerHTML = $(".canshuleixing").val();
+        insertTd.innerHTML = $("input[name='ParameterTypeChinese']").val();
 
 
 
         insertTd = insertTr.insertCell(1);
         insertTd.style.textAlign = "center";
-        insertTd.innerHTML = $("input[name='ExperimentNO']").val();
+        insertTd.innerHTML = $("input[name='Value']").val();
 
         insertTd = insertTr.insertCell(2);
         insertTd.style.textAlign = "center";
-        insertTd.innerHTML = "<button class='btn btn-info cancel' style='text-align:center;'>删除</button>";
-
-        $("input[name='ExperimentNO']").text("");
+        insertTd.innerHTML = "<button class='btn btn-info cancel' style='text-align:center;' name='" + experimentNumber + '/' + $("input[name='ParameterType']").val() + "' data-toggle='modal'>删除</button>";
 
         $('.cancel').click(function () {
-            $(this).parent().parent('tr').remove();
-        })
-    }
-    $('.cancel').click(function () {
 
+            $("#deleSystem").modal();
+            var xmlhttp;
+            var me = this;
+            $(".cancelSystem").click(function () {
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                }
+                else {
+                    // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        jobj = JSON.parse(xmlhttp.responseText);
+                        Showbo.Msg.alert(jobj.message);
+                        if (jobj.state == 0) {
+                            Showbo.Msg.alert(jobj.message);
+                            return false;
+                        } else {
+                            $(me).parent().parent('tr').remove();
+                            $("#deleSystem").modal("hide");
+                            return true;
+                        }
+                    }
+                }
+                /// 参数编号 ParameterNO
+                /// 参数类型 ParameterType
+                xmlhttp.open("GET", "/Parameter/SystemParameterDelete/" + $(me).attr('name'), true);
+                xmlhttp.send();
+            })
+
+        });
+
+    }
+
+    $('.cancel').click(function () {
+        $("#deleSystem").modal();
         var xmlhttp;
         var me = this;
-        if (window.XMLHttpRequest) {
-            // code for IE7+, Firefox, Chrome, Opera, Safari
-            xmlhttp = new XMLHttpRequest();
-        }
-        else {
-            // code for IE6, IE5
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
+        $(".cancelSystem").click(function () {
+            if (window.XMLHttpRequest) {
+                // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            }
+            else {
+                // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
 
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                jobj = JSON.parse(xmlhttp.responseText);
-                alert(jobj.message);
-                if (jobj.state == 0) {
-                    alert(jobj.message);
-                    return false;
-                } else {
-                    $(me).parent().parent('tr').remove();
-                    return true;
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    jobj = JSON.parse(xmlhttp.responseText);
+                    Showbo.Msg.alert(jobj.message);
+                    if (jobj.state == 0) {
+                        $("#deleSystem").modal("hide");
+                        Showbo.Msg.alert(jobj.message);
+
+                        return false;
+                    } else {
+                        $(me).parent().parent('tr').remove();
+                        $("#deleSystem").modal("hide");
+                        return true;
+                    }
                 }
             }
-        }
-        /// 参数编号 ParameterNO
-        /// 参数类型 ParameterType
-        xmlhttp.open("GET", "/Parameter/SystemParameterDelete/" + $(this).attr('name'), true);
-        xmlhttp.send();
+            /// 参数编号 ParameterNO
+            /// 参数类型 ParameterType
+            xmlhttp.open("GET", "/Parameter/SystemParameterDelete/" + $(me).attr('name'), true);
+            xmlhttp.send();
+        })
+        
 
     });
 

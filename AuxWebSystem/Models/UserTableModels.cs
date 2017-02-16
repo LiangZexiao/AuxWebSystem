@@ -87,15 +87,23 @@ namespace AuxWebSystem.Models
         /// 手机
         /// </summary>
         public String CellPhone { get; set; }
+
+
         /// <summary>
         /// 最后登录时间
         /// </summary>
         public DateTime LastLoginTime { get; set; }
+
+        /// <summary>
+        /// 最后登录IP
+        /// </summary>
+        public String LastLoginIP { get; set; }
+
+
         /// <summary>
         /// 超级用户权限
         /// 超级用户可删减其他用户
         /// </summary>
-
         public UserTableModel()
         {
             TableName = @"[User]";
@@ -104,7 +112,7 @@ namespace AuxWebSystem.Models
 
         public override string getRecordByKeySQL()
         {
-            return String.Format(@"SELECT UserID, LogName, Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} WHERE UserID = '{1}'", TableName, UserID);
+            return String.Format(@"SELECT UserID, LogName, Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime, LastLoginIP FROM {0} WHERE UserID = '{1}' ", TableName, UserID);
         }
 
         public String getAllRecordWithSystemParameter()
@@ -146,6 +154,7 @@ namespace AuxWebSystem.Models
             helper.Add("LogName", LogName);
             helper.Add("RealName", RealName);
             helper.Add("UserType", UserType);
+            helper.Add("Department", Department);
             return helper.Insert();
             //INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
             //return String.Format(@"INSERT INTO {0} ( LogName, RealName, Email, CellPhone ) VALUES ( '{1}', '{2}', '{3}', '{4}')", TableName, LogName, RealName, Email, CellPhone);
@@ -154,16 +163,16 @@ namespace AuxWebSystem.Models
 
         public override string getAllRecordSQL()
         {
-            return String.Format(@"SELECT UserID, LogName,Department, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0}", TableName);
+            return String.Format(@"SELECT UserID, LogName,Department, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} ", TableName);
         }
 
 
         /// <summary>
-        /// 根据用户ID获得用户信息的SQL语句
+        /// 根据用户LogName获得用户信息的SQL语句
         /// </summary>
         public override String getMyRecordSQL()
         {
-            return String.Format(@"SELECT UserID, LogName,Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime FROM {0} WHERE LogName = '{1}'", TableName, LogName);
+            return String.Format(@"SELECT UserID, LogName,Department, Password, Email, CellPhone,RealName,UserType,LastLoginTime, LastLoginIP FROM {0} WHERE LogName = '{1}'", TableName, LogName);
         }
 
         public override void FillData(SqlDataReader reader)
@@ -207,7 +216,10 @@ namespace AuxWebSystem.Models
             {
                 LastLoginTime = reader.GetDateTime(8);
             }
-
+            if (!reader.IsDBNull(9))
+            {
+                LastLoginIP = reader.GetString(9);
+            }
         }
 
         /// <summary>
@@ -285,23 +297,18 @@ namespace AuxWebSystem.Models
         public String LogName { get; set; }
         public String Password { get; set; }
         public DateTime LastLoginTime { get; set; }
+        public string LastLoginIP { get; set; }
 
         public override string getUpdateSQL()
         {
             //update YourTableName set [finishTime] = CAST('2014-09-01' AS datetime)
-            return String.Format(@"UPDATE {0} SET LastLoginTime = getdate() WHERE LogName = '{1}'", TableName, LogName);
+            return String.Format(@"UPDATE {0} SET LastLoginTime = getdate(),LastLoginIP = '{2}' WHERE LogName = '{1}'", TableName, LogName,LastLoginIP);
         }
 
         public override string getMyRecordSQL()
         {
             // SELECT * FROM 表名称
             return String.Format(@"SELECT * FROM {0} WHERE LogName = '{1}' AND Password = '{2}'", TableName, LogName, Password);
-        }
-
-        public override string getDeleteSQL()
-        {
-            //DELETE FROM 表名称 WHERE 列名称 = 值
-            return String.Format("DELETE FROM {0} WHERE LogName = '{1}' AND AdminUser = '0'", TableName, LogName);
         }
 
     }
@@ -361,6 +368,8 @@ namespace AuxWebSystem.Models
             helper.Add("Email", Email);
             helper.Add("CellPhone", CellPhone);
             helper.Add("RealName", RealName);
+            helper.Add("UserType", UserType);
+            helper.Add("Department", Department);
             return helper.Where(String.Format(" WHERE UserID = '{0}' ", UserID)).Update();
         }
 

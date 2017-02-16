@@ -52,7 +52,7 @@ namespace AuxWebSystem.Models
             return @"SELECT UserArea.UserID, UserArea.Area , SysPara.Value AS Value
                     FROM " + TableName + @" 
                     JOIN SystemParameter as SysPara
-                    ON SysPara.ParameterType = 'Area' AND SysPara.ParameterNO = UserArea.Area";
+                    ON SysPara.ParameterType = 'Department' AND SysPara.ParameterNO = UserArea.Area";
         }
 
         public override string getUpdateSQL()
@@ -70,16 +70,19 @@ namespace AuxWebSystem.Models
         public override string getMyRecordSQL()
         {
             //SELECT 列名称 FROM 表名称
-            return String.Format(@"SELECT UserID, Area FROM {0} WHRER UserID = '{1}' AND Area = '{2}'", TableName, UserID, Area);
+            return String.Format(@"SELECT UserID, Area FROM {0} WHERE UserID = '{1}' ", TableName, UserID);
         }
 
         public override string getRecordByKeySQL()
         {
-            return String.Format(@"SELECT UserArea.UserID, UserArea.Area, SysPara.Value AS Value
+            return String.Format(@"SELECT UserArea.UserID, UserInfo.LogName, UserArea.Area, SysPara.Value AS Value
                         FROM {0}
                         JOIN SystemParameter as SysPara
-                        ON SysPara.ParameterType = 'Area' AND SysPara.ParameterNO = UserArea.Area
-                        AND UserArea.UserID = '{1}'", TableName, UserID);
+                        ON SysPara.ParameterType = 'Department' AND SysPara.ParameterNO = UserArea.Area
+                        AND UserArea.UserID = '{1}'
+                        JOIN [User] as UserInfo
+                        ON UserInfo.UserID = '{2}'
+                        ", TableName, UserID, UserID);
         }
 
 

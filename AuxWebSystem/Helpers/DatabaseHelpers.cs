@@ -19,7 +19,7 @@ namespace AuxWebSystem.Helpers
 
         }
 
-        private static readonly String connectionString = getConnectionString();
+        //private static readonly String connectionString = getConnectionString();
 
         /// <summary>
         /// 获得一个SQL连接
@@ -27,18 +27,22 @@ namespace AuxWebSystem.Helpers
         /// <returns>新的SQL连接</returns>
         public static SqlConnection getSqlConnection()
         {
-            return new SqlConnection(connectionString);
+            return new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["SqlServerConnection"].ConnectionString);
         }
 
-        private static String getConnectionString()
-        {
-            //TODO: we need it to get connection String from xml
-            //Data Source=ALIY-DESKTOP;Initial Catalog=AUX_GROUP_CO;Integrated Security=True
-            //String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=sa;Password=123456";
-            //String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=guest;Password=guest";
-            String connectionString = @"Data Source=PC-201612302113;Initial Catalog=AUX_GROUP_CO;Integrated Security=True";
-            return connectionString;
-        }
+        //private static String getConnectionString()
+        //{
+
+        //    //TODO: we need it to get connection String from xml
+        //    //Data Source=ALIY-DESKTOP;Initial Catalog=AUX_GROUP_CO;Integrated Security=True
+        //    //String connectionString = @"Data Source=LENOVO-PC\SQLEXPRESS;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=sa;Password=123456";
+        //    //String connectionString = @"Data Source=LENOVO-PC;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=guest;Password=guest";
+        //     //String connectionString = @"Data Source=LENOVO-PC;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=guest;Password=123456";
+        //   // String connectionString = @"Data Source=PC-201612302113;Initial Catalog=AUX_GROUP_CO;Integrated Security=True";
+        //    //Data Source=LENOVO-PC;Initial Catalog=AUX_GROUP_CO;Persist Security Info=True;User ID=guest;Password=***********
+        //    //String connectionString = @"Data Source=ALIY-DESKTOP;Initial Catalog=NEW_AUX_GROUP_CO;Integrated Security=True";
+            
+        //}
 
         /// <summary>
         /// 根据TableModel的AllRecordSQL
